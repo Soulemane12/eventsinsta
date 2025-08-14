@@ -64,12 +64,13 @@ const styles = {
     display: "flex",
     flexDirection: "column",
     backgroundColor: COLORS.background,
+    alignItems: "center",
+    justifyContent: "center",
   },
   logoWrap: {
-    flex: 1,
     display: "flex",
     alignItems: "center",
-    justifyContent: "flex-end",
+    justifyContent: "center",
     paddingInline: 24,
   },
   logo: {
@@ -98,6 +99,8 @@ const styles = {
     display: "flex",
     gap: 24,
     flexDirection: "column" as const,
+    alignItems: "center",
+    textAlign: "center" as const,
   },
   heading: {
     fontSize: 28,
