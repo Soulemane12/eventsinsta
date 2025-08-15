@@ -11,10 +11,10 @@ export default function DetailsPage() {
     <div style={{ minHeight: "100vh", background: "#fff" }}>
       <div style={{ padding: 16, maxWidth: 800, margin: "0 auto" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <button onClick={() => router.back()} style={btnBack}>‹</button>
-          <h1 style={{ margin: 0, fontSize: 24, fontWeight: 800 }}>Step 2 of 5: Event Details</h1>
+          <button onClick={() => router.back()} style={{ fontSize: 28, color: "#000000", background: "transparent", border: 0, cursor: "pointer" }}>‹</button>
+          <h1 style={{ margin: 0, fontSize: 24, fontWeight: 800, color: "#000000" }}>2 of 5: Event Details</h1>
         </div>
-        <div style={{ height: 3, background: "#16a34a", width: "40%", marginTop: 8 }} />
+        <div style={{ height: 4, background: "#16a34a", width: "40%", marginTop: 8 }} />
 
         <div style={{ padding: 16 }}>
           <Label>Event Title</Label>
@@ -52,8 +52,20 @@ export default function DetailsPage() {
             <span>Hide guest list</span>
           </label>
 
-          <button style={{ ...cta, width: "100%" }} onClick={() => router.push("/create-event/preview")}>
-            <span style={ctaText}>Next: Preview</span>
+          <button style={{ 
+            height: 60, 
+            borderRadius: 12, 
+            background: "#2E1760", 
+            color: "#fff", 
+            display: "flex", 
+            alignItems: "center", 
+            justifyContent: "center", 
+            marginTop: 24, 
+            border: 0, 
+            cursor: "pointer",
+            width: "100%"
+          }} onClick={() => router.push("/create-event/preview")}>
+            <span style={{ color: "#fff", fontWeight: 700, fontSize: 18 }}>Next: Preview</span>
           </button>
         </div>
       </div>

@@ -9,20 +9,20 @@ export default function PreviewPage() {
     <div style={{ minHeight: "100vh", background: "#fff" }}>
       <div style={{ padding: 16, maxWidth: 800, margin: "0 auto" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <button onClick={() => router.back()} style={btnBack}>‹</button>
-          <h1 style={{ margin: 0, fontSize: 22, fontWeight: 800 }}>Step 3 of 5: Preview</h1>
+          <button onClick={() => router.back()} style={{ fontSize: 28, color: "#000000", background: "transparent", border: 0, cursor: "pointer" }}>‹</button>
+          <h1 style={{ margin: 0, fontSize: 24, fontWeight: 800, color: "#000000" }}>3 of 5: Preview</h1>
         </div>
-        <div style={{ height: 3, background: "#16a34a", width: "60%", marginTop: 8 }} />
+        <div style={{ height: 4, background: "#16a34a", width: "60%", marginTop: 8 }} />
 
         <div style={{ background: "#fff", borderRadius: 12, padding: 8, boxShadow: "0 4px 10px rgba(0,0,0,0.06)", marginTop: 10 }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="https://images.unsplash.com/photo-1520975940462-3724a3b4d66a?w=900" alt="Poster" style={{ width: "100%", height: 220, borderRadius: 8, objectFit: "cover" }} />
-          <button style={posterEdit}>✎</button>
+          <button style={{ position: "absolute", right: 18, top: 18, background: "#2E1760", width: 40, height: 40, borderRadius: 8, color: "#fff", display: "grid", placeItems: "center", border: 0, cursor: "pointer" }}>✎</button>
         </div>
 
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 16 }}>
-          <h2 style={{ fontSize: 22, fontWeight: 800, margin: 0 }}>Family Get-Together</h2>
-          <button style={editBtn}>✎ Edit Details</button>
+          <h2 style={{ fontSize: 22, fontWeight: 800, margin: 0, color: "#000000" }}>Family Get-Together</h2>
+          <button style={{ paddingInline: 10, paddingBlock: 6, background: "#E5E7EB", borderRadius: 8, border: 0, cursor: "pointer", color: "#000000", fontWeight: 600 }}>✎ Edit Details</button>
         </div>
 
         <InfoRow icon="📅" text="Wednesday, 6 Dec 2023" />
@@ -43,8 +43,8 @@ export default function PreviewPage() {
         <GuestRow name="Guest Name" count="1 Guest" />
         <GuestRow name="Guest Name" count="2 Guests" />
 
-        <button style={cta} onClick={() => router.push("/create-event/add-guests")}>
-          <span style={ctaText}>Next: Add Guests</span>
+        <button style={{ height: 60, borderRadius: 12, background: "#2E1760", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", marginTop: 24, border: 0, cursor: "pointer", width: "100%" }} onClick={() => router.push("/create-event/add-guests")}>
+          <span style={{ color: "#fff", fontWeight: 700, fontSize: 18 }}>Next: Add Guests</span>
         </button>
       </div>
     </div>

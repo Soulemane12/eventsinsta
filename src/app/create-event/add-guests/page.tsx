@@ -21,10 +21,10 @@ export default function AddGuestsPage() {
     <div style={{ minHeight: "100vh", background: "#fff" }}>
       <div style={{ padding: 16 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <button onClick={() => router.back()} style={btnBack}>‹</button>
-          <h1 style={{ margin: 0, fontSize: 24, fontWeight: 800 }}>Step 4 of 5: Add Guests</h1>
+          <button onClick={() => router.back()} style={{ fontSize: 28, color: "#000000", background: "transparent", border: 0, cursor: "pointer" }}>‹</button>
+          <h1 style={{ margin: 0, fontSize: 24, fontWeight: 800, color: "#000000" }}>4 of 5: Add Guests</h1>
         </div>
-        <div style={{ height: 3, background: "#16a34a", width: "80%", marginTop: 8 }} />
+        <div style={{ height: 4, background: "#16a34a", width: "80%", marginTop: 8 }} />
 
         <div style={{ height: 50, borderRadius: 12, background: "#F5F6FA", border: "1px solid #E7E7EA", paddingInline: 12, display: "flex", alignItems: "center", marginTop: 16 }}>
           <span style={{ marginRight: 8 }}>🔎</span>
@@ -41,8 +41,8 @@ export default function AddGuestsPage() {
           ))}
         </div>
 
-        <button style={cta} onClick={() => router.push("/home")}>
-          <span style={ctaText}>Next: Review & Send</span>
+        <button style={{ position: "fixed", left: 16, right: 16, bottom: 16, height: 60, borderRadius: 12, background: "#2E1760", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", border: 0, cursor: "pointer" }} onClick={() => router.push("/home")}>
+          <span style={{ color: "#fff", fontWeight: 700, fontSize: 18 }}>Next: Review & Send</span>
         </button>
       </div>
     </div>
