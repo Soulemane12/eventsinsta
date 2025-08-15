@@ -78,6 +78,7 @@ export default function SignInPage() {
             ...(styles.cta as React.CSSProperties),
             opacity: isValid ? 1 : 0.85,
             cursor: isValid ? "pointer" : "not-allowed",
+            width: "100%",
           }}
         >
           <span style={styles.ctaText as React.CSSProperties}>Sign In</span>

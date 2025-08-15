@@ -103,7 +103,7 @@ export default function SignUpPage() {
         </div>
 
         <div style={styles.hintRow as React.CSSProperties}>
-          <span style={styles.hintText as React.CSSProperties}>Don’t have an account? </span>
+          <span style={styles.hintText as React.CSSProperties}>Already have an account? </span>
           <Link href="/sign-in" style={styles.link as React.CSSProperties}>Sign In</Link>
         </div>
 
@@ -114,10 +114,15 @@ export default function SignUpPage() {
             ...(styles.cta as React.CSSProperties),
             opacity: isValid ? 1 : 0.8,
             cursor: isValid ? "pointer" : "not-allowed",
+            width: "100%",
           }}
         >
           <span style={styles.ctaText as React.CSSProperties}>Sign Up</span>
         </button>
+
+        <div style={{ marginTop: 12, alignSelf: "center" }}>
+          <Link href="/home">Skip for demo</Link>
+        </div>
       </div>
     </div>
   );
