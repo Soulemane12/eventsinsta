@@ -11,12 +11,12 @@ export default function DetailsPage() {
     <div style={{ minHeight: "100vh", background: "#fff" }}>
       <div style={{ padding: 16, maxWidth: 800, margin: "0 auto" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <button onClick={() => router.back()} style={{ fontSize: 28, color: "#000000", background: "transparent", border: 0, cursor: "pointer" }}>‹</button>
-          <h1 style={{ margin: 0, fontSize: 24, fontWeight: 800, color: "#000000" }}>2 of 5: Event Details</h1>
+          <button onClick={() => router.back()} style={btnBack}>‹</button>
+          <h1 style={{ margin: 0, fontSize: 24, fontWeight: 800 }}>2 of 5: Event Details</h1>
         </div>
-        <div style={{ height: 4, background: "#16a34a", width: "40%", marginTop: 8 }} />
+        <div style={{ height: 3, background: "#16a34a", width: "40%", marginTop: 8 }} />
 
-        <div style={{ padding: 16 }}>
+        <div style={{ padding: 16, color: "#0B0B0B" }}>
           <Label>Event Title</Label>
           <Input placeholder="Enter event title" />
 
@@ -27,16 +27,16 @@ export default function DetailsPage() {
           </div>
 
           <Label>Event Description</Label>
-          <textarea placeholder="Write your event description" style={{ ...input, height: 100 }} />
+          <textarea placeholder="Write your event description" style={{ ...input, height: 100, color: "#0B0B0B" }} />
 
           <h3 style={subhead}>Event Timing</h3>
           <div style={{ display: "flex", gap: 10, marginBottom: 12 }}>
-            <div style={{ ...inputRow, flex: 1 }}><span style={leadIcon}>📅</span><input placeholder="DD/MM/YY" style={inputFlex} /></div>
-            <div style={{ ...inputRow, flex: 1 }}><span style={leadIcon}>🕒</span><input placeholder="12:00 AM" style={inputFlex} /></div>
+            <div style={{ ...inputRow, flex: 1 }}><span style={leadIcon}>📅</span><input placeholder="DD/MM/YY" style={{ ...inputFlex, color: "#0B0B0B" }} /></div>
+            <div style={{ ...inputRow, flex: 1 }}><span style={leadIcon}>🕒</span><input placeholder="12:00 AM" style={{ ...inputFlex, color: "#0B0B0B" }} /></div>
           </div>
           <div style={{ display: "flex", gap: 10, marginBottom: 12 }}>
-            <div style={{ ...inputRow, flex: 1 }}><span style={leadIcon}>📅</span><input placeholder="DD/MM/YY" style={inputFlex} /></div>
-            <div style={{ ...inputRow, flex: 1 }}><span style={leadIcon}>🕒</span><input placeholder="12:00 AM" style={inputFlex} /></div>
+            <div style={{ ...inputRow, flex: 1 }}><span style={leadIcon}>📅</span><input placeholder="DD/MM/YY" style={{ ...inputFlex, color: "#0B0B0B" }} /></div>
+            <div style={{ ...inputRow, flex: 1 }}><span style={leadIcon}>🕒</span><input placeholder="12:00 AM" style={{ ...inputFlex, color: "#0B0B0B" }} /></div>
           </div>
 
           <Label>Location</Label>
@@ -46,26 +46,14 @@ export default function DetailsPage() {
           <Input placeholder="Enter host name" />
 
           <h3 style={subhead}>Guest Options</h3>
-          <div style={{ color: "#6B7280", marginBottom: 8 }}>Hide the guest list from attendees for this event</div>
+          <div style={{ color: "#0B0B0B", marginBottom: 8 }}>Hide the guest list from attendees for this event</div>
           <label style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
             <input type="checkbox" checked={hideGuestList} onChange={(e) => setHideGuestList(e.target.checked)} />
             <span>Hide guest list</span>
           </label>
 
-          <button style={{ 
-            height: 60, 
-            borderRadius: 12, 
-            background: "#2E1760", 
-            color: "#fff", 
-            display: "flex", 
-            alignItems: "center", 
-            justifyContent: "center", 
-            marginTop: 24, 
-            border: 0, 
-            cursor: "pointer",
-            width: "100%"
-          }} onClick={() => router.push("/create-event/preview")}>
-            <span style={{ color: "#fff", fontWeight: 700, fontSize: 18 }}>Next: Preview</span>
+          <button style={cta} onClick={() => router.push("/create-event/preview")}>
+            <span style={ctaText}>Next: Preview</span>
           </button>
         </div>
       </div>
