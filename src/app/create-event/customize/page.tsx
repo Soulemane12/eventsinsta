@@ -17,15 +17,25 @@ export default function CustomizePage() {
       </div>
 
       <div style={styles.posterWrap as React.CSSProperties}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="https://images.unsplash.com/photo-1520975940462-3724a3b4d66a?w=900"
-          alt="Poster"
-          style={styles.poster as React.CSSProperties}
-        />
+        {/* Event Poster with background design */}
+        <div style={styles.poster as React.CSSProperties}>
+          {/* Background pattern */}
+          <div style={styles.flagPattern}></div>
+          
+          {/* White paint stroke shape */}
+          <div style={styles.paintStroke}></div>
+          
+          {/* Event content */}
+          <div style={styles.eventContent}>
+            <div style={styles.topText}>Join us for our annual</div>
+            <div style={styles.mainTitle}>Parish Feast<br />Get-Together</div>
+            <div style={styles.bottomText}>Dec 6, 2023 | 11:30 am<br />A5 Villa, Kochi</div>
+          </div>
+        </div>
+        
         <button style={styles.editPill as React.CSSProperties} aria-label="Edit poster">✎</button>
 
-        {/* Editable content areas with better visibility */}
+        {/* Editable content areas overlaid */}
         <div style={{ ...styles.dash, top: 110, height: 36, background: "rgba(255,255,255,0.1)", borderColor: "#3B82F6" }}>
           <div style={{ padding: "8px 12px", color: "#1F2937", fontSize: 14, fontWeight: 600 }}>Event Title</div>
         </div>
@@ -55,7 +65,61 @@ const styles = {
   progress: { height: 3, backgroundColor: COLORS.progress, width: "20%", marginTop: 8 },
 
   posterWrap: { position: "relative" as const, width: 320, height: 480, margin: "20px auto 0" },
-  poster: { width: "100%", height: "100%", borderRadius: 8, objectFit: "cover" as const },
+  poster: { 
+    width: "100%", 
+    height: "100%", 
+    borderRadius: 8, 
+    background: "linear-gradient(135deg, #E0F2FE 0%, #BAE6FD 100%)",
+    position: "relative" as const,
+    overflow: "hidden"
+  },
+  flagPattern: {
+    position: "absolute" as const,
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 40,
+    background: "repeating-linear-gradient(45deg, #F1F5F9 0px, #F1F5F9 8px, transparent 8px, transparent 16px)",
+    opacity: 0.6
+  },
+  paintStroke: {
+    position: "absolute" as const,
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: 280,
+    height: 200,
+    background: "radial-gradient(ellipse at center, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 70%, transparent 100%)",
+    borderRadius: "50% 50% 50% 50% / 60% 60% 40% 40%"
+  },
+  eventContent: {
+    position: "absolute" as const,
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    textAlign: "center" as const,
+    color: "#374151",
+    zIndex: 2
+  },
+  topText: {
+    fontSize: 14,
+    fontWeight: 400,
+    marginBottom: 8,
+    opacity: 0.8
+  },
+  mainTitle: {
+    fontSize: 28,
+    fontWeight: 700,
+    lineHeight: "32px",
+    marginBottom: 12,
+    fontFamily: "Georgia, serif"
+  },
+  bottomText: {
+    fontSize: 12,
+    fontWeight: 500,
+    lineHeight: "16px",
+    opacity: 0.9
+  },
   editPill: { position: "absolute" as const, right: 10, top: 10, backgroundColor: COLORS.primary, width: 34, height: 34, borderRadius: 8, color: "#fff", display: "grid", placeItems: "center", border: 0, cursor: "pointer" },
   dash: { position: "absolute" as const, left: 24, right: 24, borderWidth: 2, borderStyle: "dashed", borderRadius: 6 },
 
