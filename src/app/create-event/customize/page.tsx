@@ -10,7 +10,7 @@ export default function CustomizePage() {
       <div style={styles.headerWrap as React.CSSProperties}>
         <div style={styles.headerRow as React.CSSProperties}>
           <button onClick={() => router.push("/create-event")} aria-label="Back" style={styles.back as React.CSSProperties}>‹</button>
-          <h1 style={styles.headerTitle as React.CSSProperties}>1 of 5: Customize</h1>
+          <h1 style={styles.headerTitle as React.CSSProperties}>Step 1 of 5: Customize</h1>
           <div style={{ width: 24 }} />
         </div>
         <div style={styles.progress as React.CSSProperties} />

@@ -10,7 +10,7 @@ export default function PreviewPage() {
       <div style={{ padding: 16, maxWidth: 800, margin: "0 auto" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <button onClick={() => router.back()} style={btnBack}>‹</button>
-          <h1 style={{ margin: 0, fontSize: 22, fontWeight: 800 }}>3 of 5: Preview</h1>
+          <h1 style={{ margin: 0, fontSize: 22, fontWeight: 800 }}>Step 3 of 5: Preview</h1>
         </div>
         <div style={{ height: 3, background: "#16a34a", width: "60%", marginTop: 8 }} />
 

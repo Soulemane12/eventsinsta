@@ -12,7 +12,7 @@ export default function DetailsPage() {
       <div style={{ padding: 16, maxWidth: 800, margin: "0 auto" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <button onClick={() => router.back()} style={btnBack}>‹</button>
-          <h1 style={{ margin: 0, fontSize: 24, fontWeight: 800 }}>2 of 5: Event Details</h1>
+          <h1 style={{ margin: 0, fontSize: 24, fontWeight: 800 }}>Step 2 of 5: Event Details</h1>
         </div>
         <div style={{ height: 3, background: "#16a34a", width: "40%", marginTop: 8 }} />
 
@@ -52,7 +52,7 @@ export default function DetailsPage() {
             <span>Hide guest list</span>
           </label>
 
-          <button style={cta} onClick={() => router.push("/create-event/preview")}>
+          <button style={{ ...cta, width: "100%" }} onClick={() => router.push("/create-event/preview")}>
             <span style={ctaText}>Next: Preview</span>
           </button>
         </div>

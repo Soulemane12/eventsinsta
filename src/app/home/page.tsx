@@ -55,7 +55,7 @@ export default function HomePage() {
       </div>
 
       <div style={styles.tabs as React.CSSProperties}>
-        <TabIcon glyph="🏠" onClick={() => {}} />
+        <TabIcon glyph="🏠" onClick={() => router.push("/home")} />
         <TabIcon glyph="➕" onClick={() => router.push("/create-event")} />
         <TabIcon glyph="👤" onClick={() => {}} />
       </div>

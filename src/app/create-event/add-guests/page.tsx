@@ -22,7 +22,7 @@ export default function AddGuestsPage() {
       <div style={{ padding: 16 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <button onClick={() => router.back()} style={btnBack}>‹</button>
-          <h1 style={{ margin: 0, fontSize: 24, fontWeight: 800 }}>4 of 5: Add Guests</h1>
+          <h1 style={{ margin: 0, fontSize: 24, fontWeight: 800 }}>Step 4 of 5: Add Guests</h1>
         </div>
         <div style={{ height: 3, background: "#16a34a", width: "80%", marginTop: 8 }} />
 

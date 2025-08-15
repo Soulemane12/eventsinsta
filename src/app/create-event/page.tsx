@@ -4,7 +4,7 @@ export default function CreateEventPage() {
       <div style={{ maxWidth: 900, margin: "0 auto", padding: 16 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <a href="/home" aria-label="Back" style={{ fontSize: 28, textDecoration: "none", color: "#1f2937" }}>‹</a>
-          <h1 style={{ fontSize: 22, fontWeight: 800, margin: 0, color: "#1f2937" }}>Create an EVENT</h1>
+          <h1 style={{ fontSize: 22, fontWeight: 800, margin: 0, color: "#1f2937" }}>Create an Event</h1>
         </div>
 
         <div style={{ background: "#3E1C87", marginTop: 8, padding: 16, borderRadius: 8 }}>
