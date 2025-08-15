@@ -7,8 +7,8 @@ export default function CustomizePage() {
   const router = useRouter();
   return (
     <div style={{ minHeight: "100vh", backgroundColor: "#FFFFFF", padding: 16, maxWidth: 800, margin: "0 auto" }}>
-      <div style={styles.headerWrap as React.CSSProperties}>
-        <div style={styles.headerRow as React.CSSProperties}>
+      <div style={{ marginBottom: 16 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <button onClick={() => router.push("/create-event")} aria-label="Back" style={{ fontSize: 28, color: "#000000", background: "transparent", border: 0, cursor: "pointer" }}>‹</button>
           <h1 style={{ fontSize: 24, fontWeight: 800, color: "#000000", margin: 0 }}>1 of 5: Customize</h1>
           <div style={{ width: 24 }} />
