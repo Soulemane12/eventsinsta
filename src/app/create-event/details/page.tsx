@@ -6,6 +6,21 @@ import { useRouter } from "next/navigation";
 export default function DetailsPage() {
   const router = useRouter();
   const [hideGuestList, setHideGuestList] = useState(false);
+  const [formData, setFormData] = useState({
+    title: "Family Get-Together",
+    type: "Social Event",
+    description: "Join us for a joyful celebration of faith, family, and fellowship at our annual Parish Feast Family Get-Together! Let us spend quality time with each other and create new memories that will last a lifetime.",
+    startDate: "06/12/2023",
+    startTime: "11:30 AM",
+    endDate: "06/12/2023", 
+    endTime: "05:00 PM",
+    location: "A5 Villa, Kent Nalukettu, near Udhyan Auditorium, Vennala, Kochi, Kerala-682028",
+    host: "Dylan Thomas"
+  });
+
+  const handleInputChange = (field: string, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
 
   return (
     <div style={{ minHeight: "100vh", background: "#fff" }}>
@@ -18,32 +33,86 @@ export default function DetailsPage() {
 
         <div style={{ padding: 16, color: "#0B0B0B" }}>
           <Label>Event Title</Label>
-          <Input placeholder="Enter event title" />
+          <Input 
+            placeholder="Enter event title" 
+            value={formData.title}
+            onChange={(e) => handleInputChange('title', e.target.value)}
+          />
 
           <Label>Event Type</Label>
           <div style={inputRow}>
-            <input placeholder="Select event type" style={inputFlex} />
+            <input 
+              placeholder="Select event type" 
+              style={inputFlex} 
+              value={formData.type}
+              onChange={(e) => handleInputChange('type', e.target.value)}
+            />
             <span style={{ fontSize: 18, marginLeft: 8 }}>⌄</span>
           </div>
 
           <Label>Event Description</Label>
-          <textarea placeholder="Write your event description" style={{ ...input, height: 100, color: "#0B0B0B" }} />
+          <textarea 
+            placeholder="Write your event description" 
+            style={{ ...input, height: 100, color: "#0B0B0B" }}
+            value={formData.description}
+            onChange={(e) => handleInputChange('description', e.target.value)}
+          />
 
           <h3 style={subhead}>Event Timing</h3>
           <div style={{ display: "flex", gap: 10, marginBottom: 12 }}>
-            <div style={{ ...inputRow, flex: 1 }}><span style={leadIcon}>📅</span><input placeholder="DD/MM/YY" style={{ ...inputFlex, color: "#0B0B0B" }} /></div>
-            <div style={{ ...inputRow, flex: 1 }}><span style={leadIcon}>🕒</span><input placeholder="12:00 AM" style={{ ...inputFlex, color: "#0B0B0B" }} /></div>
+            <div style={{ ...inputRow, flex: 1 }}>
+              <span style={leadIcon}>📅</span>
+              <input 
+                placeholder="DD/MM/YY" 
+                style={{ ...inputFlex, color: "#0B0B0B" }}
+                value={formData.startDate}
+                onChange={(e) => handleInputChange('startDate', e.target.value)}
+              />
+            </div>
+            <div style={{ ...inputRow, flex: 1 }}>
+              <span style={leadIcon}>🕒</span>
+              <input 
+                placeholder="12:00 AM" 
+                style={{ ...inputFlex, color: "#0B0B0B" }}
+                value={formData.startTime}
+                onChange={(e) => handleInputChange('startTime', e.target.value)}
+              />
+            </div>
           </div>
           <div style={{ display: "flex", gap: 10, marginBottom: 12 }}>
-            <div style={{ ...inputRow, flex: 1 }}><span style={leadIcon}>📅</span><input placeholder="DD/MM/YY" style={{ ...inputFlex, color: "#0B0B0B" }} /></div>
-            <div style={{ ...inputRow, flex: 1 }}><span style={leadIcon}>🕒</span><input placeholder="12:00 AM" style={{ ...inputFlex, color: "#0B0B0B" }} /></div>
+            <div style={{ ...inputRow, flex: 1 }}>
+              <span style={leadIcon}>📅</span>
+              <input 
+                placeholder="DD/MM/YY" 
+                style={{ ...inputFlex, color: "#0B0B0B" }}
+                value={formData.endDate}
+                onChange={(e) => handleInputChange('endDate', e.target.value)}
+              />
+            </div>
+            <div style={{ ...inputRow, flex: 1 }}>
+              <span style={leadIcon}>🕒</span>
+              <input 
+                placeholder="12:00 AM" 
+                style={{ ...inputFlex, color: "#0B0B0B" }}
+                value={formData.endTime}
+                onChange={(e) => handleInputChange('endTime', e.target.value)}
+              />
+            </div>
           </div>
 
           <Label>Location</Label>
-          <Input placeholder="Location" />
+          <Input 
+            placeholder="Location" 
+            value={formData.location}
+            onChange={(e) => handleInputChange('location', e.target.value)}
+          />
 
           <Label>Hosted By</Label>
-          <Input placeholder="Enter host name" />
+          <Input 
+            placeholder="Enter host name" 
+            value={formData.host}
+            onChange={(e) => handleInputChange('host', e.target.value)}
+          />
 
           <h3 style={subhead}>Guest Options</h3>
           <div style={{ color: "#0B0B0B", marginBottom: 8 }}>Hide the guest list from attendees for this event</div>

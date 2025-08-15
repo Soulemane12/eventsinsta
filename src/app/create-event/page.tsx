@@ -1,4 +1,13 @@
+"use client";
+
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+
 export default function CreateEventPage() {
+  const router = useRouter();
+  const [selectedType, setSelectedType] = useState("");
+  const [showDropdown, setShowDropdown] = useState(false);
+
   return (
     <div style={{ minHeight: "100vh", background: "#fff" }}>
       <div style={{ maxWidth: 900, margin: "0 auto", padding: 16 }}>
@@ -9,9 +18,35 @@ export default function CreateEventPage() {
 
         <div style={{ background: "#3E1C87", marginTop: 8, padding: 16, borderRadius: 8 }}>
           <div style={{ color: "#E9E1FF", fontWeight: 700, marginBottom: 6 }}>Event Type</div>
-          <div style={{ background: "rgba(255,255,255,0.12)", borderRadius: 12, height: 48, display: "flex", alignItems: "center", paddingInline: 14, color: "#fff" }}>
-            <input placeholder="Select event type" style={{ flex: 1, height: "100%", background: "transparent", border: 0, outline: "none", color: "#fff" }} />
-            <span style={{ fontSize: 18, opacity: 0.9, color: "#fff" }}>⌄</span>
+          <div style={{ position: "relative" }}>
+            <div 
+              style={{ background: "rgba(255,255,255,0.12)", borderRadius: 12, height: 48, display: "flex", alignItems: "center", paddingInline: 14, color: "#fff", cursor: "pointer" }}
+              onClick={() => setShowDropdown(!showDropdown)}
+            >
+              <input 
+                placeholder="Select event type" 
+                value={selectedType}
+                onChange={(e) => setSelectedType(e.target.value)}
+                style={{ flex: 1, height: "100%", background: "transparent", border: 0, outline: "none", color: "#fff" }} 
+              />
+              <span style={{ fontSize: 18, opacity: 0.9, color: "#fff" }}>⌄</span>
+            </div>
+            {showDropdown && (
+              <div style={{ position: "absolute", top: "100%", left: 0, right: 0, background: "#fff", borderRadius: 8, marginTop: 4, boxShadow: "0 4px 12px rgba(0,0,0,0.15)", zIndex: 10 }}>
+                {DEFAULT_CATEGORIES.map((category) => (
+                  <div 
+                    key={category.id}
+                    style={{ padding: 12, cursor: "pointer", color: "#1f2937", borderBottom: "1px solid #f3f4f6" }}
+                    onClick={() => {
+                      setSelectedType(category.title);
+                      setShowDropdown(false);
+                    }}
+                  >
+                    {category.title}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
 

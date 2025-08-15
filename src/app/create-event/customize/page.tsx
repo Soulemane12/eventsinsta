@@ -25,9 +25,16 @@ export default function CustomizePage() {
         />
         <button style={styles.editPill as React.CSSProperties} aria-label="Edit poster">✎</button>
 
-        <div style={{ ...styles.dash, top: 110, height: 36 }} />
-        <div style={{ ...styles.dash, top: 200, height: 70 }} />
-        <div style={{ ...styles.dash, top: 310, height: 36 }} />
+        {/* Editable content areas with better visibility */}
+        <div style={{ ...styles.dash, top: 110, height: 36, background: "rgba(255,255,255,0.1)", borderColor: "#3B82F6" }}>
+          <div style={{ padding: "8px 12px", color: "#1F2937", fontSize: 14, fontWeight: 600 }}>Event Title</div>
+        </div>
+        <div style={{ ...styles.dash, top: 200, height: 70, background: "rgba(255,255,255,0.1)", borderColor: "#3B82F6" }}>
+          <div style={{ padding: "8px 12px", color: "#1F2937", fontSize: 12 }}>Event Description</div>
+        </div>
+        <div style={{ ...styles.dash, top: 310, height: 36, background: "rgba(255,255,255,0.1)", borderColor: "#3B82F6" }}>
+          <div style={{ padding: "8px 12px", color: "#1F2937", fontSize: 14, fontWeight: 600 }}>Date & Time</div>
+        </div>
       </div>
 
       <button style={styles.cta as React.CSSProperties} onClick={() => router.push("/create-event/details")}>
@@ -50,7 +57,7 @@ const styles = {
   posterWrap: { position: "relative" as const, width: 320, height: 480, margin: "20px auto 0" },
   poster: { width: "100%", height: "100%", borderRadius: 8, objectFit: "cover" as const },
   editPill: { position: "absolute" as const, right: 10, top: 10, backgroundColor: COLORS.primary, width: 34, height: 34, borderRadius: 8, color: "#fff", display: "grid", placeItems: "center", border: 0, cursor: "pointer" },
-  dash: { position: "absolute" as const, left: 24, right: 24, borderWidth: 1.5, borderStyle: "dashed", borderColor: "#60A5FA", borderRadius: 6 },
+  dash: { position: "absolute" as const, left: 24, right: 24, borderWidth: 2, borderStyle: "dashed", borderRadius: 6 },
 
   cta: { marginTop: 24, height: 56, borderRadius: 12, backgroundColor: COLORS.primary, display: "flex", alignItems: "center", justifyContent: "center", width: "100%", maxWidth: 640, marginInline: "auto", border: 0, cursor: "pointer" },
   ctaText: { color: "#fff", fontWeight: 700 as const, fontSize: 16 },
