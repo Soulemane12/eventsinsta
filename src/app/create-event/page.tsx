@@ -20,7 +20,7 @@ export default function CreateEventPage() {
 
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, paddingBottom: 96 }}>
             {DEFAULT_CATEGORIES.map((c) => (
-              <a key={c.id} href="#" style={{ textDecoration: "none" }}>
+              <a key={c.id} href="/create-event/customize" style={{ textDecoration: "none" }}>
                 <div style={{ background: "#fff", borderRadius: 12, overflow: "hidden", boxShadow: "0 2px 6px rgba(0,0,0,0.06)" }}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={c.image} alt={c.title} style={{ width: "100%", height: 130, objectFit: "cover" }} />
