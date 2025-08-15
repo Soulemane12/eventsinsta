@@ -84,6 +84,10 @@ export default function SignInPage() {
         </button>
 
         <div style={styles.hintRow as React.CSSProperties}>
+          <Link href="/home" style={styles.linkDark as React.CSSProperties}>Skip for demo</Link>
+        </div>
+
+        <div style={styles.hintRow as React.CSSProperties}>
           <span style={styles.hintText as React.CSSProperties}>Don’t have an account? </span>
           <Link href="/sign-up" style={styles.linkDark as React.CSSProperties}>Sign up</Link>
         </div>
