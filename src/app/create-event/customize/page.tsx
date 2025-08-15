@@ -1,129 +1,304 @@
 "use client";
 
-import React from "react";
+import React, { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
 export default function CustomizePage() {
   const router = useRouter();
+
+  // Editable fields (you can persist these later)
+  const [titleTop, setTitleTop] = useState("Join us for our annual");
+  const [titleMain, setTitleMain] = useState("Parish Feast\nGet-Together");
+  const [titleBottom, setTitleBottom] = useState("Dec 6, 2023 | 11:30 am\nA5 Villa, Kochi");
+
+  // optional: focus top field when pencil is pressed
+  const editRef = useRef<HTMLDivElement | null>(null);
+
   return (
     <div style={styles.safe as React.CSSProperties}>
+      {/* Header */}
       <div style={styles.headerWrap as React.CSSProperties}>
         <div style={styles.headerRow as React.CSSProperties}>
-          <button onClick={() => router.push("/create-event")} aria-label="Back" style={styles.back as React.CSSProperties}>‹</button>
+          <button
+            onClick={() => router.push("/create-event")}
+            aria-label="Back"
+            style={styles.back as React.CSSProperties}
+          >
+            ‹
+          </button>
           <h1 style={styles.headerTitle as React.CSSProperties}>1 of 5: Customize</h1>
           <div style={{ width: 24 }} />
         </div>
         <div style={styles.progress as React.CSSProperties} />
       </div>
 
-      <div style={styles.posterWrap as React.CSSProperties}>
-        {/* Event Poster with background design */}
+      {/* Poster */}
+      <div style={styles.posterCard as React.CSSProperties}>
         <div style={styles.poster as React.CSSProperties}>
-          {/* Background pattern */}
-          <div style={styles.flagPattern}></div>
-          
-          {/* White paint stroke shape */}
-          <div style={styles.paintStroke}></div>
-          
-          {/* Event content */}
+          <div style={styles.flagPattern} />
+          <div style={styles.paintStroke} />
+          {/* static preview text (sits under the editable boxes) */}
           <div style={styles.eventContent}>
-            <div style={styles.topText}>Join us for our annual</div>
-            <div style={styles.mainTitle}>Parish Feast<br />Get-Together</div>
-            <div style={styles.bottomText}>Dec 6, 2023 | 11:30 am<br />A5 Villa, Kochi</div>
+            <div style={styles.topText}>{titleTop}</div>
+            <div style={styles.mainTitle}>
+              {titleMain.split("\n").map((l, i) => (
+                <div key={i}>{l}</div>
+              ))}
+            </div>
+            <div style={styles.bottomText}>
+              {titleBottom.split("\n").map((l, i) => (
+                <div key={i}>{l}</div>
+              ))}
+            </div>
           </div>
         </div>
-        
-        <button style={styles.editPill as React.CSSProperties} aria-label="Edit poster">✎</button>
 
-        {/* Editable content areas overlaid */}
-        <div style={{ ...styles.dash, top: 110, height: 36, background: "rgba(255,255,255,0.1)", borderColor: "#3B82F6" }}>
-          <div style={{ padding: "8px 12px", color: "#1F2937", fontSize: 14, fontWeight: 600 }}>Event Title</div>
-        </div>
-        <div style={{ ...styles.dash, top: 200, height: 70, background: "rgba(255,255,255,0.1)", borderColor: "#3B82F6" }}>
-          <div style={{ padding: "8px 12px", color: "#1F2937", fontSize: 12 }}>Event Description</div>
-        </div>
-        <div style={{ ...styles.dash, top: 310, height: 36, background: "rgba(255,255,255,0.1)", borderColor: "#3B82F6" }}>
-          <div style={{ padding: "8px 12px", color: "#1F2937", fontSize: 14, fontWeight: 600 }}>Date & Time</div>
-        </div>
+        {/* Pencil */}
+        <button
+          style={styles.editPill as React.CSSProperties}
+          aria-label="Edit poster"
+          onClick={() => editRef.current?.focus()}
+        >
+          ✎
+        </button>
+
+        {/* Editable overlays */}
+        <EditableBox
+          top={110}
+          height={36}
+          initial={titleTop}
+          onChange={setTitleTop}
+          align="center"
+          fontSize={14}
+          fontWeight={600}
+        />
+        <EditableBox
+          top={200}
+          height={90}
+          initial={titleMain}
+          onChange={setTitleMain}
+          align="center"
+          fontSize={28}
+          lineHeight="32px"
+          refEl={editRef}
+          multiline
+        />
+        <EditableBox
+          top={310}
+          height={40}
+          initial={titleBottom}
+          onChange={setTitleBottom}
+          align="center"
+          fontSize={14}
+          fontWeight={600}
+          multiline
+        />
       </div>
 
-      <button style={styles.cta as React.CSSProperties} onClick={() => router.push("/create-event/details")}>
+      {/* CTA */}
+      <button
+        style={styles.cta as React.CSSProperties}
+        onClick={() => router.push("/create-event/details")}
+      >
         <span style={styles.ctaText as React.CSSProperties}>Next: Event Details</span>
       </button>
     </div>
   );
 }
 
+/* ---------------- Editable dashed box ---------------- */
+
+type BoxProps = {
+  top: number;
+  height: number;
+  initial: string;
+  onChange: (v: string) => void;
+  align?: "left" | "center";
+  fontSize?: number;
+  fontWeight?: number;
+  lineHeight?: string;
+  multiline?: boolean;
+  refEl?: React.RefObject<HTMLDivElement | null>;
+};
+
+function EditableBox({
+  top,
+  height,
+  initial,
+  onChange,
+  align = "center",
+  fontSize = 16,
+  fontWeight = 500,
+  lineHeight,
+  multiline,
+  refEl,
+}: BoxProps) {
+  return (
+    <div
+      style={{
+        ...styles.dash,
+        top,
+        height,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: align === "center" ? "center" : "flex-start",
+        background: "rgba(255,255,255,0.08)",
+        borderColor: "#3B82F6",
+      }}
+    >
+      <div
+        ref={refEl as any}
+        contentEditable
+        suppressContentEditableWarning
+        role="textbox"
+        aria-label="Edit text"
+        onInput={(e) => onChange((e.target as HTMLDivElement).innerText)}
+        style={{
+          padding: "6px 10px",
+          outline: "none",
+          minWidth: 120,
+          textAlign: align,
+          fontSize,
+          fontWeight,
+          lineHeight: lineHeight ?? (multiline ? "20px" : "18px"),
+          color: "#1F2937",
+          whiteSpace: "pre-wrap",
+        }}
+        // set initial text
+        dangerouslySetInnerHTML={{ __html: initial.replace(/\n/g, "<br/>") }}
+      />
+    </div>
+  );
+}
+
+/* ---------------- Styles ---------------- */
+
 const COLORS = { primary: "#2E1760", bg: "#FFFFFF", progress: "#16a34a" } as const;
 
 const styles = {
-  safe: { minHeight: "100vh", backgroundColor: COLORS.bg, padding: 16 },
-  headerWrap: {},
-  headerRow: { display: "flex", alignItems: "center", gap: 8 },
-  back: { fontSize: 28 as const, color: "#111827", background: "transparent", border: 0, cursor: "pointer" },
-  headerTitle: { fontSize: 24, fontWeight: 800 as const, color: "#111827", margin: 0 },
-  progress: { height: 3, backgroundColor: COLORS.progress, width: "20%", marginTop: 8 },
-
-  posterWrap: { position: "relative" as const, width: 320, height: 480, margin: "20px auto 0" },
-  poster: { 
-    width: "100%", 
-    height: "100%", 
-    borderRadius: 8, 
-    background: "linear-gradient(135deg, #E0F2FE 0%, #BAE6FD 100%)",
-    position: "relative" as const,
-    overflow: "hidden"
+  safe: {
+    minHeight: "100vh",
+    backgroundColor: COLORS.bg,
+    padding: 16,
+    display: "flex",
+    flexDirection: "column",
   },
+
+  headerWrap: { marginBottom: 8 },
+  headerRow: { display: "flex", alignItems: "center", gap: 8 },
+  back: {
+    fontSize: 28 as const,
+    color: "#111827",
+    background: "transparent",
+    border: 0,
+    cursor: "pointer",
+    lineHeight: 1,
+  },
+  headerTitle: { fontSize: 24, fontWeight: 800 as const, color: "#111827", margin: 0 },
+  progress: {
+    height: 3,
+    backgroundColor: COLORS.progress,
+    width: "20%", // Step 1 of 5
+    marginTop: 8,
+    borderRadius: 2,
+  },
+
+  posterCard: {
+    position: "relative" as const,
+    width: 320,
+    height: 480,
+    margin: "16px auto 0",
+    borderRadius: 10,
+    boxShadow: "0 6px 18px rgba(0,0,0,0.08)",
+  },
+
+  poster: {
+    width: "100%",
+    height: "100%",
+    borderRadius: 10,
+    background: "linear-gradient(135deg, #CFE8EC 0%, #A6D5D9 100%)",
+    position: "relative" as const,
+    overflow: "hidden",
+  },
+
   flagPattern: {
     position: "absolute" as const,
-    top: 0,
-    left: 0,
+    bottom: 10,
     right: 0,
-    height: 40,
-    background: "repeating-linear-gradient(45deg, #F1F5F9 0px, #F1F5F9 8px, transparent 8px, transparent 16px)",
-    opacity: 0.6
+    left: 0,
+    height: 90,
+    background:
+      "repeating-linear-gradient(135deg, rgba(255,255,255,0.25) 0 16px, transparent 16px 32px)",
+    opacity: 0.7,
   },
+
   paintStroke: {
     position: "absolute" as const,
-    top: "50%",
+    top: "52%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    width: 280,
-    height: 200,
-    background: "radial-gradient(ellipse at center, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 70%, transparent 100%)",
-    borderRadius: "50% 50% 50% 50% / 60% 60% 40% 40%"
+    width: 360,
+    height: 360,
+    background:
+      "radial-gradient(closest-side, rgba(255,255,255,0.98), rgba(255,255,255,0.92) 65%, rgba(255,255,255,0) 70%)",
+    borderRadius: "50%",
   },
+
   eventContent: {
     position: "absolute" as const,
-    top: "50%",
+    top: "52%",
     left: "50%",
     transform: "translate(-50%, -50%)",
+    width: "86%",
     textAlign: "center" as const,
-    color: "#374151",
-    zIndex: 2
+    color: "#5B6570",
+    zIndex: 1,
+    pointerEvents: "none", // actual editing happens in overlays
   },
-  topText: {
-    fontSize: 14,
-    fontWeight: 400,
-    marginBottom: 8,
-    opacity: 0.8
-  },
-  mainTitle: {
-    fontSize: 28,
-    fontWeight: 700,
-    lineHeight: "32px",
-    marginBottom: 12,
-    fontFamily: "Georgia, serif"
-  },
-  bottomText: {
-    fontSize: 12,
-    fontWeight: 500,
-    lineHeight: "16px",
-    opacity: 0.9
-  },
-  editPill: { position: "absolute" as const, right: 10, top: 10, backgroundColor: COLORS.primary, width: 34, height: 34, borderRadius: 8, color: "#fff", display: "grid", placeItems: "center", border: 0, cursor: "pointer" },
-  dash: { position: "absolute" as const, left: 24, right: 24, borderWidth: 2, borderStyle: "dashed", borderRadius: 6 },
+  topText: { fontSize: 14, marginBottom: 8 },
+  mainTitle: { fontSize: 28, fontWeight: 700 as const, lineHeight: "32px", marginBottom: 12 },
+  bottomText: { fontSize: 12, lineHeight: "16px" },
 
-  cta: { marginTop: 24, height: 56, borderRadius: 12, backgroundColor: COLORS.primary, display: "flex", alignItems: "center", justifyContent: "center", width: "100%", maxWidth: 640, marginInline: "auto", border: 0, cursor: "pointer" },
+  editPill: {
+    position: "absolute" as const,
+    right: 12,
+    top: 12,
+    backgroundColor: COLORS.primary,
+    width: 34,
+    height: 34,
+    borderRadius: 8,
+    color: "#fff",
+    display: "grid",
+    placeItems: "center",
+    border: 0,
+    cursor: "pointer",
+    zIndex: 3,
+  },
+
+  dash: {
+    position: "absolute" as const,
+    left: 24,
+    right: 24,
+    borderWidth: 2,
+    borderStyle: "dashed",
+    borderRadius: 6,
+    zIndex: 2,
+  },
+
+  cta: {
+    marginTop: 24,
+    height: 56,
+    borderRadius: 12,
+    backgroundColor: COLORS.primary,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    width: "100%",
+    maxWidth: 640,
+    marginInline: "auto",
+    border: 0,
+    cursor: "pointer",
+  },
   ctaText: { color: "#fff", fontWeight: 700 as const, fontSize: 16 },
 } as const;
 
