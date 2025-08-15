@@ -23,7 +23,7 @@ export default function OnboardingWelcome({
   logoSrc,
   heading = "Event planning made easy",
   description =
-    "Choose event type, location, guests, budget  get personalized suggestions for a memorable event...",
+    "Choose event type, location, guests, budget get personalized suggestions for a memorable event...",
   buttonLabel = "Start",
 }: Props) {
   return (
@@ -65,9 +65,9 @@ const styles = {
     flexDirection: "column",
     backgroundColor: COLORS.background,
     alignItems: "center",
-    justifyContent: "center",
   },
   logoWrap: {
+    flex: 1,
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -101,6 +101,7 @@ const styles = {
     flexDirection: "column" as const,
     alignItems: "center",
     textAlign: "center" as const,
+    marginTop: "auto",
   },
   heading: {
     fontSize: 28,
