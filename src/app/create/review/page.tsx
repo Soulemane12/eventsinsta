@@ -55,43 +55,118 @@ function Card({ children, className = '' }: { children: React.ReactNode; classNa
 
 export default function ReviewSend() {
   const router = useRouter()
-  const link = useMemo(()=> `https://events.insta/invite/${Math.random().toString(36).slice(2,8)}`, [])
+  const totalPrice = useMemo(() => 2500 + 2250 + 800 + 1200, []) // Venue + Catering + DJ + Photography
 
-  async function share(){
-    try {
-      if ((navigator as any).share) {
-        await (navigator as any).share({ title: 'Family Get-Together', url: link })
-      } else if (navigator.clipboard) {
-        await navigator.clipboard.writeText(link)
-        alert('Link copied to clipboard!')
-      }
-    } catch {}
-  }
-
-  function send(){
-    // pretend to send and succeed
+  function bookEvent(){
+    // In a real app, this would process the booking
     router.push('/create/success')
   }
 
+  function saveForLater(){
+    // In a real app, this would save the event details
+    router.push('/home')
+  }
+
   return (
-    <div className="max-w-md mx-auto min-h-screen">
-      <StepHeader step={5} title="Review & Send" />
-      <div className="p-6 space-y-4">
+    <div className="max-w-md mx-auto min-h-screen bg-gray-50">
+      <StepHeader step={5} title="Book & Celebrate!" />
+      <div className="p-6 space-y-6">
+        <div className="text-center">
+          <h2 className="text-xl font-semibold mb-2">Ready to book your perfect event?</h2>
+          <p className="text-sm text-gray-600">Review your selections and complete your booking</p>
+        </div>
+
+        {/* Event Summary */}
         <Card className="p-4">
-          <div className="font-semibold">Summary</div>
-          <div className="text-sm text-gray-700 mt-2">Title: Family Get-Together</div>
-          <div className="text-sm text-gray-700">Type: Anniversary</div>
-          <div className="text-sm text-gray-700">When: Wednesday, 6 Dec 2023</div>
-          <div className="text-sm text-gray-700">🕐 11:30 am - 5:00 pm</div>
-          <div className="text-sm text-gray-700">Where: A5 Villa, Kochi</div>
-          <div className="text-sm text-gray-700">Hosted by: Dylan Thomas</div>
-          <div className="text-sm text-gray-700">Guest list: Visible</div>
-          <div className="text-sm text-gray-700">Guests selected: 3</div>
+          <div className="font-semibold mb-3">Event Summary</div>
+          <div className="space-y-2 text-sm">
+            <div className="flex justify-between">
+              <span>Event Type:</span>
+              <span className="font-medium">Birthday Party</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Location:</span>
+              <span className="font-medium">New York, NY</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Date & Time:</span>
+              <span className="font-medium">Dec 15, 2024 at 7:00 PM</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Guests:</span>
+              <span className="font-medium">50 people</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Budget Range:</span>
+              <span className="font-medium">$1,000 - $3,000</span>
+            </div>
+          </div>
         </Card>
 
-        <Button onClick={send}>Send Invitations</Button>
-        <GhostButton onClick={share}>Copy/Share Link</GhostButton>
-        <div className="text-xs text-gray-500 text-center">Share Link is always available, even if sending fails.</div>
+        {/* Selected Venues & Services */}
+        <Card className="p-4">
+          <div className="font-semibold mb-3">Your Selections</div>
+          <div className="space-y-3">
+            <div className="flex justify-between items-center">
+              <div>
+                <div className="font-medium text-sm">The Grand Ballroom</div>
+                <div className="text-xs text-gray-600">Wedding Venue</div>
+              </div>
+              <div className="text-sm font-medium">$2,500</div>
+            </div>
+            <div className="flex justify-between items-center">
+              <div>
+                <div className="font-medium text-sm">Elite Catering</div>
+                <div className="text-xs text-gray-600">Food & Beverage (50 guests)</div>
+              </div>
+              <div className="text-sm font-medium">$2,250</div>
+            </div>
+            <div className="flex justify-between items-center">
+              <div>
+                <div className="font-medium text-sm">DJ Master Pro</div>
+                <div className="text-xs text-gray-600">Entertainment</div>
+              </div>
+              <div className="text-sm font-medium">$800</div>
+            </div>
+            <div className="flex justify-between items-center">
+              <div>
+                <div className="font-medium text-sm">Capture Moments</div>
+                <div className="text-xs text-gray-600">Photography</div>
+              </div>
+              <div className="text-sm font-medium">$1,200</div>
+            </div>
+            <div className="border-t pt-3">
+              <div className="flex justify-between items-center font-semibold">
+                <span>Total:</span>
+                <span className="text-lg">${totalPrice.toLocaleString()}</span>
+              </div>
+            </div>
+          </div>
+        </Card>
+
+        {/* Booking Benefits */}
+        <Card className="p-4 bg-green-50">
+          <div className="text-sm font-medium text-green-800 mb-2">🎉 What's Included</div>
+          <div className="space-y-1 text-xs text-green-700">
+            <div>• Professional event coordination</div>
+            <div>• All-inclusive pricing (no hidden fees)</div>
+            <div>• 24/7 support throughout your event</div>
+            <div>• Flexible payment options available</div>
+          </div>
+        </Card>
+
+        <div className="space-y-3">
+          <Button onClick={bookEvent}>
+            Book Now - ${totalPrice.toLocaleString()}
+          </Button>
+          <GhostButton onClick={saveForLater}>
+            Save for Later
+          </GhostButton>
+        </div>
+
+        <div className="text-xs text-gray-500 text-center">
+          Secure booking with instant confirmation. Cancel up to 48 hours before your event.
+        </div>
       </div>
     </div>
   )

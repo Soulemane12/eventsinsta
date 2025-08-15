@@ -27,16 +27,35 @@ function GhostButton({ children, className = '', ...props }: React.ButtonHTMLAtt
 export default function Success() {
   const router = useRouter()
   return (
-    <div className="max-w-md mx-auto min-h-screen grid place-items-center p-6 text-center">
-      <div>
-        <div className="text-6xl">🎉</div>
-        <h1 className="text-2xl font-bold mt-2">Invitations sent!</h1>
-        <p className="text-gray-600 mt-2">Your event is live. You can invite more people or share the link anytime.</p>
-        <div className="mt-6 grid gap-3">
-          <Button onClick={()=>router.push('/home')}>View Event</Button>
-          <Button onClick={()=>router.push('/create/guests')} className="!h-12">Invite more</Button>
-          <GhostButton onClick={()=>router.push('/create/review')} className="!h-12">Share link</GhostButton>
-          <button onClick={()=>router.push('/home')} className="text-sm text-gray-500 underline mt-2">Plan another</button>
+    <div className="max-w-md mx-auto min-h-screen grid place-items-center p-6 text-center bg-gray-50">
+      <div className="w-full">
+        <div className="text-6xl mb-4">🎉</div>
+        <h1 className="text-2xl font-bold mb-2">Booking Confirmed!</h1>
+        <p className="text-gray-600 mb-6">Your event is officially booked and ready to celebrate!</p>
+        
+        <div className="bg-white rounded-2xl p-6 mb-6 shadow">
+          <div className="text-sm font-medium text-gray-800 mb-3">Event Details</div>
+          <div className="space-y-2 text-sm text-gray-600">
+            <div>🎉 Birthday Party</div>
+            <div>📍 The Grand Ballroom, New York</div>
+            <div>📅 Dec 15, 2024 at 7:00 PM</div>
+            <div>👥 50 guests</div>
+            <div className="font-medium text-purple-600">💰 $6,750 total</div>
+          </div>
+        </div>
+
+        <div className="space-y-3">
+          <Button onClick={()=>router.push('/home')}>
+            View My Events
+          </Button>
+          <GhostButton onClick={()=>router.push('/create/customize')}>
+            Plan Another Event
+          </GhostButton>
+        </div>
+
+        <div className="mt-6 text-xs text-gray-500">
+          <div>You'll receive a confirmation email shortly</div>
+          <div>Our team will contact you within 24 hours</div>
         </div>
       </div>
     </div>

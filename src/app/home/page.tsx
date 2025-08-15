@@ -39,34 +39,79 @@ function BottomNav() {
 export default function Home() {
   const router = useRouter()
   return (
-    <div className="max-w-md mx-auto min-h-screen pb-24">
+    <div className="max-w-md mx-auto min-h-screen pb-24 bg-gray-50">
       <div className="p-6">
         <h1 className="text-3xl font-bold">Hello Jared!</h1>
         <Card className="mt-4 p-5 bg-purple-100">
-          <div className="text-gray-700">Now that you are all set, let's make your events extraordinary, starting right here!</div>
+          <div className="text-gray-700">Ready to plan your next unforgettable event? Let's find the perfect venues and services for you!</div>
           <div className="mt-4"><Button onClick={()=>router.push('/create/customize')} className="!h-12">Plan an Event</Button></div>
         </Card>
 
         <section className="mt-8">
-          <h2 className="text-xl font-semibold">Invitations</h2>
+          <h2 className="text-xl font-semibold">Quick Start</h2>
+          <div className="grid grid-cols-2 gap-3 mt-3">
+            <Card className="p-4 text-center">
+              <div className={`${BrandText} text-2xl mb-2`}>🎉</div>
+              <div className="font-semibold text-sm">Birthday Party</div>
+              <div className="text-xs text-gray-600 mt-1">Find venues & services</div>
+            </Card>
+            <Card className="p-4 text-center">
+              <div className={`${BrandText} text-2xl mb-2`}>💒</div>
+              <div className="font-semibold text-sm">Wedding</div>
+              <div className="text-xs text-gray-600 mt-1">Venues & coordination</div>
+            </Card>
+            <Card className="p-4 text-center">
+              <div className={`${BrandText} text-2xl mb-2`}>🏢</div>
+              <div className="font-semibold text-sm">Corporate Event</div>
+              <div className="text-xs text-gray-600 mt-1">Professional venues</div>
+            </Card>
+            <Card className="p-4 text-center">
+              <div className={`${BrandText} text-2xl mb-2`}>🎓</div>
+              <div className="font-semibold text-sm">Graduation</div>
+              <div className="text-xs text-gray-600 mt-1">Celebration venues</div>
+            </Card>
+          </div>
+        </section>
+
+        <section className="mt-8">
+          <h2 className="text-xl font-semibold">Your Events</h2>
           <Card className="mt-3 p-4 flex gap-4 items-start">
-            <div className={`${BrandText} text-2xl`}>✉️</div>
+            <div className={`${BrandText} text-2xl`}>📅</div>
             <div>
-              <div className="font-semibold">No Invitations</div>
-              <p className="text-sm text-gray-600">No invitations received? Take charge and plan your own event with EventsInsta.</p>
+              <div className="font-semibold">No Events Yet</div>
+              <p className="text-sm text-gray-600">Start planning your first event and discover amazing venues and services tailored to your needs.</p>
             </div>
           </Card>
         </section>
 
         <section className="mt-8">
-          <h2 className="text-xl font-semibold">Upcoming Events</h2>
-          <Card className="mt-3 p-4 flex gap-4 items-start">
-            <div className={`${BrandText} text-2xl`}>📅</div>
-            <div>
-              <div className="font-semibold">No Events</div>
-              <p className="text-sm text-gray-600">Your event calendar is a blank canvas. Use EventsInsta to paint it with memorable moments.</p>
-            </div>
-          </Card>
+          <h2 className="text-xl font-semibold">Popular Services</h2>
+          <div className="grid grid-cols-3 gap-2 mt-3">
+            <Card className="p-3 text-center">
+              <div className="text-lg mb-1">📸</div>
+              <div className="text-xs font-medium">Photographer</div>
+            </Card>
+            <Card className="p-3 text-center">
+              <div className="text-lg mb-1">🎵</div>
+              <div className="text-xs font-medium">DJ</div>
+            </Card>
+            <Card className="p-3 text-center">
+              <div className="text-lg mb-1">🍽️</div>
+              <div className="text-xs font-medium">Catering</div>
+            </Card>
+            <Card className="p-3 text-center">
+              <div className="text-lg mb-1">🚗</div>
+              <div className="text-xs font-medium">Transport</div>
+            </Card>
+            <Card className="p-3 text-center">
+              <div className="text-lg mb-1">💄</div>
+              <div className="text-xs font-medium">Makeup</div>
+            </Card>
+            <Card className="p-3 text-center">
+              <div className="text-lg mb-1">🎪</div>
+              <div className="text-xs font-medium">Venues</div>
+            </Card>
+          </div>
         </section>
       </div>
       <BottomNav />

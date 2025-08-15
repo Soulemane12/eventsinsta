@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 
 const BrandPurple = 'bg-purple-800'
@@ -17,19 +17,6 @@ function Button({ children, className = '', disabled, ...props }: React.ButtonHT
       {children}
     </button>
   )
-}
-
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <label className="block">
-      <div className="text-sm font-medium text-gray-700 mb-1">{label}</div>
-      {children}
-    </label>
-  )
-}
-
-function Input(props: React.InputHTMLAttributes<HTMLInputElement>) {
-  return <input {...props} className={`w-full h-12 rounded-xl border border-gray-300 px-4 outline-none focus:ring-2 focus:ring-purple-300 ${props.className ?? ''}`} />
 }
 
 function BackBtn() {
@@ -56,73 +43,70 @@ function StepHeader({ step, title }: { step: number; title: string }) {
   )
 }
 
-type Template = {
-  id: string
-  name: string
-  bg: string
+function Card({ children, className = '' }: { children: React.ReactNode; className?: string }) {
+  return <div className={`rounded-2xl bg-white shadow ${className}`}>{children}</div>
 }
 
-const TEMPLATES: Template[] = [
-  { id: 'soft-mint', name: 'Soft Mint', bg: 'bg-teal-100' },
-  { id: 'lavender', name: 'Lavender', bg: 'bg-purple-100' },
-  { id: 'sunset', name: 'Sunset', bg: 'bg-orange-100' },
-  { id: 'mono', name: 'Minimal', bg: 'bg-gray-100' },
+const EVENT_TYPES = [
+  { id: 'birthday', name: 'Birthday Party', icon: '🎉', description: 'Celebrate special moments' },
+  { id: 'wedding', name: 'Wedding', icon: '💒', description: 'Your perfect day' },
+  { id: 'corporate', name: 'Corporate Event', icon: '🏢', description: 'Professional gatherings' },
+  { id: 'graduation', name: 'Graduation', icon: '🎓', description: 'Academic achievements' },
+  { id: 'anniversary', name: 'Anniversary', icon: '💕', description: 'Milestone celebrations' },
+  { id: 'vacation', name: 'Vacation', icon: '✈️', description: 'Travel experiences' },
+  { id: 'sporting', name: 'Sporting Event', icon: '⚽', description: 'Sports and recreation' },
+  { id: 'networking', name: 'Networking Mixer', icon: '🤝', description: 'Professional connections' },
 ]
-
-function TemplateCard({ t, selected, onSelect, headline, dateText, locationText }: { t: Template; selected: boolean; onSelect: () => void; headline?: string; dateText?: string; locationText?: string }) {
-  return (
-    <button onClick={onSelect} className={`relative rounded-2xl p-4 w-full text-left ${t.bg} border ${selected? 'border-purple-600' : 'border-transparent'} hover:border-purple-400`}>
-      <div className="text-xs text-gray-500">{t.name}</div>
-      <div className="mt-6 grid place-items-center">
-        <div className="w-64 h-40 rounded-xl bg-white/80 border border-dashed grid place-items-center">
-          <div className="text-center px-4">
-            <div className="font-semibold text-lg">{headline || 'Event Headline'}</div>
-            <div className="text-sm text-gray-600 mt-1">{dateText || 'Dec 6, 2023 | 11:30 am'}</div>
-            <div className="text-xs text-gray-500">{locationText || 'AS Villa, Kochi'}</div>
-          </div>
-        </div>
-      </div>
-      {selected && <span className="absolute top-3 right-3 text-sm px-2 py-0.5 rounded-full bg-purple-700 text-white">Selected</span>}
-    </button>
-  )
-}
 
 export default function Customize() {
   const router = useRouter()
-  const [headline, setHeadline] = useState('')
-  const [dateText, setDate] = useState('')
-  const [locText, setLoc] = useState('')
-  const [selected, setSelected] = useState<string>(TEMPLATES[0].id)
-
-  const tObj = useMemo(()=> TEMPLATES.find(t=>t.id===selected)!, [selected])
+  const [selectedType, setSelectedType] = useState('')
 
   function next() {
-    // In a real app, you'd save this to context/state
-    router.push('/create/details')
+    if (selectedType) {
+      router.push('/create/details')
+    }
   }
 
   return (
-    <div className="max-w-md mx-auto min-h-screen">
-      <StepHeader step={1} title="Customize" />
+    <div className="max-w-md mx-auto min-h-screen bg-gray-50">
+      <StepHeader step={1} title="Select Event Type" />
       <div className="p-6 space-y-6">
-        <div className="grid gap-4">
-          <TemplateCard t={tObj} selected={true} onSelect={()=>{}} headline={headline} dateText={dateText} locationText={locText} />
-          <div className="grid grid-cols-2 gap-3">
-            {TEMPLATES.map(t => (
-              <button key={t.id} onClick={()=>setSelected(t.id)} className={`rounded-xl p-3 ${t.bg} border ${selected===t.id?'border-purple-600':'border-transparent'}`}>
-                <div className="text-sm">{t.name}</div>
-              </button>
-            ))}
-          </div>
+        <div className="text-center">
+          <h2 className="text-xl font-semibold mb-2">What type of event are you planning?</h2>
+          <p className="text-sm text-gray-600">Choose the event type that best matches your celebration</p>
         </div>
 
-        <div className="grid gap-3">
-          <Field label="Headline"><Input value={headline} onChange={e=>setHeadline(e.target.value)} placeholder="Parish Feast Get-Together" /></Field>
-          <Field label="Date"><Input value={dateText} onChange={e=>setDate(e.target.value)} placeholder="Dec 6, 2023 | 11:30 am" /></Field>
-          <Field label="Location"><Input value={locText} onChange={e=>setLoc(e.target.value)} placeholder="AS Villa, Kochi" /></Field>
+        <div className="grid grid-cols-2 gap-3">
+          {EVENT_TYPES.map((type) => (
+            <button
+              key={type.id}
+              className={`w-full p-4 text-center cursor-pointer transition-all rounded-2xl bg-white shadow ${
+                selectedType === type.id 
+                  ? 'border-2 border-purple-600 bg-purple-50' 
+                  : 'border border-gray-200 hover:border-purple-300'
+              }`}
+              onClick={() => setSelectedType(type.id)}
+            >
+              <div className="text-3xl mb-2">{type.icon}</div>
+              <div className="font-semibold text-sm mb-1">{type.name}</div>
+              <div className="text-xs text-gray-600">{type.description}</div>
+              {selectedType === type.id && (
+                <div className="mt-2">
+                  <div className="w-4 h-4 bg-purple-600 rounded-full mx-auto flex items-center justify-center">
+                    <div className="w-2 h-2 bg-white rounded-full"></div>
+                  </div>
+                </div>
+              )}
+            </button>
+          ))}
         </div>
 
-        <Button onClick={next}>Next: Event Details</Button>
+        <div className="mt-8">
+          <Button onClick={next} disabled={!selectedType}>
+            Next: Location & Date
+          </Button>
+        </div>
       </div>
     </div>
   )

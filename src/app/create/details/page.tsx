@@ -32,24 +32,6 @@ function Input(props: React.InputHTMLAttributes<HTMLInputElement>) {
   return <input {...props} className={`w-full h-12 rounded-xl border border-gray-300 px-4 outline-none focus:ring-2 focus:ring-purple-300 ${props.className ?? ''}`} />
 }
 
-function TextArea(props: React.TextareaHTMLAttributes<HTMLTextAreaElement>) {
-  return <textarea {...props} className={`w-full min-h-[96px] rounded-xl border border-gray-300 px-4 py-3 outline-none focus:ring-2 focus:ring-purple-300 ${props.className ?? ''}`} />
-}
-
-function Toggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean) => void }) {
-  return (
-    <div className="flex items-center">
-      <button
-        onClick={() => onChange(!checked)}
-        className={`w-12 h-7 rounded-full transition-colors ${checked ? 'bg-purple-700' : 'bg-gray-300'} relative`}
-        aria-pressed={checked}
-      >
-        <span className={`absolute top-0.5 ${checked ? 'right-0.5' : 'left-0.5'} w-6 h-6 rounded-full bg-white shadow`} />
-      </button>
-    </div>
-  )
-}
-
 function BackBtn() {
   const router = useRouter();
   return (
@@ -74,74 +56,66 @@ function StepHeader({ step, title }: { step: number; title: string }) {
   )
 }
 
-function isoLocal(date: string, time: string) {
-  if (!date) return ''
-  const [y,m,d] = date.split('-').map(Number)
-  const [hh,mm] = time.split(':').map(Number)
-  const dt = new Date(y, m-1, d, hh ?? 0, mm ?? 0)
-  return dt.toISOString()
-}
-
 export default function Details() {
   const router = useRouter()
 
-  const [title, setTitle] = useState('')
-  const [type, setType] = useState('')
-  const [desc, setDesc] = useState('')
-  const [startDate, setStartDate] = useState('')
-  const [startTime, setStartTime] = useState('12:00')
-  const [endDate, setEndDate] = useState('')
-  const [endTime, setEndTime] = useState('13:00')
   const [location, setLocation] = useState('')
-  const [hostedBy, setHostedBy] = useState('')
-  const [hideGuests, setHideGuests] = useState(false)
+  const [date, setDate] = useState('')
+  const [time, setTime] = useState('')
 
-  const startIso = isoLocal(startDate, startTime)
-  const endIso = isoLocal(endDate, endTime)
-  const valid = title.trim().length>0 && !!startIso && !!endIso && new Date(startIso) < new Date(endIso)
+  const valid = location.trim().length > 0 && date && time
 
   function next(){
-    // In a real app, you'd save this to context/state
-    router.push('/create/guests')
+    if (valid) {
+      router.push('/create/guests')
+    }
   }
 
   return (
-    <div className="max-w-md mx-auto min-h-screen">
-      <StepHeader step={2} title="Event Details" />
-      <div className="p-6 space-y-4">
-        <Field label="Event Title"><Input value={title} onChange={e=>setTitle(e.target.value)} placeholder="Enter event title" /></Field>
-
-        <Field label="Event Type">
-          <select value={type} onChange={e=>setType(e.target.value)} className="w-full h-12 rounded-xl border border-gray-300 px-4">
-            <option value="">Select event type</option>
-            {['Graduation','Anniversary','Wedding Party','Kid Party','Rooftop Party','Corporate Event'].map(opt=> <option key={opt} value={opt}>{opt}</option>)}
-          </select>
-        </Field>
-
-        <Field label="Event Description"><TextArea value={desc} onChange={e=>setDesc(e.target.value)} placeholder="Write your event description" /></Field>
-
-        <div className="grid grid-cols-2 gap-4">
-          <Field label="Start Date"><Input type="date" value={startDate} onChange={e=>setStartDate(e.target.value)} /></Field>
-          <Field label="Start Time"><Input type="time" value={startTime} onChange={e=>setStartTime(e.target.value)} /></Field>
-          <Field label="End Date"><Input type="date" value={endDate} onChange={e=>setEndDate(e.target.value)} /></Field>
-          <Field label="End Time"><Input type="time" value={endTime} onChange={e=>setEndTime(e.target.value)} /></Field>
+    <div className="max-w-md mx-auto min-h-screen bg-gray-50">
+      <StepHeader step={2} title="Location & Date" />
+      <div className="p-6 space-y-6">
+        <div className="text-center">
+          <h2 className="text-xl font-semibold mb-2">Where and when is your event?</h2>
+          <p className="text-sm text-gray-600">Tell us about your event location and timing</p>
         </div>
 
-        <Field label="Location"><Input value={location} onChange={e=>setLocation(e.target.value)} placeholder="Location" /></Field>
-        <Field label="Hosted By"><Input value={hostedBy} onChange={e=>setHostedBy(e.target.value)} placeholder="Enter host name" /></Field>
+        <div className="space-y-4">
+          <Field label="Event Location">
+            <Input 
+              value={location} 
+              onChange={e=>setLocation(e.target.value)} 
+              placeholder="Enter city, venue, or address" 
+            />
+          </Field>
 
-        <div className="flex items-center justify-between py-2">
-          <div>
-            <div className="font-medium">Guest Options</div>
-            <div className="text-sm text-gray-600">Hide the guest list from attendees for this event</div>
+          <Field label="Event Date">
+            <Input 
+              type="date" 
+              value={date} 
+              onChange={e=>setDate(e.target.value)} 
+            />
+          </Field>
+
+          <Field label="Event Time">
+            <Input 
+              type="time" 
+              value={time} 
+              onChange={e=>setTime(e.target.value)} 
+            />
+          </Field>
+        </div>
+
+        <div className="bg-purple-50 p-4 rounded-xl">
+          <div className="text-sm font-medium text-purple-800 mb-2">💡 Tip</div>
+          <div className="text-xs text-purple-700">
+            We'll use this information to find the best venues and services available in your area for your chosen date and time.
           </div>
-          <Toggle checked={hideGuests} onChange={setHideGuests} />
         </div>
 
-        {!valid && (
-          <div className="text-sm text-red-600">Title is required and start must be before end.</div>
-        )}
-        <Button onClick={next} disabled={!valid}>Next: Add Guests</Button>
+        <Button onClick={next} disabled={!valid}>
+          Next: Guest Count & Budget
+        </Button>
       </div>
     </div>
   )
