@@ -85,7 +85,7 @@ const styles = {
   safe: { minHeight: "100vh", backgroundColor: COLORS.bg, position: "relative" as const },
   scroll: { paddingBottom: 120 },
   container: { padding: 24, maxWidth: 720, margin: "0 auto" },
-  h1: { fontSize: 28, fontWeight: 800, color: COLORS.text as const, marginBottom: 16 },
+  h1: { fontSize: 28, fontWeight: 800, color: COLORS.text, marginBottom: 16 },
   heroCard: { backgroundColor: COLORS.card, borderRadius: 12, padding: 20 },
   heroText: { color: COLORS.white, fontSize: 16, lineHeight: "22px", marginBottom: 16 },
   heroBtn: {
@@ -103,7 +103,7 @@ const styles = {
   },
   heroBtnText: { color: "#fff", fontWeight: 700, fontSize: 16 },
 
-  sectionTitle: { fontSize: 22, fontWeight: 800, color: COLORS.text as const, marginTop: 28, marginBottom: 12 },
+  sectionTitle: { fontSize: 22, fontWeight: 800, color: COLORS.text, marginTop: 28, marginBottom: 12 },
   row: { display: "flex", gap: 16, alignItems: "flex-start" },
 
   ovalIcon: {
@@ -117,8 +117,8 @@ const styles = {
     display: "flex",
   },
   ovalEmoji: { fontSize: 28 },
-  itemTitle: { fontSize: 18, fontWeight: 700, color: COLORS.text as const, marginBottom: 6 },
-  itemBody: { color: COLORS.sub as const, lineHeight: "20px" },
+  itemTitle: { fontSize: 18, fontWeight: 700, color: COLORS.text, marginBottom: 6 },
+  itemBody: { color: COLORS.sub, lineHeight: "20px" },
 
   tabs: {
     position: "fixed" as const,
