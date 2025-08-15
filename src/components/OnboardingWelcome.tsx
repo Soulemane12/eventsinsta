@@ -118,8 +118,8 @@ const styles = {
     opacity: 0.8,
   },
   cta: {
-    height: 56,
-    borderRadius: 18,
+    height: 64,
+    borderRadius: 30,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: COLORS.primary,
@@ -127,10 +127,11 @@ const styles = {
     border: 0,
     cursor: "pointer",
     display: "flex",
+    width: "100%",
   },
   ctaText: {
     color: "#FFFFFF",
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 700,
   },
 } as const;
