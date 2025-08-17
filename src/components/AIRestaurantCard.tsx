@@ -71,14 +71,14 @@ export default function AIRestaurantCard({
           )}
         </div>
 
-        {/* AI Recommendation Section */}
+        {/* Recommendation Section */}
         {aiRecommendation && (
           <div className="bg-gradient-to-r from-purple-50 to-blue-50 p-4 rounded-xl mb-4 border border-purple-200">
             <div className="flex items-center gap-2 mb-2">
               <div className="w-5 h-5 bg-purple-600 rounded-full flex items-center justify-center">
-                <span className="text-white text-xs">AI</span>
+                <span className="text-white text-xs">⭐</span>
               </div>
-              <span className="text-sm font-semibold text-purple-800">AI Recommendation</span>
+              <span className="text-sm font-semibold text-purple-800">Perfect Match</span>
               <span className="text-xs text-gray-500">({Math.round(aiRecommendation.confidence * 100)}% match)</span>
             </div>
             <p className="text-sm text-gray-700 mb-2">{aiRecommendation.reasoning}</p>

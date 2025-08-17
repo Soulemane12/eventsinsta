@@ -183,8 +183,8 @@ function PreviewContent() {
       <StepHeader step={4} title="AI Restaurant Recommendations" />
       <div className="p-6 space-y-6">
         <div className="text-center">
-          <h2 className="text-xl font-semibold mb-2">🤖 AI-Powered Restaurant Matches</h2>
-          <p className="text-sm text-gray-600">Our AI has analyzed your event and found the perfect restaurants</p>
+          <h2 className="text-xl font-semibold mb-2">🍽️ Perfect Restaurant Matches</h2>
+          <p className="text-sm text-gray-600">We've found the best restaurants for your event</p>
         </div>
 
         {/* Event Summary */}
@@ -204,7 +204,7 @@ function PreviewContent() {
         {loading && (
           <div className="text-center py-8">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto mb-4"></div>
-            <p className="text-sm text-gray-600">AI is analyzing your event requirements...</p>
+            <p className="text-sm text-gray-600">Finding perfect restaurants for your event...</p>
           </div>
         )}
 
@@ -230,9 +230,9 @@ function PreviewContent() {
         {/* No Recommendations */}
         {!loading && recommendedRestaurants.length === 0 && (
           <div className="bg-yellow-50 p-6 rounded-2xl text-center">
-            <div className="text-yellow-800 font-medium mb-2">🤖 AI Analysis Complete</div>
+            <div className="text-yellow-800 font-medium mb-2">No Perfect Matches Found</div>
             <div className="text-yellow-700 text-sm mb-4">
-              Our AI analyzed your event requirements and couldn't find a perfect match among our current restaurant partners.
+              We couldn't find restaurants that perfectly match your event requirements among our current partners.
               <br /><br />
               <strong>Your Event Details:</strong><br />
               • Event Type: {eventData.eventType}<br />
