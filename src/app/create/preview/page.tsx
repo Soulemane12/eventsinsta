@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useEffect, Suspense } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import AIRestaurantCard from '../../../components/AIRestaurantCard'
 import { RESTAURANTS } from '../../../data/restaurants'
 import { getAIRecommendations } from '../../../services/aiRecommendation'
@@ -50,14 +50,13 @@ function Card({ children, className = '' }: { children: React.ReactNode; classNa
   return <div className={`rounded-2xl bg-white shadow ${className}`}>{children}</div>
 }
 
-// Mock data for demonstration - in a real app, this would come from URL params or state management
-const MOCK_EVENT_DATA = {
-  eventType: 'Anniversary',
-  location: 'New York, NY',
-  date: 'Dec 15, 2024',
-  time: '7:00 PM',
-  guestCount: 2,
-  budget: 'budget-2' // $1,000 - $3,000
+interface EventData {
+  eventType: string
+  location: string
+  date: string
+  time: string
+  guestCount: number
+  budget: string
 }
 
 interface AIRecommendation {
@@ -68,21 +67,83 @@ interface AIRecommendation {
   whyPerfect: string
 }
 
-export default function Preview() {
+function getBudgetDisplay(budget: string): string {
+  switch (budget) {
+    case 'budget-1': return '$500 - $1,000'
+    case 'budget-2': return '$1,000 - $3,000'
+    case 'budget-3': return '$3,000 - $5,000'
+    case 'budget-4': return '$5,000+'
+    default: return '$1,000 - $3,000'
+  }
+}
+
+function formatDate(dateString: string): string {
+  if (!dateString) return 'Not set'
+  try {
+    const date = new Date(dateString)
+    return date.toLocaleDateString('en-US', { 
+      month: 'short', 
+      day: 'numeric', 
+      year: 'numeric' 
+    })
+  } catch {
+    return dateString
+  }
+}
+
+function formatTime(timeString: string): string {
+  if (!timeString) return 'Not set'
+  try {
+    const [hours, minutes] = timeString.split(':')
+    const hour = parseInt(hours)
+    const ampm = hour >= 12 ? 'PM' : 'AM'
+    const displayHour = hour % 12 || 12
+    return `${displayHour}:${minutes} ${ampm}`
+  } catch {
+    return timeString
+  }
+}
+
+function PreviewContent() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [aiRecommendations, setAiRecommendations] = useState<AIRecommendation[]>([])
   const [selectedRestaurant, setSelectedRestaurant] = useState<string>('')
   const [loading, setLoading] = useState(true)
+  const [eventData, setEventData] = useState<EventData | null>(null)
 
   useEffect(() => {
+    // Get event data from URL parameters
+    const eventType = searchParams.get('eventType') || 'Anniversary'
+    const location = searchParams.get('location') || 'New York, NY'
+    const date = searchParams.get('date') || ''
+    const time = searchParams.get('time') || ''
+    const guestCount = parseInt(searchParams.get('guestCount') || '2')
+    const budget = searchParams.get('budget') || 'budget-2'
+
+    const data: EventData = {
+      eventType,
+      location,
+      date,
+      time,
+      guestCount,
+      budget
+    }
+
+    setEventData(data)
+  }, [searchParams])
+
+  useEffect(() => {
+    if (!eventData) return
+
     async function loadRecommendations() {
       setLoading(true)
       try {
         const recommendations = await getAIRecommendations({
-          eventType: MOCK_EVENT_DATA.eventType,
-          guestCount: MOCK_EVENT_DATA.guestCount,
-          budget: MOCK_EVENT_DATA.budget,
-          location: MOCK_EVENT_DATA.location
+          eventType: eventData!.eventType,
+          guestCount: eventData!.guestCount,
+          budget: eventData!.budget,
+          location: eventData!.location
         })
         setAiRecommendations(recommendations)
       } catch (error) {
@@ -93,15 +154,29 @@ export default function Preview() {
     }
 
     loadRecommendations()
-  }, [])
+  }, [eventData])
 
   const getRecommendationForRestaurant = (restaurantId: string) => {
     return aiRecommendations.find(rec => rec.restaurantId === restaurantId)
   }
 
-  const recommendedRestaurants = RESTAURANTS.filter(restaurant => 
+  const recommendedRestaurants = RESTAURANTS.filter(restaurant =>
     aiRecommendations.some(rec => rec.restaurantId === restaurant.id)
   )
+
+  if (!eventData) {
+    return (
+      <div className="max-w-md mx-auto min-h-screen bg-gray-50">
+        <StepHeader step={4} title="AI Restaurant Recommendations" />
+        <div className="p-6">
+          <div className="text-center py-8">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto mb-4"></div>
+            <p className="text-sm text-gray-600">Loading event details...</p>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="max-w-md mx-auto min-h-screen bg-gray-50">
@@ -113,14 +188,15 @@ export default function Preview() {
         </div>
 
         {/* Event Summary */}
-        <Card className="p-4 bg-purple-50">
+        <Card className="p-4">
           <div className="text-sm font-medium text-purple-800 mb-2">Your Event Details</div>
           <div className="grid grid-cols-2 gap-2 text-xs">
-            <div>🎉 {MOCK_EVENT_DATA.eventType}</div>
-            <div>📍 {MOCK_EVENT_DATA.location}</div>
-            <div>📅 {MOCK_EVENT_DATA.date}</div>
-            <div>👥 {MOCK_EVENT_DATA.guestCount} guests</div>
-            <div>💰 $1,000 - $3,000</div>
+            <div>🎉 {eventData.eventType}</div>
+            <div>📍 {eventData.location}</div>
+            <div>📅 {formatDate(eventData.date)}</div>
+            <div>👥 {eventData.guestCount} guests</div>
+            <div>💰 {getBudgetDisplay(eventData.budget)}</div>
+            <div>🕐 {formatTime(eventData.time)}</div>
           </div>
         </Card>
 
@@ -159,9 +235,10 @@ export default function Preview() {
               Our AI analyzed your event requirements and couldn't find a perfect match among our current restaurant partners.
               <br /><br />
               <strong>Your Event Details:</strong><br />
-              • Event Type: {MOCK_EVENT_DATA.eventType}<br />
-              • Guest Count: {MOCK_EVENT_DATA.guestCount} guests<br />
-              • Budget: $1,000 - $3,000<br /><br />
+              • Event Type: {eventData.eventType}<br />
+              • Guest Count: {eventData.guestCount} guests<br />
+              • Budget: {getBudgetDisplay(eventData.budget)}<br />
+              • Location: {eventData.location}<br /><br />
               <strong>Why no matches?</strong><br />
               This could be due to:
               <ul className="mt-2 text-left max-w-md mx-auto space-y-1">
@@ -193,18 +270,35 @@ export default function Preview() {
           <div className="bg-green-50 p-4 rounded-xl">
             <div className="text-sm font-medium text-green-800 mb-2">✅ Restaurant Selected!</div>
             <div className="text-xs text-green-700">
-              Great choice! This restaurant is perfect for your {MOCK_EVENT_DATA.eventType.toLowerCase()} celebration.
+              Great choice! This restaurant is perfect for your {eventData.eventType.toLowerCase()} celebration.
             </div>
           </div>
         )}
 
-        <Button 
-          onClick={()=>router.push('/create/review')} 
+        <Button
+          onClick={() => router.push('/create/review')}
           disabled={!selectedRestaurant}
         >
           Next: Book & Celebrate!
         </Button>
       </div>
     </div>
+  )
+}
+
+export default function Preview() {
+  return (
+    <Suspense fallback={
+      <div className="max-w-md mx-auto min-h-screen bg-gray-50">
+        <div className="p-6">
+          <div className="text-center py-8">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto mb-4"></div>
+            <p className="text-sm text-gray-600">Loading...</p>
+          </div>
+        </div>
+      </div>
+    }>
+      <PreviewContent />
+    </Suspense>
   )
 }

@@ -65,7 +65,8 @@ export default function Customize() {
 
   function next() {
     if (selectedType) {
-      router.push('/create/details')
+      const eventTypeName = EVENT_TYPES.find(type => type.id === selectedType)?.name || selectedType
+      router.push(`/create/details?eventType=${encodeURIComponent(eventTypeName)}`)
     }
   }
 

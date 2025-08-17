@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useEffect, Suspense } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import LocationAutocomplete from '../../../components/LocationAutocomplete'
 
 const BrandPurple = 'bg-purple-800'
@@ -57,18 +57,34 @@ function StepHeader({ step, title }: { step: number; title: string }) {
   )
 }
 
-export default function Details() {
+function DetailsContent() {
   const router = useRouter()
+  const searchParams = useSearchParams()
 
   const [location, setLocation] = useState('')
   const [date, setDate] = useState('')
   const [time, setTime] = useState('')
+  const [eventType, setEventType] = useState('')
+
+  useEffect(() => {
+    // Get event type from URL parameters
+    const eventTypeParam = searchParams.get('eventType')
+    if (eventTypeParam) {
+      setEventType(eventTypeParam)
+    }
+  }, [searchParams])
 
   const valid = location.trim().length > 0 && date && time
 
   function next(){
     if (valid) {
-      router.push('/create/guests')
+      const params = new URLSearchParams({
+        eventType: eventType,
+        location: location,
+        date: date,
+        time: time
+      })
+      router.push(`/create/guests?${params.toString()}`)
     }
   }
 
@@ -79,6 +95,11 @@ export default function Details() {
         <div className="text-center">
           <h2 className="text-xl font-semibold mb-2">Where and when is your event?</h2>
           <p className="text-sm text-gray-600">Tell us about your event location and timing</p>
+          {eventType && (
+            <div className="mt-2 text-sm text-purple-600 font-medium">
+              Planning: {eventType}
+            </div>
+          )}
         </div>
 
         <div className="space-y-4">
@@ -119,5 +140,22 @@ export default function Details() {
         </Button>
       </div>
     </div>
+  )
+}
+
+export default function Details() {
+  return (
+    <Suspense fallback={
+      <div className="max-w-md mx-auto min-h-screen bg-gray-50">
+        <div className="p-6">
+          <div className="text-center py-8">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto mb-4"></div>
+            <p className="text-sm text-gray-600">Loading...</p>
+          </div>
+        </div>
+      </div>
+    }>
+      <DetailsContent />
+    </Suspense>
   )
 }

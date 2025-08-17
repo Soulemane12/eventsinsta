@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useEffect, Suspense } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 
 const BrandPurple = 'bg-purple-800'
 const BrandPurpleHover = 'hover:bg-purple-900'
@@ -63,16 +63,43 @@ const BUDGET_RANGES = [
   { id: 'budget-4', range: '$5,000+', description: 'Premium events' },
 ]
 
-export default function Guests() {
+function GuestsContent() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  
   const [guestCount, setGuestCount] = useState('')
   const [selectedBudget, setSelectedBudget] = useState('')
+  const [eventType, setEventType] = useState('')
+  const [location, setLocation] = useState('')
+  const [date, setDate] = useState('')
+  const [time, setTime] = useState('')
+
+  useEffect(() => {
+    // Get previous parameters from URL
+    const eventTypeParam = searchParams.get('eventType')
+    const locationParam = searchParams.get('location')
+    const dateParam = searchParams.get('date')
+    const timeParam = searchParams.get('time')
+    
+    if (eventTypeParam) setEventType(eventTypeParam)
+    if (locationParam) setLocation(locationParam)
+    if (dateParam) setDate(dateParam)
+    if (timeParam) setTime(timeParam)
+  }, [searchParams])
 
   const valid = guestCount && selectedBudget
 
   function next(){
     if (valid) {
-      router.push('/create/preview')
+      const params = new URLSearchParams({
+        eventType: eventType,
+        location: location,
+        date: date,
+        time: time,
+        guestCount: guestCount,
+        budget: selectedBudget
+      })
+      router.push(`/create/preview?${params.toString()}`)
     }
   }
 
@@ -83,6 +110,11 @@ export default function Guests() {
         <div className="text-center">
           <h2 className="text-xl font-semibold mb-2">How many guests and what's your budget?</h2>
           <p className="text-sm text-gray-600">This helps us find the perfect venues and services for your event</p>
+          {eventType && location && (
+            <div className="mt-2 text-sm text-purple-600 font-medium">
+              Planning: {eventType} in {location}
+            </div>
+          )}
         </div>
 
         <div className="space-y-4">
@@ -138,5 +170,22 @@ export default function Guests() {
         </Button>
       </div>
     </div>
+  )
+}
+
+export default function Guests() {
+  return (
+    <Suspense fallback={
+      <div className="max-w-md mx-auto min-h-screen bg-gray-50">
+        <div className="p-6">
+          <div className="text-center py-8">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto mb-4"></div>
+            <p className="text-sm text-gray-600">Loading...</p>
+          </div>
+        </div>
+      </div>
+    }>
+      <GuestsContent />
+    </Suspense>
   )
 }
