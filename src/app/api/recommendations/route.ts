@@ -1,7 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server'
-import Groq from 'groq-sdk'
-
-const groq = new Groq()
 
 interface RecommendationRequest {
   eventType: string
@@ -107,6 +104,10 @@ async function getAIRecommendations(request: RecommendationRequest): Promise<AIR
   }
 
   try {
+    // Dynamically import Groq only when API key is available
+    const { default: Groq } = await import('groq-sdk')
+    const groq = new Groq()
+
     const prompt = `
 You are an expert event planning AI assistant. You have access to ONLY these 3 restaurants in New York City:
 
@@ -207,6 +208,9 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    console.log('Processing recommendation request:', { eventType, guestCount, budget, location, preferences })
+    console.log('GROQ_API_KEY available:', !!process.env.GROQ_API_KEY)
+
     const recommendations = await getAIRecommendations({
       eventType,
       guestCount,
@@ -214,6 +218,8 @@ export async function POST(request: NextRequest) {
       location,
       preferences
     })
+
+    console.log('Generated recommendations:', recommendations.length)
 
     return NextResponse.json({ recommendations })
   } catch (error) {
