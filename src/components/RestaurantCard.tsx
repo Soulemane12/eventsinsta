@@ -20,9 +20,6 @@ interface RestaurantCardProps {
     }>
     hours: string
     features: string[]
-    matchScore?: number
-    matchReasons?: string[]
-    recommendation?: string
   }
   onSelect: (restaurantId: string) => void
   isSelected: boolean
@@ -54,35 +51,6 @@ export default function RestaurantCard({ restaurant, onSelect, isSelected }: Res
             </div>
           )}
         </div>
-
-        {/* Recommendation */}
-        {restaurant.recommendation && (
-          <div className="bg-green-50 p-4 rounded-lg mb-4">
-            <div className="text-sm font-medium text-green-800 mb-1">💡 Our Recommendation</div>
-            <div className="text-sm text-green-700">{restaurant.recommendation}</div>
-          </div>
-        )}
-
-        {/* Match Score and Reasons */}
-        {restaurant.matchScore && restaurant.matchReasons && (
-          <div className="bg-blue-50 p-4 rounded-lg mb-4">
-            <div className="flex items-center justify-between mb-2">
-              <div className="text-sm font-medium text-blue-800">Match Score</div>
-              <div className="text-lg font-bold text-blue-600">{restaurant.matchScore}/100</div>
-            </div>
-            <div className="text-xs text-blue-700">
-              <div className="font-medium mb-1">Why this restaurant matches:</div>
-              <ul className="space-y-1">
-                {restaurant.matchReasons.map((reason, index) => (
-                  <li key={index} className="flex items-center gap-2">
-                    <div className="w-1.5 h-1.5 bg-blue-600 rounded-full"></div>
-                    {reason}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        )}
 
         {/* Description */}
         <p className="text-sm text-gray-700 mb-4 leading-relaxed">

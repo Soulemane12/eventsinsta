@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import RestaurantCard from '../../../components/RestaurantCard'
+import AIRestaurantCard from '../../../components/AIRestaurantCard'
 import CelebrationIdeas from '../../../components/CelebrationIdeas'
-import { getRestaurantRecommendations, Restaurant } from '../../../data/restaurants'
+import { getAIRecommendations, getRestaurantById } from '../../../services/aiRecommendations'
 
 const BrandPurple = 'bg-purple-800'
 const BrandPurpleHover = 'hover:bg-purple-900'
@@ -72,35 +72,57 @@ const SERVICES = [
   { id: '3', name: 'Capture Moments', type: 'Photography', rating: 4.8, price: '$1,200', image: '📸' },
 ]
 
+interface AIRecommendation {
+  restaurantId: string
+  confidence: number
+  reasoning: string
+  bestPackage: string
+  whyPerfect: string
+}
+
 export default function Preview() {
   const router = useRouter()
-  const [recommendedRestaurants, setRecommendedRestaurants] = useState<Array<Restaurant & { matchScore: number; matchReasons: string[]; recommendation: string }>>([])
+  const [aiRecommendations, setAiRecommendations] = useState<AIRecommendation[]>([])
   const [selectedRestaurant, setSelectedRestaurant] = useState<string>('')
   const [showCelebrationIdeas, setShowCelebrationIdeas] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    // Get intelligent restaurant recommendations based on event criteria
-    const recommendations = getRestaurantRecommendations(
-      MOCK_EVENT_DATA.eventType,
-      MOCK_EVENT_DATA.guestCount,
-      MOCK_EVENT_DATA.budget
-    )
-    setRecommendedRestaurants(recommendations)
+    async function loadAIRecommendations() {
+      setIsLoading(true)
+      try {
+        const recommendations = await getAIRecommendations({
+          eventType: MOCK_EVENT_DATA.eventType,
+          guestCount: MOCK_EVENT_DATA.guestCount,
+          budget: MOCK_EVENT_DATA.budget,
+          location: MOCK_EVENT_DATA.location,
+          occasion: MOCK_EVENT_DATA.eventType,
+          atmosphere: 'romantic', // For anniversary
+          specialRequirements: ['private dining', 'wine pairing']
+        })
+        setAiRecommendations(recommendations)
+      } catch (error) {
+        console.error('Failed to load AI recommendations:', error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    loadAIRecommendations()
   }, [])
 
   const handleCelebrationIdeaSelect = (idea: any) => {
-    // In a real app, this would update the event data and re-filter restaurants
     console.log('Selected celebration idea:', idea)
     setShowCelebrationIdeas(false)
   }
 
   return (
     <div className="max-w-md mx-auto min-h-screen bg-gray-50">
-      <StepHeader step={4} title="View Matching Venues & Services" />
+      <StepHeader step={4} title="AI-Powered Recommendations" />
       <div className="p-6 space-y-6">
         <div className="text-center">
-          <h2 className="text-xl font-semibold mb-2">Perfect matches for your event!</h2>
-          <p className="text-sm text-gray-600">Based on your preferences, here are our top recommendations</p>
+          <h2 className="text-xl font-semibold mb-2">🤖 AI-Powered Restaurant Matches</h2>
+          <p className="text-sm text-gray-600">Our AI has analyzed your preferences and found the perfect restaurants</p>
         </div>
 
         {/* Event Summary */}
@@ -135,29 +157,65 @@ export default function Preview() {
           </Card>
         )}
 
-        {/* Recommended Restaurants Section */}
-        {recommendedRestaurants.length > 0 ? (
-          <div>
-            <h3 className="text-lg font-semibold mb-3">🍽️ Top Restaurant Recommendations</h3>
+        {/* AI Restaurant Recommendations */}
+        <div>
+          <h3 className="text-lg font-semibold mb-3">🍽️ AI-Recommended Restaurants</h3>
+          
+          {isLoading ? (
             <div className="space-y-4">
-              {recommendedRestaurants.map((restaurant) => (
-                <RestaurantCard
-                  key={restaurant.id}
-                  restaurant={restaurant}
-                  onSelect={setSelectedRestaurant}
-                  isSelected={selectedRestaurant === restaurant.id}
-                />
-              ))}
+              <div className="bg-white rounded-2xl shadow-lg p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-8 h-8 bg-purple-200 rounded-full animate-pulse"></div>
+                  <div className="flex-1">
+                    <div className="h-4 bg-gray-200 rounded animate-pulse mb-2"></div>
+                    <div className="h-3 bg-gray-200 rounded animate-pulse w-2/3"></div>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <div className="h-3 bg-gray-200 rounded animate-pulse"></div>
+                  <div className="h-3 bg-gray-200 rounded animate-pulse w-4/5"></div>
+                </div>
+              </div>
+              <div className="bg-white rounded-2xl shadow-lg p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-8 h-8 bg-purple-200 rounded-full animate-pulse"></div>
+                  <div className="flex-1">
+                    <div className="h-4 bg-gray-200 rounded animate-pulse mb-2"></div>
+                    <div className="h-3 bg-gray-200 rounded animate-pulse w-2/3"></div>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <div className="h-3 bg-gray-200 rounded animate-pulse"></div>
+                  <div className="h-3 bg-gray-200 rounded animate-pulse w-4/5"></div>
+                </div>
+              </div>
             </div>
-          </div>
-        ) : (
-          <div className="bg-yellow-50 p-6 rounded-2xl text-center">
-            <div className="text-yellow-800 font-medium mb-2">No perfect matches found</div>
-            <div className="text-yellow-700 text-sm">
-              We couldn't find restaurants that perfectly match your criteria. Try adjusting your guest count or budget range.
+          ) : aiRecommendations.length > 0 ? (
+            <div className="space-y-4">
+              {aiRecommendations.map((recommendation) => {
+                const restaurant = getRestaurantById(recommendation.restaurantId)
+                if (!restaurant) return null
+                
+                return (
+                  <AIRestaurantCard
+                    key={restaurant.id}
+                    restaurant={restaurant}
+                    aiRecommendation={recommendation}
+                    onSelect={setSelectedRestaurant}
+                    isSelected={selectedRestaurant === restaurant.id}
+                  />
+                )
+              })}
             </div>
-          </div>
-        )}
+          ) : (
+            <div className="bg-yellow-50 p-6 rounded-2xl text-center">
+              <div className="text-yellow-800 font-medium mb-2">No AI recommendations found</div>
+              <div className="text-yellow-700 text-sm">
+                Try adjusting your preferences or contact us for personalized assistance.
+              </div>
+            </div>
+          )}
+        </div>
 
         {/* Venues Section */}
         <div>
@@ -209,11 +267,11 @@ export default function Preview() {
           </div>
         </div>
 
-        {recommendedRestaurants.length > 0 && (
+        {aiRecommendations.length > 0 && (
           <div className="bg-green-50 p-4 rounded-xl">
-            <div className="text-sm font-medium text-green-800 mb-2">✅ Perfect Recommendations Found</div>
+            <div className="text-sm font-medium text-green-800 mb-2">✅ AI Recommendations Found</div>
             <div className="text-xs text-green-700">
-              We found {recommendedRestaurants.length} restaurants that perfectly match your event criteria. 
+              Our AI found {aiRecommendations.length} perfect restaurant matches for your event. 
               {selectedRestaurant && ' You\'ve selected a restaurant!'}
             </div>
           </div>

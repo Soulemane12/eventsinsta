@@ -146,133 +146,23 @@ export function getMatchingRestaurants(
   eventType: string,
   guestCount: number,
   budget: string
-): Array<Restaurant & { matchScore: number; matchReasons: string[] }> {
-  const budgetRange = getBudgetRange(budget)
-  
-  // Score each restaurant based on how well it matches the criteria
-  const scoredRestaurants = RESTAURANTS.map(restaurant => {
-    let score = 0
-    let reasons: string[] = []
-    
-    // Event type matching (highest weight)
-    const eventTypeMatch = restaurant.eventTypes.some(type => 
+): Restaurant[] {
+  return RESTAURANTS.filter(restaurant => {
+    // Check if restaurant supports the event type
+    const supportsEventType = restaurant.eventTypes.some(type => 
       type.toLowerCase().includes(eventType.toLowerCase())
     )
-    if (eventTypeMatch) {
-      score += 40
-      reasons.push(`Perfect for ${eventType} events`)
-    }
     
-    // Guest count optimization
-    const guestCountOptimal = guestCount >= restaurant.guestRange.min && 
-                             guestCount <= restaurant.guestRange.max
-    if (guestCountOptimal) {
-      score += 30
-      reasons.push(`Accommodates ${guestCount} guests`)
-    }
+    // Check if guest count is within range
+    const supportsGuestCount = guestCount >= restaurant.guestRange.min && 
+                              guestCount <= restaurant.guestRange.max
     
-    // Budget matching
-    const budgetMatch = budgetRange.max >= restaurant.budgetRange.min && 
-                       budgetRange.min <= restaurant.budgetRange.max
-    if (budgetMatch) {
-      score += 20
-      reasons.push(`Fits your budget`)
-    }
+    // Check if budget is within range
+    const budgetRange = getBudgetRange(budget)
+    const supportsBudget = budgetRange.max >= restaurant.budgetRange.min && 
+                          budgetRange.min <= restaurant.budgetRange.max
     
-    // Special package matching for specific scenarios
-    const hasPerfectPackage = restaurant.packages.some(pkg => {
-      // Anniversary dinner for 2
-      if (eventType.toLowerCase().includes('anniversary') && guestCount === 2) {
-        return pkg.name.toLowerCase().includes('anniversary') || 
-               pkg.name.toLowerCase().includes('dinner for two')
-      }
-      // Holiday party for 50
-      if (eventType.toLowerCase().includes('holiday') && guestCount >= 50) {
-        return pkg.name.toLowerCase().includes('holiday') || 
-               pkg.name.toLowerCase().includes('party')
-      }
-      // Birthday celebrations
-      if (eventType.toLowerCase().includes('birthday')) {
-        return pkg.name.toLowerCase().includes('birthday') || 
-               pkg.name.toLowerCase().includes('party')
-      }
-      return false
-    })
-    
-    if (hasPerfectPackage) {
-      score += 10
-      reasons.push(`Has perfect package for your event`)
-    }
-    
-    // Cuisine preference bonus (for specific event types)
-    if (eventType.toLowerCase().includes('anniversary') && 
-        restaurant.cuisine.toLowerCase().includes('steakhouse')) {
-      score += 5
-      reasons.push(`Premium steakhouse for special occasions`)
-    }
-    
-    if (eventType.toLowerCase().includes('birthday') && 
-        restaurant.cuisine.toLowerCase().includes('caribbean')) {
-      score += 5
-      reasons.push(`Vibrant atmosphere perfect for celebrations`)
-    }
-    
-    return {
-      restaurant,
-      score,
-      reasons
-    }
-  })
-  
-  // Filter out restaurants with no matches and sort by score
-  const matchingRestaurants = scoredRestaurants
-    .filter(item => item.score > 0)
-    .sort((a, b) => b.score - a.score)
-    .slice(0, 2) // Only show top 2 recommendations
-  
-  return matchingRestaurants.map(item => ({
-    ...item.restaurant,
-    matchScore: item.score,
-    matchReasons: item.reasons
-  }))
-}
-
-// Enhanced function to get restaurant recommendations with explanations
-export function getRestaurantRecommendations(
-  eventType: string,
-  guestCount: number,
-  budget: string
-): Array<Restaurant & { matchScore: number; matchReasons: string[]; recommendation: string }> {
-  const matches = getMatchingRestaurants(eventType, guestCount, budget)
-  
-  return matches.map(restaurant => {
-    let recommendation = ''
-    
-    // Generate personalized recommendation based on the scenario
-    if (eventType.toLowerCase().includes('anniversary') && guestCount === 2) {
-      if (restaurant.id === 'saint-restaurant') {
-        recommendation = `Perfect choice for your anniversary! Saint Restaurant offers an all-inclusive $200 package with wine pairing, making it ideal for a romantic celebration.`
-      } else if (restaurant.id === 'del-friscos') {
-        recommendation = `For a truly special anniversary, Del Frisco's premium steakhouse experience with USDA Prime steaks and exceptional service will create unforgettable memories.`
-      }
-    } else if (eventType.toLowerCase().includes('holiday') && guestCount >= 50) {
-      if (restaurant.id === 'saint-restaurant') {
-        recommendation = `Saint Restaurant's $5,000 holiday package is perfect for your large celebration, including 2-hour open bar and catering for 50 guests.`
-      }
-    } else if (eventType.toLowerCase().includes('birthday')) {
-      if (restaurant.id === 'rebel-restaurant') {
-        recommendation = `Rebel Restaurant's vibrant Haitian atmosphere and group party packages make it perfect for birthday celebrations with friends and family.`
-      } else if (restaurant.id === 'saint-restaurant') {
-        recommendation = `Saint Restaurant offers a festive birthday package with decorations and photography service, perfect for your celebration.`
-      }
-    } else {
-      recommendation = `${restaurant.name} is an excellent choice for your ${eventType} with ${guestCount} guests. Their ${restaurant.cuisine} cuisine and professional service will ensure a memorable event.`
-    }
-    
-    return {
-      ...restaurant,
-      recommendation
-    }
+    return supportsEventType && supportsGuestCount && supportsBudget
   })
 }
 
