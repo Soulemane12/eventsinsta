@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import RestaurantCard from '../../components/RestaurantCard'
 import CelebrationIdeas from '../../components/CelebrationIdeas'
-import { getMatchingRestaurants, Restaurant } from '../../data/restaurants'
+import { getRestaurantRecommendations, Restaurant } from '../../data/restaurants'
 
 const BrandPurple = 'bg-purple-800'
 const BrandPurpleHover = 'hover:bg-purple-900'
@@ -53,18 +53,18 @@ const DEMO_SCENARIOS = [
 
 export default function Demo() {
   const [selectedScenario, setSelectedScenario] = useState(DEMO_SCENARIOS[0])
-  const [matchingRestaurants, setMatchingRestaurants] = useState<Restaurant[]>([])
+  const [recommendedRestaurants, setRecommendedRestaurants] = useState<Array<Restaurant & { matchScore: number; matchReasons: string[]; recommendation: string }>>([])
   const [selectedRestaurant, setSelectedRestaurant] = useState<string>('')
   const [showCelebrationIdeas, setShowCelebrationIdeas] = useState(false)
 
   const updateScenario = (scenario: typeof DEMO_SCENARIOS[0]) => {
     setSelectedScenario(scenario)
-    const restaurants = getMatchingRestaurants(
+    const recommendations = getRestaurantRecommendations(
       scenario.eventType,
       scenario.guestCount,
       scenario.budget
     )
-    setMatchingRestaurants(restaurants)
+    setRecommendedRestaurants(recommendations)
     setSelectedRestaurant('')
   }
 
@@ -81,8 +81,8 @@ export default function Demo() {
   return (
     <div className="max-w-4xl mx-auto min-h-screen bg-gray-50 p-6">
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-purple-800 mb-2">Restaurant Matching Demo</h1>
-        <p className="text-gray-600">See how our smart matching system finds the perfect restaurants for your event</p>
+        <h1 className="text-3xl font-bold text-purple-800 mb-2">Restaurant Recommendation Demo</h1>
+        <p className="text-gray-600">See how our intelligent system finds the perfect restaurants for your event</p>
       </div>
 
       {/* Scenario Selector */}
@@ -132,8 +132,8 @@ export default function Demo() {
             </div>
           </div>
           <div className="bg-purple-50 p-3 rounded-lg">
-            <div className="font-medium text-purple-800">Matches Found</div>
-            <div className="text-gray-700">{matchingRestaurants.length} restaurants</div>
+            <div className="font-medium text-purple-800">Top Recommendations</div>
+            <div className="text-gray-700">{recommendedRestaurants.length} restaurants</div>
           </div>
         </div>
       </div>
@@ -159,22 +159,22 @@ export default function Demo() {
         )}
       </div>
 
-      {/* Matching Restaurants */}
+      {/* Recommended Restaurants */}
       <div>
         <h2 className="text-xl font-semibold mb-4">
-          🍽️ Matching Restaurants ({matchingRestaurants.length} found)
+          🍽️ Top Restaurant Recommendations ({recommendedRestaurants.length} found)
         </h2>
         
-        {matchingRestaurants.length === 0 ? (
+        {recommendedRestaurants.length === 0 ? (
           <div className="bg-yellow-50 p-6 rounded-2xl text-center">
-            <div className="text-yellow-800 font-medium mb-2">No matches found</div>
+            <div className="text-yellow-800 font-medium mb-2">No perfect matches found</div>
             <div className="text-yellow-700 text-sm">
               Try adjusting your guest count or budget range to find matching restaurants.
             </div>
           </div>
         ) : (
           <div className="grid gap-6">
-            {matchingRestaurants.map((restaurant) => (
+            {recommendedRestaurants.map((restaurant) => (
               <RestaurantCard
                 key={restaurant.id}
                 restaurant={restaurant}
@@ -186,18 +186,22 @@ export default function Demo() {
         )}
       </div>
 
-      {/* Expected Matches Info */}
+      {/* How the Recommendation System Works */}
       <div className="mt-8 bg-blue-50 p-6 rounded-2xl">
-        <h3 className="text-lg font-semibold text-blue-800 mb-2">Expected Matches</h3>
+        <h3 className="text-lg font-semibold text-blue-800 mb-2">How Our Recommendation System Works</h3>
         <p className="text-blue-700 text-sm mb-3">
-          Based on the current scenario, we expect to find restaurants that support:
+          Our intelligent system scores restaurants based on multiple factors:
         </p>
         <ul className="text-blue-700 text-sm space-y-1">
-          <li>• Event type: {selectedScenario.eventType}</li>
-          <li>• Guest capacity: {selectedScenario.guestCount} people</li>
-          <li>• Budget range: ${selectedScenario.budget === 'budget-2' ? '1,000-3,000' : 
-                               selectedScenario.budget === 'budget-4' ? '5,000+' : '500-1,000'}</li>
+          <li>• <strong>Event Type Match (40 points):</strong> Perfect for your specific celebration</li>
+          <li>• <strong>Guest Capacity (30 points):</strong> Can accommodate your group size</li>
+          <li>• <strong>Budget Fit (20 points):</strong> Packages within your price range</li>
+          <li>• <strong>Perfect Package (10 points):</strong> Special packages for your event type</li>
+          <li>• <strong>Cuisine Bonus (5 points):</strong> Atmosphere matches your celebration</li>
         </ul>
+        <p className="text-blue-700 text-sm mt-3">
+          We only show the top 2 highest-scoring restaurants to ensure quality recommendations.
+        </p>
       </div>
     </div>
   )

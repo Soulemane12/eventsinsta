@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import RestaurantCard from '../../../components/RestaurantCard'
 import CelebrationIdeas from '../../../components/CelebrationIdeas'
-import { getMatchingRestaurants, Restaurant } from '../../../data/restaurants'
+import { getRestaurantRecommendations, Restaurant } from '../../../data/restaurants'
 
 const BrandPurple = 'bg-purple-800'
 const BrandPurpleHover = 'hover:bg-purple-900'
@@ -74,18 +74,18 @@ const SERVICES = [
 
 export default function Preview() {
   const router = useRouter()
-  const [matchingRestaurants, setMatchingRestaurants] = useState<Restaurant[]>([])
+  const [recommendedRestaurants, setRecommendedRestaurants] = useState<Array<Restaurant & { matchScore: number; matchReasons: string[]; recommendation: string }>>([])
   const [selectedRestaurant, setSelectedRestaurant] = useState<string>('')
   const [showCelebrationIdeas, setShowCelebrationIdeas] = useState(false)
 
   useEffect(() => {
-    // Get matching restaurants based on event criteria
-    const restaurants = getMatchingRestaurants(
+    // Get intelligent restaurant recommendations based on event criteria
+    const recommendations = getRestaurantRecommendations(
       MOCK_EVENT_DATA.eventType,
       MOCK_EVENT_DATA.guestCount,
       MOCK_EVENT_DATA.budget
     )
-    setMatchingRestaurants(restaurants)
+    setRecommendedRestaurants(recommendations)
   }, [])
 
   const handleCelebrationIdeaSelect = (idea: any) => {
@@ -100,7 +100,7 @@ export default function Preview() {
       <div className="p-6 space-y-6">
         <div className="text-center">
           <h2 className="text-xl font-semibold mb-2">Perfect matches for your event!</h2>
-          <p className="text-sm text-gray-600">Based on your preferences, here are the best venues and services</p>
+          <p className="text-sm text-gray-600">Based on your preferences, here are our top recommendations</p>
         </div>
 
         {/* Event Summary */}
@@ -135,12 +135,12 @@ export default function Preview() {
           </Card>
         )}
 
-        {/* Matching Restaurants Section */}
-        {matchingRestaurants.length > 0 && (
+        {/* Recommended Restaurants Section */}
+        {recommendedRestaurants.length > 0 ? (
           <div>
-            <h3 className="text-lg font-semibold mb-3">🍽️ Perfect Restaurant Matches</h3>
+            <h3 className="text-lg font-semibold mb-3">🍽️ Top Restaurant Recommendations</h3>
             <div className="space-y-4">
-              {matchingRestaurants.map((restaurant) => (
+              {recommendedRestaurants.map((restaurant) => (
                 <RestaurantCard
                   key={restaurant.id}
                   restaurant={restaurant}
@@ -148,6 +148,13 @@ export default function Preview() {
                   isSelected={selectedRestaurant === restaurant.id}
                 />
               ))}
+            </div>
+          </div>
+        ) : (
+          <div className="bg-yellow-50 p-6 rounded-2xl text-center">
+            <div className="text-yellow-800 font-medium mb-2">No perfect matches found</div>
+            <div className="text-yellow-700 text-sm">
+              We couldn't find restaurants that perfectly match your criteria. Try adjusting your guest count or budget range.
             </div>
           </div>
         )}
@@ -202,11 +209,11 @@ export default function Preview() {
           </div>
         </div>
 
-        {matchingRestaurants.length > 0 && (
+        {recommendedRestaurants.length > 0 && (
           <div className="bg-green-50 p-4 rounded-xl">
-            <div className="text-sm font-medium text-green-800 mb-2">✅ Perfect Matches Found</div>
+            <div className="text-sm font-medium text-green-800 mb-2">✅ Perfect Recommendations Found</div>
             <div className="text-xs text-green-700">
-              We found {matchingRestaurants.length} restaurants that perfectly match your event criteria. 
+              We found {recommendedRestaurants.length} restaurants that perfectly match your event criteria. 
               {selectedRestaurant && ' You\'ve selected a restaurant!'}
             </div>
           </div>
