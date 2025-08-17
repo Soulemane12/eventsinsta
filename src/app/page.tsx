@@ -42,10 +42,7 @@ export default function Onboarding() {
         <Button onClick={() => router.push('/signup')}>Get Started Now</Button>
         
         {/* Contact Info */}
-        <div className="text-center mt-6 text-xs text-gray-500">
-          <div>info@eventsinsta.com</div>
-          <div>www.eventsinsta.com</div>
-        </div>
+        
       </div>
     </div>
   )
