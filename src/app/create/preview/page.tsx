@@ -1,6 +1,10 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import RestaurantCard from '../../../components/RestaurantCard'
+import CelebrationIdeas from '../../../components/CelebrationIdeas'
+import { getMatchingRestaurants, Restaurant } from '../../../data/restaurants'
 
 const BrandPurple = 'bg-purple-800'
 const BrandPurpleHover = 'hover:bg-purple-900'
@@ -46,6 +50,16 @@ function Card({ children, className = '' }: { children: React.ReactNode; classNa
   return <div className={`rounded-2xl bg-white shadow ${className}`}>{children}</div>
 }
 
+// Mock data for demonstration - in a real app, this would come from URL params or state management
+const MOCK_EVENT_DATA = {
+  eventType: 'Anniversary',
+  location: 'New York, NY',
+  date: 'Dec 15, 2024',
+  time: '7:00 PM',
+  guestCount: 2,
+  budget: 'budget-2' // $1,000 - $3,000
+}
+
 const VENUES = [
   { id: '1', name: 'The Grand Ballroom', type: 'Wedding Venue', rating: 4.8, price: '$2,500', image: '🏛️' },
   { id: '2', name: 'Skyline Rooftop', type: 'Event Space', rating: 4.6, price: '$1,800', image: '🏙️' },
@@ -60,6 +74,25 @@ const SERVICES = [
 
 export default function Preview() {
   const router = useRouter()
+  const [matchingRestaurants, setMatchingRestaurants] = useState<Restaurant[]>([])
+  const [selectedRestaurant, setSelectedRestaurant] = useState<string>('')
+  const [showCelebrationIdeas, setShowCelebrationIdeas] = useState(false)
+
+  useEffect(() => {
+    // Get matching restaurants based on event criteria
+    const restaurants = getMatchingRestaurants(
+      MOCK_EVENT_DATA.eventType,
+      MOCK_EVENT_DATA.guestCount,
+      MOCK_EVENT_DATA.budget
+    )
+    setMatchingRestaurants(restaurants)
+  }, [])
+
+  const handleCelebrationIdeaSelect = (idea: any) => {
+    // In a real app, this would update the event data and re-filter restaurants
+    console.log('Selected celebration idea:', idea)
+    setShowCelebrationIdeas(false)
+  }
 
   return (
     <div className="max-w-md mx-auto min-h-screen bg-gray-50">
@@ -74,17 +107,54 @@ export default function Preview() {
         <Card className="p-4 bg-purple-50">
           <div className="text-sm font-medium text-purple-800 mb-2">Your Event Details</div>
           <div className="grid grid-cols-2 gap-2 text-xs">
-            <div>🎉 Birthday Party</div>
-            <div>📍 New York, NY</div>
-            <div>📅 Dec 15, 2024</div>
-            <div>👥 50 guests</div>
+            <div>🎉 {MOCK_EVENT_DATA.eventType}</div>
+            <div>📍 {MOCK_EVENT_DATA.location}</div>
+            <div>📅 {MOCK_EVENT_DATA.date}</div>
+            <div>👥 {MOCK_EVENT_DATA.guestCount} guests</div>
             <div>💰 $1,000 - $3,000</div>
           </div>
         </Card>
 
+        {/* Celebration Ideas Button */}
+        <div className="text-center">
+          <button
+            onClick={() => setShowCelebrationIdeas(!showCelebrationIdeas)}
+            className="px-4 py-2 bg-purple-100 text-purple-700 rounded-lg text-sm font-medium hover:bg-purple-200 transition-colors"
+          >
+            {showCelebrationIdeas ? 'Hide' : 'Need help deciding?'} 💡
+          </button>
+        </div>
+
+        {/* Celebration Ideas Section */}
+        {showCelebrationIdeas && (
+          <Card className="p-4">
+            <CelebrationIdeas 
+              onSelectIdea={handleCelebrationIdeaSelect}
+              selectedEventType={MOCK_EVENT_DATA.eventType}
+            />
+          </Card>
+        )}
+
+        {/* Matching Restaurants Section */}
+        {matchingRestaurants.length > 0 && (
+          <div>
+            <h3 className="text-lg font-semibold mb-3">🍽️ Perfect Restaurant Matches</h3>
+            <div className="space-y-4">
+              {matchingRestaurants.map((restaurant) => (
+                <RestaurantCard
+                  key={restaurant.id}
+                  restaurant={restaurant}
+                  onSelect={setSelectedRestaurant}
+                  isSelected={selectedRestaurant === restaurant.id}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Venues Section */}
         <div>
-          <h3 className="text-lg font-semibold mb-3">Recommended Venues</h3>
+          <h3 className="text-lg font-semibold mb-3">🏛️ Recommended Venues</h3>
           <div className="space-y-3">
             {VENUES.map((venue) => (
               <Card key={venue.id} className="p-4">
@@ -109,7 +179,7 @@ export default function Preview() {
 
         {/* Services Section */}
         <div>
-          <h3 className="text-lg font-semibold mb-3">Recommended Services</h3>
+          <h3 className="text-lg font-semibold mb-3">🎯 Recommended Services</h3>
           <div className="space-y-3">
             {SERVICES.map((service) => (
               <Card key={service.id} className="p-4">
@@ -132,12 +202,15 @@ export default function Preview() {
           </div>
         </div>
 
-        <div className="bg-green-50 p-4 rounded-xl">
-          <div className="text-sm font-medium text-green-800 mb-2">✅ Perfect Match</div>
-          <div className="text-xs text-green-700">
-            All venues and services are available for your date and within your budget range.
+        {matchingRestaurants.length > 0 && (
+          <div className="bg-green-50 p-4 rounded-xl">
+            <div className="text-sm font-medium text-green-800 mb-2">✅ Perfect Matches Found</div>
+            <div className="text-xs text-green-700">
+              We found {matchingRestaurants.length} restaurants that perfectly match your event criteria. 
+              {selectedRestaurant && ' You\'ve selected a restaurant!'}
+            </div>
           </div>
-        </div>
+        )}
 
         <Button onClick={()=>router.push('/create/review')}>
           Next: Book & Celebrate!

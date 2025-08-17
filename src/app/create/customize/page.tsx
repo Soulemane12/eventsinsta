@@ -53,6 +53,7 @@ const EVENT_TYPES = [
   { id: 'corporate', name: 'Corporate Event', icon: '🏢', description: 'Professional gatherings' },
   { id: 'graduation', name: 'Graduation', icon: '🎓', description: 'Academic achievements' },
   { id: 'anniversary', name: 'Anniversary', icon: '💕', description: 'Milestone celebrations' },
+  { id: 'holiday-party', name: 'Holiday Party', icon: '🎄', description: 'Festive celebrations' },
   { id: 'vacation', name: 'Vacation', icon: '✈️', description: 'Travel experiences' },
   { id: 'sporting', name: 'Sporting Event', icon: '⚽', description: 'Sports and recreation' },
   { id: 'networking', name: 'Networking Mixer', icon: '🤝', description: 'Professional connections' },
