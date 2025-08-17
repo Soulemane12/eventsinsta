@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import LocationAutocomplete from '../../../components/LocationAutocomplete'
 
 const BrandPurple = 'bg-purple-800'
 const BrandPurpleHover = 'hover:bg-purple-900'
@@ -82,10 +83,10 @@ export default function Details() {
 
         <div className="space-y-4">
           <Field label="Event Location">
-            <Input 
-              value={location} 
-              onChange={e=>setLocation(e.target.value)} 
-              placeholder="Enter city, venue, or address" 
+            <LocationAutocomplete
+              value={location}
+              onChange={setLocation}
+              placeholder="Start typing city or state..."
             />
           </Field>
 
@@ -109,7 +110,7 @@ export default function Details() {
         <div className="bg-purple-50 p-4 rounded-xl">
           <div className="text-sm font-medium text-purple-800 mb-2">💡 Tip</div>
           <div className="text-xs text-purple-700">
-            We'll use this information to find the best venues and services available in your area for your chosen date and time.
+            Start typing a city or state name and we'll suggest options. We'll use this information to find the best venues and services available in your area for your chosen date and time.
           </div>
         </div>
 
