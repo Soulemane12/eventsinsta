@@ -21,15 +21,16 @@ function Button({ children, className = '', disabled, ...props }: React.ButtonHT
 export default function Onboarding() {
   const router = useRouter()
   return (
-    <div className="max-w-md mx-auto min-h-screen bg-white">
-      {/* Hero Section */}
-      <div className="text-center py-16 px-6">
-        <div className={`${BrandText} text-5xl font-black tracking-wide mb-2`}>EVENTSINSTA</div>
-        <div className="text-purple-500 text-xs tracking-wide mb-4">Plan. Create. Celebrate</div>
-        <div className="text-xl font-semibold mb-2">Your All-in-One Event Planning Solution</div>
+    <div className="max-w-md mx-auto min-h-screen bg-white flex flex-col">
+      {/* Centered Logo Section */}
+      <div className="flex-1 flex items-center justify-center px-6">
+        <div className="text-center">
+          <div className={`${BrandText} text-5xl font-black tracking-wide mb-2`}>EVENTSINSTA</div>
+          <div className="text-purple-500 text-xs tracking-wide mb-4">Plan. Create. Celebrate</div>
+        </div>
       </div>
 
-      {/* CTA Section */}
+      {/* Bottom CTA Section */}
       <div className="px-6 pb-8">
         <div className="text-center mb-6">
           <div className="text-xl font-bold mb-2">YOUR EVENT, YOUR WAY</div>
