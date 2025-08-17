@@ -154,16 +154,37 @@ export default function Preview() {
         {/* No Recommendations */}
         {!loading && recommendedRestaurants.length === 0 && (
           <div className="bg-yellow-50 p-6 rounded-2xl text-center">
-            <div className="text-yellow-800 font-medium mb-2">No Perfect Matches Found</div>
+            <div className="text-yellow-800 font-medium mb-2">🤖 AI Analysis Complete</div>
             <div className="text-yellow-700 text-sm mb-4">
-              Our AI couldn't find restaurants that perfectly match your criteria. Try adjusting your guest count or budget.
+              Our AI analyzed your event requirements and couldn't find a perfect match among our current restaurant partners.
+              <br /><br />
+              <strong>Your Event Details:</strong><br />
+              • Event Type: {MOCK_EVENT_DATA.eventType}<br />
+              • Guest Count: {MOCK_EVENT_DATA.guestCount} guests<br />
+              • Budget: $1,000 - $3,000<br /><br />
+              <strong>Why no matches?</strong><br />
+              This could be due to:
+              <ul className="mt-2 text-left max-w-md mx-auto space-y-1">
+                <li>• Guest count outside restaurant capacities</li>
+                <li>• Budget range mismatch</li>
+                <li>• Event type not currently supported</li>
+                <li>• Specific requirements not met</li>
+              </ul>
             </div>
-            <button
-              onClick={() => router.push('/create/guests')}
-              className="px-4 py-2 bg-yellow-600 text-white rounded-lg text-sm font-medium hover:bg-yellow-700"
-            >
-              Adjust Event Details
-            </button>
+            <div className="space-y-2">
+              <button
+                onClick={() => router.push('/create/guests')}
+                className="w-full px-4 py-2 bg-yellow-600 text-white rounded-lg text-sm font-medium hover:bg-yellow-700"
+              >
+                Adjust Event Details
+              </button>
+              <button
+                onClick={() => router.push('/create/customize')}
+                className="w-full px-4 py-2 bg-gray-600 text-white rounded-lg text-sm font-medium hover:bg-gray-700"
+              >
+                Try Different Event Type
+              </button>
+            </div>
           </div>
         )}
 

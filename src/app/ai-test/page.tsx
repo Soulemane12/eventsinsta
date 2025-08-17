@@ -182,14 +182,26 @@ export default function AITest() {
       {/* No Recommendations */}
       {!loading && recommendations.length === 0 && (
         <div className="bg-yellow-50 p-6 rounded-2xl text-center">
-          <div className="text-yellow-800 font-medium mb-2">No AI Matches Found</div>
-          <div className="text-yellow-700 text-sm">
-            The AI couldn't find restaurants that match your criteria. This might be due to:
-            <ul className="mt-2 text-left max-w-md mx-auto">
-              <li>• Guest count outside restaurant capacity</li>
-              <li>• Budget range mismatch</li>
-              <li>• Event type not supported</li>
+          <div className="text-yellow-800 font-medium mb-2">🤖 AI Analysis: No Matches Found</div>
+          <div className="text-yellow-700 text-sm mb-4">
+            The AI analyzed your event requirements and couldn't find a suitable match among our 3 restaurant partners.
+            <br /><br />
+            <strong>Current Scenario:</strong><br />
+            • Event Type: {selectedScenario.eventType}<br />
+            • Guest Count: {selectedScenario.guestCount} guests<br />
+            • Budget: ${selectedScenario.budget === 'budget-2' ? '1,000-3,000' : 
+                       selectedScenario.budget === 'budget-4' ? '5,000+' : '500-1,000'}<br /><br />
+            <strong>Why no matches?</strong><br />
+            This could be due to:
+            <ul className="mt-2 text-left max-w-md mx-auto space-y-1">
+              <li>• Guest count outside restaurant capacities (2-200 guests supported)</li>
+              <li>• Budget range mismatch with available packages</li>
+              <li>• Event type not currently supported by our partners</li>
+              <li>• Specific requirements not met by available options</li>
             </ul>
+          </div>
+          <div className="text-xs text-yellow-600">
+            💡 Try a different scenario or adjust the parameters to see AI recommendations in action!
           </div>
         </div>
       )}

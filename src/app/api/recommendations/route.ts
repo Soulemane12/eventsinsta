@@ -22,6 +22,16 @@ function getFallbackRecommendations(request: RecommendationRequest): AIRecommend
   
   const recommendations: AIRecommendation[] = []
   
+  // Check if guest count is within any restaurant's capacity
+  const hasValidGuestCount = (guestCount >= 2 && guestCount <= 100) || 
+                            (guestCount >= 2 && guestCount <= 50) || 
+                            (guestCount >= 2 && guestCount <= 200)
+  
+  if (!hasValidGuestCount) {
+    console.log('Guest count outside all restaurant capacities, no matches')
+    return []
+  }
+  
   // Saint Restaurant - good for most events
   if (guestCount >= 2 && guestCount <= 100) {
     if (eventType.toLowerCase().includes('anniversary') || eventType.toLowerCase().includes('romantic')) {
@@ -93,6 +103,11 @@ function getFallbackRecommendations(request: RecommendationRequest): AIRecommend
     }
   }
   
+  // If no specific matches found, return empty array instead of forcing recommendations
+  if (recommendations.length === 0) {
+    console.log('No suitable matches found in fallback logic')
+  }
+  
   return recommendations
 }
 
@@ -153,6 +168,8 @@ Based on the user's request, recommend ONLY the restaurants that are the best fi
 - Budget range match
 - User preferences and special requirements
 
+IMPORTANT: If none of these 3 restaurants are suitable for the user's requirements, return an empty array. It's perfectly acceptable to say "no match" when the requirements don't align with what these restaurants offer.
+
 User Request:
 - Event Type: ${request.eventType}
 - Guest Count: ${request.guestCount}
@@ -167,7 +184,7 @@ Respond with a JSON array of recommendations, each containing:
 - bestPackage: the specific package name that best fits
 - whyPerfect: what makes this restaurant perfect for this event
 
-Only recommend restaurants that are actually suitable. If none are suitable, return an empty array.
+If no restaurants match the user's requirements, return an empty array. Be honest about limitations.
 `
 
     const response = await groq.chat.completions.create({
@@ -175,7 +192,7 @@ Only recommend restaurants that are actually suitable. If none are suitable, ret
       messages: [
         {
           role: 'system',
-          content: 'You are an expert event planning AI that provides restaurant recommendations. Always respond with valid JSON only.'
+          content: 'You are an expert event planning AI that provides restaurant recommendations. Always respond with valid JSON only. It is perfectly acceptable to return an empty array if no restaurants match the requirements.'
         },
         {
           role: 'user',
