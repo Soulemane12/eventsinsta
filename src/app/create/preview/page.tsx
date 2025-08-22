@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import AIRestaurantCard from '../../../components/AIRestaurantCard'
 import { RESTAURANTS } from '../../../data/restaurants'
 import { getAIRecommendations } from '../../../services/aiRecommendation'
+import { SERVICES } from '../../../data/services'
 
 const BrandPurple = 'bg-purple-800'
 const BrandPurpleHover = 'hover:bg-purple-900'
@@ -32,12 +33,12 @@ function BackBtn() {
 }
 
 function StepHeader({ step, title }: { step: number; title: string }) {
-  const pct = (step / 5) * 100
+  const pct = (step / 6) * 100
   return (
     <div className="sticky top-0 bg-white z-10">
       <div className="flex items-center gap-2 p-4">
         <BackBtn />
-        <div className="text-2xl font-semibold">{step} of 5: {title}</div>
+        <div className="text-2xl font-semibold">{step} of 6: {title}</div>
       </div>
       <div className="w-full h-1 bg-gray-200">
         <div className="h-1 bg-green-500" style={{ width: pct + '%' }} />
@@ -57,6 +58,8 @@ interface EventData {
   time: string
   guestCount: number
   budget: string
+  services: string[]
+  servicesTotal: number
 }
 
 interface AIRecommendation {
@@ -120,6 +123,8 @@ function PreviewContent() {
     const time = searchParams.get('time') || ''
     const guestCount = parseInt(searchParams.get('guestCount') || '2')
     const budget = searchParams.get('budget') || 'budget-2'
+    const services = searchParams.get('services')?.split(',').filter(Boolean) || []
+    const servicesTotal = parseInt(searchParams.get('servicesTotal') || '0')
 
     const data: EventData = {
       eventType,
@@ -127,7 +132,9 @@ function PreviewContent() {
       date,
       time,
       guestCount,
-      budget
+      budget,
+      services,
+      servicesTotal
     }
 
     setEventData(data)
@@ -167,7 +174,7 @@ function PreviewContent() {
   if (!eventData) {
     return (
       <div className="max-w-md mx-auto min-h-screen bg-gray-50">
-        <StepHeader step={4} title="AI Restaurant Recommendations" />
+        <StepHeader step={5} title="Review Your Event" />
         <div className="p-6">
           <div className="text-center py-8">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto mb-4"></div>
@@ -180,7 +187,7 @@ function PreviewContent() {
 
   return (
     <div className="max-w-md mx-auto min-h-screen bg-gray-50">
-      <StepHeader step={4} title="AI Restaurant Recommendations" />
+      <StepHeader step={5} title="Review Your Event" />
       <div className="p-6 space-y-6">
         <div className="text-center">
           <h2 className="text-xl font-semibold mb-2">🍽️ Perfect Restaurant Matches</h2>
@@ -199,6 +206,33 @@ function PreviewContent() {
             <div>🕐 {formatTime(eventData.time)}</div>
           </div>
         </Card>
+
+        {/* Services Summary */}
+        {eventData.services.length > 0 && (
+          <Card className="p-4">
+            <div className="text-sm font-medium text-purple-800 mb-2">Selected Services</div>
+            <div className="space-y-2">
+              {eventData.services.map(serviceId => {
+                const service = SERVICES.find(s => s.id === serviceId)
+                return service ? (
+                  <div key={serviceId} className="flex items-center justify-between text-xs">
+                    <div className="flex items-center gap-2">
+                      <span>{service.icon}</span>
+                      <span className="text-gray-700">{service.name}</span>
+                    </div>
+                    <span className="font-semibold text-purple-600">${service.price}</span>
+                  </div>
+                ) : null
+              })}
+              <div className="border-t border-gray-200 pt-2 mt-2">
+                <div className="flex justify-between text-xs font-bold">
+                  <span className="text-purple-800">Total Services Cost</span>
+                  <span className="text-purple-800">${eventData.servicesTotal}</span>
+                </div>
+              </div>
+            </div>
+          </Card>
+        )}
 
         {/* Loading State */}
         {loading && (

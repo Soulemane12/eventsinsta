@@ -43,12 +43,12 @@ function BackBtn() {
 }
 
 function StepHeader({ step, title }: { step: number; title: string }) {
-  const pct = (step / 5) * 100
+  const pct = (step / 6) * 100
   return (
     <div className="sticky top-0 bg-white z-10">
       <div className="flex items-center gap-2 p-4">
         <BackBtn />
-        <div className="text-2xl font-semibold">{step} of 5: {title}</div>
+        <div className="text-2xl font-semibold">{step} of 6: {title}</div>
       </div>
       <div className="w-full h-1 bg-gray-200">
         <div className="h-1 bg-green-500" style={{ width: pct + '%' }} />
