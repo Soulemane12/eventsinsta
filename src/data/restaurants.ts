@@ -49,7 +49,7 @@ export const RESTAURANTS: Restaurant[] = [
       },
       {
         name: 'Holiday Party Package',
-        price: 5000,
+        price: 750,
         description: 'Complete holiday celebration package for 50 guests with premium dining and entertainment.',
         includes: ['2-hour open bar', 'Catering for 50 guests', 'Private dining space', 'Event coordination', 'Decorations']
       },
@@ -64,7 +64,7 @@ export const RESTAURANTS: Restaurant[] = [
     features: ['Speakeasy Bar', 'Private Dining', 'Catering Services', 'Live Music', 'Outdoor Seating', 'Wine Pairing'],
     eventTypes: ['Anniversary', 'Birthday', 'Holiday Party', 'Corporate Event', 'Date Night'],
     guestRange: { min: 2, max: 100 },
-    budgetRange: { min: 150, max: 10000 }
+    budgetRange: { min: 150, max: 1000 }
   },
   {
     id: 'rebel-restaurant',
@@ -86,7 +86,7 @@ export const RESTAURANTS: Restaurant[] = [
       },
       {
         name: 'Group Party Package',
-        price: 1200,
+        price: 450,
         description: 'Perfect for birthday celebrations and group gatherings with authentic Haitian atmosphere.',
         includes: ['Group dining setup', 'Shared plates', 'Cocktail packages', 'Music and entertainment', 'Party decorations']
       },
@@ -101,7 +101,7 @@ export const RESTAURANTS: Restaurant[] = [
     features: ['Haitian Cuisine', 'Lounge Bar', 'Happy Hour', 'Live Music', 'Group Seating', 'Cultural Experience'],
     eventTypes: ['Birthday', 'Group Party', 'Date Night', 'Cultural Celebration', 'Happy Hour'],
     guestRange: { min: 2, max: 50 },
-    budgetRange: { min: 25, max: 2000 }
+    budgetRange: { min: 25, max: 1000 }
   },
   {
     id: 'del-friscos',
@@ -123,7 +123,7 @@ export const RESTAURANTS: Restaurant[] = [
       },
       {
         name: 'Corporate Event Package',
-        price: 8000,
+        price: 750,
         description: 'Professional corporate dining experience with private dining rooms and business catering.',
         includes: ['Private dining room', 'Corporate menu options', 'Professional service', 'Business catering', 'Audio/visual setup']
       },
@@ -138,7 +138,7 @@ export const RESTAURANTS: Restaurant[] = [
     features: ['USDA Prime Steaks', 'Private Dining', 'Wine Cellar', 'Chef\'s Table', 'Corporate Events', 'Luxury Service'],
     eventTypes: ['Anniversary', 'Corporate Event', 'Special Occasion', 'Business Dinner', 'Luxury Celebration'],
     guestRange: { min: 2, max: 200 },
-    budgetRange: { min: 200, max: 15000 }
+    budgetRange: { min: 200, max: 1500 }
   }
 ]
 
