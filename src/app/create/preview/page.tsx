@@ -3,7 +3,7 @@
 import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import AIRestaurantCard from '../../../components/AIRestaurantCard'
-import { RESTAURANTS } from '../../../data/restaurants'
+import { RESTAURANTS, getRestaurantPriceByGuestCount } from '../../../data/restaurants'
 import { getAIRecommendations } from '../../../services/aiRecommendation'
 import { SERVICES } from '../../../data/services'
 
@@ -77,6 +77,16 @@ function getBudgetDisplay(budget: string): string {
     case 'budget-3': return '$3,000 - $5,000'
     case 'budget-4': return '$5,000+'
     default: return '$1,000 - $3,000'
+  }
+}
+
+function getBudgetRange(budget: string): { min: number; max: number } {
+  switch (budget) {
+    case 'budget-1': return { min: 500, max: 1000 }
+    case 'budget-2': return { min: 1000, max: 3000 }
+    case 'budget-3': return { min: 3000, max: 5000 }
+    case 'budget-4': return { min: 5000, max: 50000 }
+    default: return { min: 1000, max: 3000 }
   }
 }
 
@@ -171,6 +181,29 @@ function PreviewContent() {
     aiRecommendations.some(rec => rec.restaurantId === restaurant.id)
   )
 
+  const getTotalCost = () => {
+    if (!eventData || !selectedRestaurant) return 0
+    const restaurantCost = getRestaurantPriceByGuestCount(selectedRestaurant, eventData.guestCount)
+    return restaurantCost + eventData.servicesTotal
+  }
+
+  const getBudgetRange = (budget: string) => {
+    switch (budget) {
+      case 'budget-1': return { min: 500, max: 1000 }
+      case 'budget-2': return { min: 1000, max: 3000 }
+      case 'budget-3': return { min: 3000, max: 5000 }
+      case 'budget-4': return { min: 5000, max: 50000 }
+      default: return { min: 1000, max: 3000 }
+    }
+  }
+
+  const isWithinBudget = () => {
+    if (!eventData || !selectedRestaurant) return true
+    const totalCost = getTotalCost()
+    const budgetRange = getBudgetRange(eventData.budget)
+    return totalCost >= budgetRange.min && totalCost <= budgetRange.max
+  }
+
   if (!eventData) {
     return (
       <div className="max-w-md mx-auto min-h-screen bg-gray-50">
@@ -255,6 +288,7 @@ function PreviewContent() {
                   onSelect={setSelectedRestaurant}
                   isSelected={selectedRestaurant === restaurant.id}
                   showDetails={true}
+                  guestCount={eventData.guestCount}
                 />
               ))}
             </div>
@@ -299,6 +333,38 @@ function PreviewContent() {
           </div>
         )}
 
+        {/* Cost Summary */}
+        {selectedRestaurant && (
+          <Card className="p-4">
+            <div className="text-sm font-medium text-purple-800 mb-2">💰 Cost Summary</div>
+            <div className="space-y-2 text-xs">
+              <div className="flex justify-between">
+                <span>Restaurant Cost ({eventData.guestCount} guests):</span>
+                <span className="font-semibold">${getRestaurantPriceByGuestCount(selectedRestaurant, eventData.guestCount)}</span>
+              </div>
+              {eventData.servicesTotal > 0 && (
+                <div className="flex justify-between">
+                  <span>Services Cost:</span>
+                  <span className="font-semibold">${eventData.servicesTotal}</span>
+                </div>
+              )}
+              <div className="border-t border-gray-200 pt-2 mt-2">
+                <div className="flex justify-between font-bold">
+                  <span>Total Cost:</span>
+                  <span className={isWithinBudget() ? 'text-green-600' : 'text-red-600'}>
+                    ${getTotalCost()}
+                  </span>
+                </div>
+                {!isWithinBudget() && (
+                  <div className="text-red-600 text-xs mt-1">
+                    ⚠️ Total exceeds your budget range of {getBudgetDisplay(eventData.budget)}
+                  </div>
+                )}
+              </div>
+            </div>
+          </Card>
+        )}
+
         {/* Success Message */}
         {selectedRestaurant && (
           <div className="bg-green-50 p-4 rounded-xl">
@@ -310,7 +376,20 @@ function PreviewContent() {
         )}
 
         <Button
-          onClick={() => router.push('/create/review')}
+          onClick={() => {
+            const params = new URLSearchParams({
+              eventType: eventData.eventType,
+              location: eventData.location,
+              date: eventData.date,
+              time: eventData.time,
+              guestCount: eventData.guestCount.toString(),
+              budget: eventData.budget,
+              services: eventData.services.join(','),
+              servicesTotal: eventData.servicesTotal.toString(),
+              selectedRestaurant: selectedRestaurant
+            })
+            router.push(`/create/review?${params.toString()}`)
+          }}
           disabled={!selectedRestaurant}
         >
           Next: Book & Celebrate!

@@ -70,6 +70,11 @@ function ServiceCard({
             <div className="text-sm font-bold text-purple-600">{service.priceDescription}</div>
           </div>
           <div className="text-xs text-gray-600 mb-2">{service.description}</div>
+          {service.instagram && (
+            <div className="text-xs text-blue-600 mb-2">
+              📸 Instagram: {service.instagram}
+            </div>
+          )}
           <div className="flex items-center justify-between">
             <div className="text-xs text-gray-500">{service.category}</div>
             {isSelected && (

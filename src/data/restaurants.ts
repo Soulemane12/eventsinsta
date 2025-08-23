@@ -14,6 +14,7 @@ export interface Restaurant {
     price: number
     description: string
     includes: string[]
+    guestCount?: number
   }>
   hours: string
   features: string[]
@@ -45,26 +46,29 @@ export const RESTAURANTS: Restaurant[] = [
         name: 'Anniversary Dinner for Two',
         price: 200,
         description: 'All-inclusive romantic dinner experience perfect for couples celebrating special moments.',
-        includes: ['Appetizers', 'Entrées', 'Dessert', 'Tax', 'Tip', 'Curated wine pairing']
+        includes: ['Appetizers', 'Entrées', 'Dessert', 'Tax', 'Tip', 'Curated wine pairing'],
+        guestCount: 2
       },
       {
-        name: 'Holiday Party Package',
-        price: 750,
-        description: 'Complete holiday celebration package for 50 guests with premium dining and entertainment.',
-        includes: ['2-hour open bar', 'Catering for 50 guests', 'Private dining space', 'Event coordination', 'Decorations']
+        name: 'Small Group Event (25 guests)',
+        price: 1000,
+        description: 'Perfect for intimate gatherings with premium dining experience.',
+        includes: ['Private dining space', 'Multi-course meal', 'Basic service', 'Event coordination'],
+        guestCount: 25
       },
       {
-        name: 'Birthday Celebration',
-        price: 150,
-        description: 'Birthday party package with personalized service and festive atmosphere.',
-        includes: ['Multi-course meal', 'Birthday dessert', 'Decorations', 'Photography service']
+        name: 'Large Group Event (50 guests)',
+        price: 2500,
+        description: 'Complete celebration package for larger groups with premium dining and entertainment.',
+        includes: ['Private dining space', 'Multi-course meal', 'Premium service', 'Event coordination'],
+        guestCount: 50
       }
     ],
     hours: 'Dinner: Wed-Sat 5pm-11pm, Brunch: Sat 12pm-4pm, Bar: Fri-Sat until 2am',
     features: ['Speakeasy Bar', 'Private Dining', 'Catering Services', 'Live Music', 'Outdoor Seating', 'Wine Pairing'],
     eventTypes: ['Anniversary', 'Birthday', 'Holiday Party', 'Corporate Event', 'Date Night'],
     guestRange: { min: 2, max: 100 },
-    budgetRange: { min: 150, max: 1000 }
+    budgetRange: { min: 150, max: 3000 }
   },
   {
     id: 'rebel-restaurant',
@@ -82,26 +86,29 @@ export const RESTAURANTS: Restaurant[] = [
         name: 'Three-Course Dinner for Two',
         price: 79,
         description: 'Special deal offering incredible value with premium Haitian cuisine and drinks.',
-        includes: ['Appetizers', 'Two entrées', 'Dessert', 'Two cocktails/wine/beer', 'Valued at $140']
+        includes: ['Appetizers', 'Two entrées', 'Dessert', 'Two cocktails/wine/beer', 'Valued at $140'],
+        guestCount: 2
       },
       {
-        name: 'Group Party Package',
-        price: 450,
-        description: 'Perfect for birthday celebrations and group gatherings with authentic Haitian atmosphere.',
-        includes: ['Group dining setup', 'Shared plates', 'Cocktail packages', 'Music and entertainment', 'Party decorations']
+        name: 'Small Group Event (25 guests)',
+        price: 1000,
+        description: 'Authentic Haitian atmosphere for intimate gatherings.',
+        includes: ['Group dining setup', 'Shared plates', 'Cocktail packages', 'Music and entertainment'],
+        guestCount: 25
       },
       {
-        name: 'Happy Hour Special',
-        price: 25,
-        description: 'Tuesday-Friday 5PM to 7PM happy hour with great deals on drinks and appetizers.',
-        includes: ['Discounted cocktails', 'Appetizer specials', 'Lounge atmosphere', 'Live music']
+        name: 'Large Group Event (50 guests)',
+        price: 2500,
+        description: 'Complete celebration package with authentic Haitian cuisine and culture.',
+        includes: ['Group dining setup', 'Shared plates', 'Cocktail packages', 'Music and entertainment', 'Party decorations'],
+        guestCount: 50
       }
     ],
     hours: 'Tue-Fri 5PM-7PM Happy Hour, Dinner hours vary, Lounge Bar open late',
     features: ['Haitian Cuisine', 'Lounge Bar', 'Happy Hour', 'Live Music', 'Group Seating', 'Cultural Experience'],
     eventTypes: ['Birthday', 'Group Party', 'Date Night', 'Cultural Celebration', 'Happy Hour'],
     guestRange: { min: 2, max: 50 },
-    budgetRange: { min: 25, max: 1000 }
+    budgetRange: { min: 25, max: 3000 }
   },
   {
     id: 'del-friscos',
@@ -119,26 +126,29 @@ export const RESTAURANTS: Restaurant[] = [
         name: 'Premium Anniversary Experience',
         price: 300,
         description: 'Luxury anniversary dinner with premium steaks and exceptional service.',
-        includes: ['USDA Prime steaks', 'Appetizers', 'Dessert', 'Premium wine selection', 'Private table service']
+        includes: ['USDA Prime steaks', 'Appetizers', 'Dessert', 'Premium wine selection', 'Private table service'],
+        guestCount: 2
       },
       {
-        name: 'Corporate Event Package',
-        price: 750,
-        description: 'Professional corporate dining experience with private dining rooms and business catering.',
-        includes: ['Private dining room', 'Corporate menu options', 'Professional service', 'Business catering', 'Audio/visual setup']
+        name: 'Small Group Event (25 guests)',
+        price: 1000,
+        description: 'Professional dining experience with private dining rooms.',
+        includes: ['Private dining room', 'Premium menu options', 'Professional service', 'Business catering'],
+        guestCount: 25
       },
       {
-        name: 'Chef\'s Table Experience',
-        price: 500,
-        description: 'Exclusive chef\'s table with personalized menu and wine pairing.',
-        includes: ['Chef\'s table seating', 'Personalized menu', 'Wine pairing', 'Chef interaction', 'Premium service']
+        name: 'Large Group Event (50 guests)',
+        price: 2500,
+        description: 'Luxury corporate dining experience with premium service.',
+        includes: ['Private dining room', 'Premium menu options', 'Professional service', 'Business catering', 'Audio/visual setup'],
+        guestCount: 50
       }
     ],
     hours: 'Dinner hours vary by location, typically 5pm-11pm',
     features: ['USDA Prime Steaks', 'Private Dining', 'Wine Cellar', 'Chef\'s Table', 'Corporate Events', 'Luxury Service'],
     eventTypes: ['Anniversary', 'Corporate Event', 'Special Occasion', 'Business Dinner', 'Luxury Celebration'],
     guestRange: { min: 2, max: 200 },
-    budgetRange: { min: 200, max: 1500 }
+    budgetRange: { min: 200, max: 3000 }
   }
 ]
 
@@ -164,6 +174,28 @@ export function getMatchingRestaurants(
     
     return supportsEventType && supportsGuestCount && supportsBudget
   })
+}
+
+export function getRestaurantPriceByGuestCount(restaurantId: string, guestCount: number): number {
+  const restaurant = RESTAURANTS.find(r => r.id === restaurantId)
+  if (!restaurant) return 0
+
+  // Find the appropriate package based on guest count
+  if (guestCount <= 2) {
+    const couplePackage = restaurant.packages.find(p => p.guestCount === 2)
+    return couplePackage?.price || 0
+  } else if (guestCount <= 25) {
+    const smallGroupPackage = restaurant.packages.find(p => p.guestCount === 25)
+    return smallGroupPackage?.price || 0
+  } else if (guestCount <= 50) {
+    const largeGroupPackage = restaurant.packages.find(p => p.guestCount === 50)
+    return largeGroupPackage?.price || 0
+  } else {
+    // For larger groups, calculate based on 50-guest package
+    const largeGroupPackage = restaurant.packages.find(p => p.guestCount === 50)
+    const basePrice = largeGroupPackage?.price || 0
+    return Math.ceil(guestCount / 50) * basePrice
+  }
 }
 
 function getBudgetRange(budgetId: string): { min: number; max: number } {

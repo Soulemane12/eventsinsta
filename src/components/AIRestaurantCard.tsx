@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Restaurant } from '../data/restaurants'
+import { Restaurant, getRestaurantPriceByGuestCount } from '../data/restaurants'
 
 interface AIRecommendation {
   restaurantId: string
@@ -15,6 +15,7 @@ interface AIRestaurantCardProps {
   onSelect: (restaurantId: string) => void
   isSelected: boolean
   showDetails?: boolean
+  guestCount?: number
 }
 
 export default function AIRestaurantCard({ 
@@ -22,7 +23,8 @@ export default function AIRestaurantCard({
   aiRecommendation, 
   onSelect, 
   isSelected,
-  showDetails = false 
+  showDetails = false,
+  guestCount = 2
 }: AIRestaurantCardProps) {
   const [expanded, setExpanded] = useState(false)
 
@@ -36,6 +38,10 @@ export default function AIRestaurantCard({
     if (confidence >= 0.8) return 'Perfect Match'
     if (confidence >= 0.6) return 'Good Match'
     return 'Fair Match'
+  }
+
+  const getRestaurantPrice = () => {
+    return getRestaurantPriceByGuestCount(restaurant.id, guestCount)
   }
 
   return (
@@ -91,8 +97,8 @@ export default function AIRestaurantCard({
         {/* Quick Info */}
         <div className="grid grid-cols-2 gap-3 mb-4 text-sm">
           <div className="bg-gray-50 p-2 rounded-lg">
-            <div className="font-medium text-gray-700">Price Range</div>
-            <div className="text-gray-600">{restaurant.priceRange}</div>
+            <div className="font-medium text-gray-700">Price for {guestCount} guests</div>
+            <div className="text-lg font-bold text-purple-600">${getRestaurantPrice()}</div>
           </div>
           <div className="bg-gray-50 p-2 rounded-lg">
             <div className="font-medium text-gray-700">Capacity</div>

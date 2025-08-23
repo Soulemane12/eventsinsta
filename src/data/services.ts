@@ -6,6 +6,7 @@ export interface Service {
   price: number
   priceDescription: string
   icon: string
+  instagram?: string
 }
 
 export const SERVICES: Service[] = [
@@ -29,6 +30,38 @@ export const SERVICES: Service[] = [
     icon: '🎵'
   },
   
+  // CEO Services
+  {
+    id: 'ceo-service',
+    name: 'CEO Service',
+    category: 'CEO',
+    description: 'Professional CEO-level event coordination and management',
+    price: 600,
+    priceDescription: '$600 for full event',
+    icon: '👔'
+  },
+  
+  // Photography
+  {
+    id: 'photographer-premium',
+    name: 'Premium Photographer',
+    category: 'Photography',
+    description: 'Professional photographer with editing included. Specializing in event photography with 5+ years experience. Check out our work @capturemoments_nyc',
+    price: 600,
+    priceDescription: '$600 for full event',
+    icon: '📸',
+    instagram: '@capturemoments_nyc'
+  },
+  {
+    id: 'photographer-standard',
+    name: 'Standard Photographer',
+    category: 'Photography',
+    description: 'Professional photography service with basic editing',
+    price: 400,
+    priceDescription: '$400 for full event',
+    icon: '📸'
+  },
+  
   // Car Services
   {
     id: 'isit-corp',
@@ -47,26 +80,6 @@ export const SERVICES: Service[] = [
     price: 150,
     priceDescription: '$150 for 2 hours',
     icon: '🚗'
-  },
-  
-  // Photography
-  {
-    id: 'photographer-premium',
-    name: 'Premium Photographer',
-    category: 'Photography',
-    description: 'Professional photographer with editing included',
-    price: 800,
-    priceDescription: '$800 for full event',
-    icon: '📸'
-  },
-  {
-    id: 'photographer-standard',
-    name: 'Standard Photographer',
-    category: 'Photography',
-    description: 'Professional photography service',
-    price: 500,
-    priceDescription: '$500 for full event',
-    icon: '📸'
   },
   
   // Catering
@@ -152,8 +165,9 @@ export const SERVICES: Service[] = [
 
 export const SERVICE_CATEGORIES = [
   'DJ',
-  'Car Services', 
+  'CEO',
   'Photography',
+  'Car Services',
   'Catering',
   'Makeup & Hair',
   'Decorations',
