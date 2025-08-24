@@ -25,7 +25,6 @@ export default function Onboarding() {
       {/* Centered Logo Section */}
       <div className="flex-1 flex items-center justify-center px-6">
         <div className="text-center">
-          <div className="text-2xl font-bold text-purple-600 mb-4">Hello Billy Duc</div>
           <div className={`${BrandText} text-5xl font-black tracking-wide mb-2`}>EVENTSINSTA</div>
           <div className="text-purple-500 text-xs tracking-wide mb-4">Plan. Create. Celebrate</div>
         </div>

@@ -163,7 +163,21 @@ function ReviewContent() {
   function bookEvent() {
     // In a real app, this would process the booking with the collected data
     console.log('Booking event with data:', { eventData, bookingData })
-    router.push('/create/success')
+    
+    const params = new URLSearchParams({
+      eventType: eventData!.eventType,
+      location: eventData!.location,
+      date: eventData!.date,
+      time: eventData!.time,
+      guestCount: eventData!.guestCount.toString(),
+      budget: eventData!.budget,
+      services: eventData!.services.join(','),
+      servicesTotal: eventData!.servicesTotal.toString(),
+      selectedRestaurant: eventData!.selectedRestaurant,
+      customerName: bookingData.name
+    })
+    
+    router.push(`/create/success?${params.toString()}`)
   }
 
   function saveForLater() {

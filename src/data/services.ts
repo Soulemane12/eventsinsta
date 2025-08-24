@@ -46,9 +46,9 @@ export const SERVICES: Service[] = [
     id: 'photographer-premium',
     name: 'Premium Photographer',
     category: 'Photography',
-    description: 'Professional photographer with editing included. Specializing in event photography with 5+ years experience. Check out our work @capturemoments_nyc',
-    price: 600,
-    priceDescription: '$600 for full event',
+    description: 'Professional photographer with editing included. Specializing in event photography with 5+ years experience. 4 hours of photography and videography. Check out our work @capturemoments_nyc',
+    price: 750,
+    priceDescription: '$750 for 4 hours',
     icon: '📸',
     instagram: '@capturemoments_nyc'
   },
