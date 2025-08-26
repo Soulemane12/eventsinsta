@@ -263,8 +263,8 @@ function PreviewContent() {
                   <span className="text-purple-800">${eventData.servicesTotal}</span>
                 </div>
               </div>
-            </div>
-          </Card>
+                </div>
+              </Card>
         )}
 
         {/* Loading State */}
@@ -277,7 +277,7 @@ function PreviewContent() {
 
         {/* AI Recommendations */}
         {!loading && recommendedRestaurants.length > 0 && (
-          <div>
+        <div>
             <h3 className="text-lg font-semibold mb-3">🍽️ Recommended Restaurants</h3>
             <div className="space-y-4">
               {recommendedRestaurants.map((restaurant) => (
@@ -291,8 +291,8 @@ function PreviewContent() {
                   guestCount={eventData.guestCount}
                 />
               ))}
-            </div>
-          </div>
+                    </div>
+                  </div>
         )}
 
         {/* No Recommendations */}
@@ -328,8 +328,8 @@ function PreviewContent() {
                 className="w-full px-4 py-2 bg-gray-600 text-white rounded-lg text-sm font-medium hover:bg-gray-700"
               >
                 Try Different Event Type
-              </button>
-            </div>
+                  </button>
+                </div>
           </div>
         )}
 
@@ -360,16 +360,16 @@ function PreviewContent() {
                     ⚠️ Total exceeds your budget range of {getBudgetDisplay(eventData.budget)}
                   </div>
                 )}
-              </div>
-            </div>
+          </div>
+        </div>
           </Card>
         )}
 
         {/* Success Message */}
         {selectedRestaurant && (
-          <div className="bg-green-50 p-4 rounded-xl">
+        <div className="bg-green-50 p-4 rounded-xl">
             <div className="text-sm font-medium text-green-800 mb-2">✅ Restaurant Selected!</div>
-            <div className="text-xs text-green-700">
+          <div className="text-xs text-green-700">
               Great choice! This restaurant is perfect for your {eventData.eventType.toLowerCase()} celebration.
             </div>
           </div>
