@@ -41,9 +41,7 @@ export default function Home() {
   return (
     <div className="max-w-md mx-auto min-h-screen pb-24 bg-gray-50">
       <div className="p-6">
-        <div className="text-center">
-          <h1 className="text-3xl font-bold">Welcome to EventsInsta!</h1>
-        </div>
+        <h1 className="text-3xl font-bold">Welcome to EventsInsta!</h1>
         <Card className="mt-4 p-5 bg-purple-100">
           <div className="text-gray-700">Ready to plan your next unforgettable event? Let's find the perfect venues and services for you!</div>
           <div className="mt-4"><Button onClick={()=>router.push('/create/customize')} className="!h-12">Plan an Event</Button></div>
