@@ -321,6 +321,9 @@ function ReviewContent() {
           <GhostButton onClick={saveForLater}>
             Save for Later
           </GhostButton>
+          <GhostButton onClick={() => router.push('/home')}>
+            Home
+          </GhostButton>
         </div>
 
         <div className="text-xs text-gray-500 text-center">
