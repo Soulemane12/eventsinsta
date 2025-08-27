@@ -148,9 +148,19 @@ function ServicesContent() {
   const totalCost = getSelectedServicesTotal()
 
   // Budget flexibility features
-  const budgetRange = budget.split(' - ')
-  const minBudget = parseInt(budgetRange[0]?.replace(/[^0-9]/g, '') || '0')
-  const maxBudget = parseInt(budgetRange[1]?.replace(/[^0-9]/g, '') || '0')
+  const getBudgetRange = (budgetId: string): { min: number; max: number } => {
+    switch (budgetId) {
+      case 'budget-1': return { min: 500, max: 1000 }
+      case 'budget-2': return { min: 1000, max: 3000 }
+      case 'budget-3': return { min: 3000, max: 5000 }
+      case 'budget-4': return { min: 5000, max: 50000 }
+      default: return { min: 1000, max: 3000 }
+    }
+  }
+  
+  const budgetRangeValues = getBudgetRange(budget)
+  const minBudget = budgetRangeValues.min
+  const maxBudget = budgetRangeValues.max
   const isOverBudget = totalCost > maxBudget
   const budgetRemaining = maxBudget - totalCost
 
@@ -306,7 +316,9 @@ function ServicesContent() {
                 </div>
                 <div className="flex justify-between text-sm mt-1">
                   <span className="text-gray-600">Your Budget</span>
-                  <span className="text-gray-600">${minBudget} - ${maxBudget}</span>
+                  <span className="text-gray-600">
+                    {budget === 'budget-4' ? '$5,000+' : `$${minBudget.toLocaleString()} - $${maxBudget.toLocaleString()}`}
+                  </span>
                 </div>
                 <div className="flex justify-between text-sm mt-1">
                   <span className={isOverBudget ? "text-red-600" : "text-green-600"}>
