@@ -2,7 +2,7 @@
 
 import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { getRestaurantPriceByGuestCount } from '../../../data/restaurants'
+import { getRestaurantPriceByGuestCount, RESTAURANTS } from '../../../data/restaurants'
 import { SERVICES } from '../../../data/services'
 
 const BrandPurple = 'bg-purple-800'
@@ -101,6 +101,29 @@ function SuccessContent() {
     setEventData(data)
   }, [searchParams])
 
+  const getRestaurantDetails = () => {
+    if (!eventData || !eventData.selectedRestaurant) return null
+    const restaurant = RESTAURANTS.find(r => r.id === eventData.selectedRestaurant)
+    if (!restaurant) return null
+    
+    // Get host name based on restaurant id
+    let hostName = ""
+    if (restaurant.id === 'saint-restaurant') {
+      hostName = "Ian"
+    } else if (restaurant.id === 'rebel-restaurant') {
+      hostName = "Fred"
+    } else if (restaurant.id === 'del-friscos') {
+      hostName = "Travis"
+    }
+    
+    return {
+      name: restaurant.name,
+      address: restaurant.address,
+      phone: restaurant.phone,
+      hostName: hostName
+    }
+  }
+
   const getRestaurantCost = () => {
     if (!eventData || !eventData.selectedRestaurant) return 0
     return getRestaurantPriceByGuestCount(eventData.selectedRestaurant, eventData.guestCount)
@@ -139,6 +162,18 @@ function SuccessContent() {
             <div>👥 {eventData.guestCount} guests</div>
             <div className="font-medium text-purple-600">💰 ${getTotalCost().toLocaleString()} total</div>
           </div>
+          
+          {getRestaurantDetails() && (
+            <div className="mt-4 pt-4 border-t border-gray-100">
+              <div className="text-sm font-medium text-gray-800 mb-2">Restaurant Information</div>
+              <div className="space-y-1 text-sm text-gray-600">
+                <div>🍽️ {getRestaurantDetails()?.name}</div>
+                <div>📍 {getRestaurantDetails()?.address}</div>
+                <div>📞 {getRestaurantDetails()?.phone}</div>
+                <div>👤 Host: {getRestaurantDetails()?.hostName}</div>
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="space-y-3">
