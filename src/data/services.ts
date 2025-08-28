@@ -242,11 +242,11 @@ export const SERVICES: Service[] = [
     icon: '🏀'
   },
 
-  // Venue Rentals
+  // Private Home Rentals
   {
     id: 'venue-hamptons-3br',
     name: 'The Hamptons 3BR/2BA with Basement',
-    category: 'Venues',
+    category: 'Private Home Rentals',
     description: 'Luxury vacation rental in The Hamptons. 3 bedrooms, 2 bathrooms with finished basement. Perfect for events and gatherings.',
     price: 7000,
     priceDescription: '$7,000 per week',
@@ -255,7 +255,7 @@ export const SERVICES: Service[] = [
   {
     id: 'venue-hamptons-pool',
     name: 'The Hamptons House with Pool',
-    category: 'Venues',
+    category: 'Private Home Rentals',
     description: 'Premium Hamptons rental with private pool. Perfect for summer events and celebrations.',
     price: 15000,
     priceDescription: '$15,000 per week',
@@ -264,7 +264,7 @@ export const SERVICES: Service[] = [
   {
     id: 'venue-marthas-vineyard-3br',
     name: 'Martha\'s Vineyard 3BR/2BA with Basement',
-    category: 'Venues',
+    category: 'Private Home Rentals',
     description: 'Beautiful Martha\'s Vineyard rental. 3 bedrooms, 2 bathrooms with finished basement. Ideal for destination events.',
     price: 7000,
     priceDescription: '$7,000 per week',
@@ -273,11 +273,49 @@ export const SERVICES: Service[] = [
   {
     id: 'venue-marthas-vineyard-pool',
     name: 'Martha\'s Vineyard House with Pool',
-    category: 'Venues',
+    category: 'Private Home Rentals',
     description: 'Luxury Martha\'s Vineyard rental with private pool. Perfect for upscale events and celebrations.',
     price: 15000,
     priceDescription: '$15,000 per week',
     icon: '🏊‍♂️'
+  },
+
+  // Venue Types
+  {
+    id: 'venue-type-private-home',
+    name: 'Private Home Venue',
+    category: 'Venue Type',
+    description: 'Luxury private homes available for events. Various locations and sizes to accommodate different group sizes.',
+    price: 5000,
+    priceDescription: '$5,000 base fee',
+    icon: '🏠'
+  },
+  {
+    id: 'venue-type-boat',
+    name: 'Boat Venue',
+    category: 'Venue Type',
+    description: 'Private yacht and boat rentals for unique waterfront events and celebrations.',
+    price: 3000,
+    priceDescription: '$3,000 base fee',
+    icon: '🛥️'
+  },
+  {
+    id: 'venue-type-restaurant',
+    name: 'Restaurant Venue',
+    category: 'Venue Type',
+    description: 'Private dining rooms and restaurant venues for intimate or large gatherings.',
+    price: 2500,
+    priceDescription: '$2,500 base fee',
+    icon: '🍽️'
+  },
+  {
+    id: 'venue-type-event-space',
+    name: 'Event Space Venue',
+    category: 'Venue Type',
+    description: 'Dedicated event spaces and halls perfect for conferences, parties, and special occasions.',
+    price: 4000,
+    priceDescription: '$4,000 base fee',
+    icon: '🏛️'
   },
 
   // Additional Services
@@ -366,7 +404,8 @@ export const SERVICE_CATEGORIES = [
   'Kids',
   'Wedding',
   'Sporting Events',
-  'Venues',
+  'Private Home Rentals',
+  'Venue Type',
   'Mobile Professionals',
   'Exotic Cars',
   'Yacht',

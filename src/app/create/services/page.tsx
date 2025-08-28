@@ -53,27 +53,40 @@ function ServiceCard({
   isSelected: boolean; 
   onToggle: () => void 
 }) {
+  const [showDetails, setShowDetails] = useState(false)
+
+  const handleViewDetails = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    setShowDetails(!showDetails)
+  }
+
+  const handlePurchase = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    // In a real app, this would handle the purchase flow
+    console.log('Purchase:', service.name)
+    alert(`Purchase functionality for ${service.name} would be implemented here.`)
+  }
+
   return (
-    <button
-      onClick={onToggle}
-      className={`w-full p-4 cursor-pointer transition-all rounded-2xl bg-white shadow ${
+    <div
+      className={`w-full p-4 transition-all rounded-2xl bg-white shadow ${
         isSelected 
           ? 'border-2 border-purple-600 bg-purple-50' 
           : 'border border-gray-200 hover:border-purple-300'
       }`}
     >
-              <div className="flex items-start gap-3">
-          {service.image ? (
-            <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
-              <img 
-                src={service.image} 
-                alt={service.name}
-                className="w-full h-full object-cover"
-              />
-            </div>
-          ) : (
-            <div className="text-2xl">{service.icon}</div>
-          )}
+      <div className="flex items-start gap-3" onClick={onToggle}>
+        {service.image ? (
+          <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
+            <img 
+              src={service.image} 
+              alt={service.name}
+              className="w-full h-full object-cover"
+            />
+          </div>
+        ) : (
+          <div className="text-2xl">{service.icon}</div>
+        )}
         <div className="flex-1 text-left">
           <div className="flex items-center justify-between mb-1">
             <div className="font-semibold text-sm">{service.name}</div>
@@ -95,7 +108,41 @@ function ServiceCard({
           </div>
         </div>
       </div>
-    </button>
+      
+      {/* Action Buttons */}
+      <div className="mt-3 pt-3 border-t border-gray-100 flex gap-2">
+        <button
+          onClick={handleViewDetails}
+          className="flex-1 py-2 px-3 bg-gray-100 text-gray-700 rounded-lg text-xs font-medium hover:bg-gray-200 transition-colors"
+        >
+          {showDetails ? 'Hide Details' : 'View Details'}
+        </button>
+        <button
+          onClick={handlePurchase}
+          className="flex-1 py-2 px-3 bg-purple-600 text-white rounded-lg text-xs font-medium hover:bg-purple-700 transition-colors"
+        >
+          Purchase
+        </button>
+      </div>
+
+      {/* Expandable Details */}
+      {showDetails && (
+        <div className="mt-3 pt-3 border-t border-gray-100">
+          <div className="text-xs text-gray-600 space-y-2">
+            <div><strong>Service Details:</strong></div>
+            <div>{service.description}</div>
+            <div><strong>Price:</strong> {service.priceDescription}</div>
+            <div><strong>Category:</strong> {service.category}</div>
+            {service.instagram && (
+              <div><strong>Instagram:</strong> {service.instagram}</div>
+            )}
+            <div className="text-xs text-gray-500 mt-2 p-2 bg-gray-50 rounded">
+              Contact our team for more details, customization options, and booking assistance.
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   )
 }
 
