@@ -118,7 +118,6 @@ export default function SignUp() {
 
         <Button onClick={()=>router.push('/home')} disabled={!isFormValid}>Sign Up</Button>
         <div className="text-center text-sm">Already have an account? <Link className="text-purple-700 font-medium" href="/signin">Sign In</Link></div>
-        <div className="text-center text-xs text-gray-500">For demo, you can <button onClick={()=>router.push('/home')} className="underline">skip</button>.</div>
       </div>
     </div>
   )

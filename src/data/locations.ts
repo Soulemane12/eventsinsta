@@ -1,4 +1,4 @@
-export interface Location {
+                                                                                                                                                                                        export interface Location {
   id: string
   name: string
   type: 'state' | 'city'

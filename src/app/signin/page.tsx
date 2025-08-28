@@ -69,7 +69,6 @@ export default function SignIn() {
         <GhostButton>Sign in with Google</GhostButton>
         <GhostButton>Sign in with Apple</GhostButton>
         <div className="text-center text-sm">Don't have an account? <Link className="text-purple-700 font-medium" href="/signup">Sign up</Link></div>
-        <div className="text-center text-xs text-gray-500">For demo, you can <button onClick={()=>router.push('/home')} className="underline">skip</button>.</div>
       </div>
     </div>
   )
