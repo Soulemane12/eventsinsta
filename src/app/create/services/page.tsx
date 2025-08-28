@@ -54,6 +54,7 @@ function ServiceCard({
   onToggle: () => void 
 }) {
   const [showDetails, setShowDetails] = useState(false)
+  const [isAdding, setIsAdding] = useState(false)
 
   const handleViewDetails = (e: React.MouseEvent) => {
     e.stopPropagation()
@@ -62,9 +63,44 @@ function ServiceCard({
 
   const handlePurchase = (e: React.MouseEvent) => {
     e.stopPropagation()
-    // In a real app, this would handle the purchase flow
-    console.log('Purchase:', service.name)
-    alert(`Purchase functionality for ${service.name} would be implemented here.`)
+    setIsAdding(true)
+    
+    // Add service to selection if not already selected
+    if (!isSelected) {
+      onToggle()
+    }
+    // Create purchase intent with service details
+    const purchaseData = {
+      serviceId: service.id,
+      serviceName: service.name,
+      price: service.price,
+      category: service.category,
+      description: service.description,
+      priceDescription: service.priceDescription
+    }
+    
+    // Store purchase intent in localStorage for future implementation
+    localStorage.setItem(`purchase_intent_${service.id}`, JSON.stringify(purchaseData))
+    
+    // Show success feedback with better UX
+    setTimeout(() => {
+      setIsAdding(false)
+      // Create a more elegant success notification
+      const successMessage = document.createElement('div')
+      successMessage.className = 'fixed top-4 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 flex items-center gap-2'
+      successMessage.innerHTML = `
+        <span>✅</span>
+        <span>${service.name} added to your event!</span>
+      `
+      document.body.appendChild(successMessage)
+      
+      // Remove the notification after 3 seconds
+      setTimeout(() => {
+        if (successMessage.parentNode) {
+          successMessage.parentNode.removeChild(successMessage)
+        }
+      }, 3000)
+    }, 500)
   }
 
   return (
@@ -119,9 +155,24 @@ function ServiceCard({
         </button>
         <button
           onClick={handlePurchase}
-          className="flex-1 py-2 px-3 bg-purple-600 text-white rounded-lg text-xs font-medium hover:bg-purple-700 transition-colors"
+          disabled={isAdding}
+          className={`flex-1 py-2 px-3 rounded-lg text-xs font-medium transition-all duration-300 ${
+            isAdding 
+              ? 'bg-green-500 text-white' 
+              : isSelected 
+                ? 'bg-green-600 text-white hover:bg-green-700' 
+                : 'bg-purple-600 text-white hover:bg-purple-700'
+          }`}
         >
-          Purchase
+          {isAdding ? (
+            <span className="flex items-center justify-center gap-1">
+              <span className="animate-spin">⭐</span> Adding...
+            </span>
+          ) : isSelected ? (
+            '✅ Selected'
+          ) : (
+            'Add Service'
+          )}
         </button>
       </div>
 
@@ -159,6 +210,8 @@ function ServicesContent() {
   const [budget, setBudget] = useState('')
   const [recommendedServices, setRecommendedServices] = useState<string[]>([])
   const [isLoadingRecommendations, setIsLoadingRecommendations] = useState(false)
+  const [searchTerm, setSearchTerm] = useState('')
+  const [filterCategory, setFilterCategory] = useState('')
 
   useEffect(() => {
     // Get previous parameters from URL
@@ -168,6 +221,7 @@ function ServicesContent() {
     const timeParam = searchParams.get('time')
     const guestCountParam = searchParams.get('guestCount')
     const budgetParam = searchParams.get('budget')
+    const servicesParam = searchParams.get('services')
     
     if (eventTypeParam) setEventType(eventTypeParam)
     if (locationParam) setLocation(locationParam)
@@ -175,14 +229,55 @@ function ServicesContent() {
     if (timeParam) setTime(timeParam)
     if (guestCountParam) setGuestCount(guestCountParam)
     if (budgetParam) setBudget(budgetParam)
+    
+    // Restore previously selected services
+    if (servicesParam) {
+      const services = servicesParam.split(',').filter(Boolean)
+      setSelectedServices(services)
+    } else {
+      // Try to restore from localStorage as fallback
+      const savedServices = localStorage.getItem('event_selected_services')
+      if (savedServices) {
+        try {
+          const parsedServices = JSON.parse(savedServices)
+          setSelectedServices(parsedServices)
+        } catch (error) {
+          console.error('Error parsing saved services:', error)
+        }
+      }
+    }
   }, [searchParams])
 
+  // Save selected services to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem('event_selected_services', JSON.stringify(selectedServices))
+  }, [selectedServices])
+
   const toggleService = (serviceId: string) => {
-    setSelectedServices(prev => 
-      prev.includes(serviceId) 
+    setSelectedServices(prev => {
+      const isCurrentlySelected = prev.includes(serviceId)
+      const newSelection = isCurrentlySelected 
         ? prev.filter(id => id !== serviceId)
         : [...prev, serviceId]
-    )
+      
+      // Show feedback for service addition/removal
+      const service = SERVICES.find(s => s.id === serviceId)
+      if (service) {
+        if (isCurrentlySelected) {
+          // Service removed
+          setTimeout(() => {
+            console.log(`${service.name} removed from your event`)
+          }, 100)
+        } else {
+          // Service added
+          setTimeout(() => {
+            console.log(`${service.name} added to your event`)
+          }, 100)
+        }
+      }
+      
+      return newSelection
+    })
   }
 
   const getSelectedServicesTotal = () => {
@@ -280,13 +375,78 @@ function ServicesContent() {
           )}
         </div>
 
+        {/* Search and Filter */}
+        <div className="space-y-3">
+          <div className="relative">
+            <input
+              type="text"
+              placeholder="Search services..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full p-3 pl-10 rounded-2xl border border-gray-200 focus:outline-none focus:border-purple-500"
+            />
+            <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+              🔍
+            </div>
+          </div>
+          
+          <div className="flex gap-2 overflow-x-auto pb-2">
+            <button
+              onClick={() => setFilterCategory('')}
+              className={`px-4 py-2 rounded-xl text-xs font-medium whitespace-nowrap transition-colors ${
+                filterCategory === '' 
+                  ? 'bg-purple-600 text-white' 
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              All Categories
+            </button>
+            {SERVICE_CATEGORIES.map(category => (
+              <button
+                key={category}
+                onClick={() => setFilterCategory(category)}
+                className={`px-4 py-2 rounded-xl text-xs font-medium whitespace-nowrap transition-colors ${
+                  filterCategory === category 
+                    ? 'bg-purple-600 text-white' 
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
+              >
+                {category}
+              </button>
+            ))}
+          </div>
+        </div>
+
         {/* Services by Category */}
         <div className="space-y-6">
           {SERVICE_CATEGORIES.map(category => {
-            const categoryServices = SERVICES.filter(service => service.category === category)
+            // Filter services based on search term and category filter
+            let categoryServices = SERVICES.filter(service => service.category === category)
+            
+            // Apply search filter
+            if (searchTerm) {
+              categoryServices = categoryServices.filter(service =>
+                service.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                service.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                service.category.toLowerCase().includes(searchTerm.toLowerCase())
+              )
+            }
+            
+            // Apply category filter
+            if (filterCategory && filterCategory !== category) {
+              return null
+            }
+            
+            // Don't render empty categories
+            if (categoryServices.length === 0) {
+              return null
+            }
+            
             return (
               <div key={category}>
-                <h3 className="text-lg font-semibold mb-3 text-gray-800">{category}</h3>
+                <h3 className="text-lg font-semibold mb-3 text-gray-800">
+                  {category} ({categoryServices.length})
+                </h3>
                 <div className="space-y-3">
                   {categoryServices.map(service => (
                     <ServiceCard
@@ -301,6 +461,41 @@ function ServicesContent() {
             )
           })}
         </div>
+
+        {/* No Results Message */}
+        {(searchTerm || filterCategory) && (
+          (() => {
+            let filteredServices = SERVICES
+            if (searchTerm) {
+              filteredServices = filteredServices.filter(service =>
+                service.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                service.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                service.category.toLowerCase().includes(searchTerm.toLowerCase())
+              )
+            }
+            if (filterCategory) {
+              filteredServices = filteredServices.filter(service => service.category === filterCategory)
+            }
+            
+            return filteredServices.length === 0 ? (
+              <div className="text-center py-8">
+                <div className="text-gray-500 text-sm">
+                  No services found matching your search criteria.
+                  <br />
+                  <button
+                    onClick={() => {
+                      setSearchTerm('')
+                      setFilterCategory('')
+                    }}
+                    className="text-purple-600 underline mt-2"
+                  >
+                    Clear filters
+                  </button>
+                </div>
+              </div>
+            ) : null
+          })()
+        )}
 
         {/* AI Recommendations */}
         {isLoadingRecommendations && (
@@ -415,6 +610,26 @@ function ServicesContent() {
             You can select multiple services from different categories. The total cost will be added to your event budget. You can always modify your selections later.
           </div>
         </div>
+
+        {/* Quick Actions Floating Panel */}
+        {selectedServices.length > 0 && (
+          <div className="fixed bottom-20 left-4 right-4 max-w-md mx-auto z-20">
+            <div className="bg-purple-600 text-white p-4 rounded-2xl shadow-lg">
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="text-sm font-medium">{selectedServices.length} service{selectedServices.length !== 1 ? 's' : ''} selected</div>
+                  <div className="text-xs opacity-90">Total: ${totalCost}</div>
+                </div>
+                <button
+                  onClick={next}
+                  className="bg-white text-purple-600 px-4 py-2 rounded-xl text-sm font-medium hover:bg-gray-100 transition-colors"
+                >
+                  Continue →
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         <Button onClick={next}>
           Next: Review Your Event
