@@ -44,18 +44,12 @@ interface EventData {
 function formatDate(dateString: string): string {
   if (!dateString) return 'Not set'
   try {
-    // Safari-friendly date parsing
-    const parts = dateString.split('-')
-    if (parts.length !== 3) return dateString
-    
-    // Create date using year, month (0-indexed), day
-    const date = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]))
-    
-    // Check if date is valid
-    if (isNaN(date.getTime())) return dateString
-    
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-    return `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`
+    const date = new Date(dateString)
+    return date.toLocaleDateString('en-US', { 
+      month: 'short', 
+      day: 'numeric', 
+      year: 'numeric' 
+    })
   } catch {
     return dateString 
   }
@@ -66,8 +60,6 @@ function formatTime(timeString: string): string {
   try {
     const [hours, minutes] = timeString.split(':')
     const hour = parseInt(hours)
-    if (isNaN(hour)) return timeString
-    
     const ampm = hour >= 12 ? 'PM' : 'AM'
     const displayHour = hour % 12 || 12
     return `${displayHour}:${minutes} ${ampm}`
@@ -165,29 +157,13 @@ function SuccessContent() {
     setMessage('')
   }
 
-  // Add viewport meta tag for mobile responsiveness
-  useEffect(() => {
-    // Add viewport meta tag if it doesn't exist
-    if (!document.querySelector('meta[name="viewport"]')) {
-      const meta = document.createElement('meta')
-      meta.name = 'viewport'
-      meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no'
-      document.getElementsByTagName('head')[0].appendChild(meta)
-    }
-    
-    // Force layout recalculation on Safari mobile
-    setTimeout(() => {
-      window.scrollTo(0, 0)
-    }, 100)
-  }, [])
-
   return (
-    <div className="max-w-md mx-auto min-h-screen grid place-items-center p-4 sm:p-6 text-center bg-gray-50">
+    <div className="max-w-md mx-auto min-h-screen grid place-items-center p-6 text-center bg-gray-50">
       <div className="w-full">
-        <div className="text-5xl sm:text-6xl mb-4">🎉</div>
-        <h1 className="text-xl sm:text-2xl font-bold mb-2">Hello {eventData.customerName}!</h1>
-        <h2 className="text-lg sm:text-xl font-bold mb-2">Booking Confirmed!</h2>
-        <p className="text-gray-600 mb-4 sm:mb-6">Your event is officially booked and ready to celebrate!</p>
+        <div className="text-6xl mb-4">🎉</div>
+        <h1 className="text-2xl font-bold mb-2">Hello {eventData.customerName}!</h1>
+        <h2 className="text-xl font-bold mb-2">Booking Confirmed!</h2>
+        <p className="text-gray-600 mb-6">Your event is officially booked and ready to celebrate!</p>
         
         <div className="bg-white rounded-2xl p-6 mb-6 shadow">
           <div className="text-sm font-medium text-gray-800 mb-3">Event Details</div>
@@ -226,17 +202,13 @@ function SuccessContent() {
                   rows={3}
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
-                  style={{WebkitAppearance: 'none'}} // Fix for Safari mobile
-                  autoComplete="off"
-                  autoCorrect="on"
                 ></textarea>
                 <button 
                   onClick={sendSpecialRequest}
                   disabled={!message.trim()}
-                  className={`w-full py-3 rounded-lg text-sm font-medium ${
-                    message.trim() ? 'bg-purple-600 text-white active:bg-purple-800' : 'bg-gray-200 text-gray-500'
+                  className={`w-full py-2 rounded-lg text-sm font-medium ${
+                    message.trim() ? 'bg-purple-600 text-white hover:bg-purple-700' : 'bg-gray-200 text-gray-500'
                   }`}
-                  style={{WebkitTapHighlightColor: 'transparent'}} // Remove tap highlight on Safari
                 >
                   Send to Venue
                 </button>
@@ -246,16 +218,10 @@ function SuccessContent() {
         </div>
 
         <div className="space-y-3">
-          <Button 
-            onClick={()=>router.push('/home')}
-            className="!h-12 sm:!h-14 active:bg-purple-900"
-          >
+          <Button onClick={()=>router.push('/home')}>
             View My Events
           </Button>
-          <GhostButton 
-            onClick={()=>router.push('/create/customize')}
-            className="!h-12 sm:!h-14 active:bg-gray-100"
-          >
+          <GhostButton onClick={()=>router.push('/create/customize')}>
             Plan Another Event
           </GhostButton>
         </div>
@@ -264,9 +230,6 @@ function SuccessContent() {
           <div>You'll receive a confirmation email shortly</div>
           <div>Our team will contact you within 24 hours</div>
         </div>
-        
-        {/* Safari mobile fix - invisible element to ensure proper scrolling */}
-        <div className="h-4"></div>
       </div>
     </div>
   )
