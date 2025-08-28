@@ -38,6 +38,7 @@ interface EventData {
   servicesTotal: number
   selectedRestaurant: string
   customerName: string
+  specialRequests?: string
 }
 
 function formatDate(dateString: string): string {
@@ -145,6 +146,17 @@ function SuccessContent() {
     )
   }
 
+  const [message, setMessage] = useState('')
+  const [messageSent, setMessageSent] = useState(false)
+  
+  const sendSpecialRequest = () => {
+    // In a real app, this would send the message to the backend
+    console.log('Special request sent:', message)
+    setMessageSent(true)
+    // Clear the message
+    setMessage('')
+  }
+
   return (
     <div className="max-w-md mx-auto min-h-screen grid place-items-center p-6 text-center bg-gray-50">
       <div className="w-full">
@@ -174,6 +186,35 @@ function SuccessContent() {
               </div>
             </div>
           )}
+          
+          {/* Special Requests Section */}
+          <div className="mt-4 pt-4 border-t border-gray-100">
+            <div className="text-sm font-medium text-gray-800 mb-2">Special Requests</div>
+            {messageSent ? (
+              <div className="bg-green-50 p-3 rounded-lg text-sm text-green-700">
+                Your special request has been sent to the venue. They will contact you shortly.
+              </div>
+            ) : (
+              <div className="space-y-3">
+                <textarea 
+                  placeholder="Any special requests for the venue? (dietary restrictions, seating preferences, etc.)" 
+                  className="w-full p-3 border border-gray-300 rounded-lg text-sm"
+                  rows={3}
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                ></textarea>
+                <button 
+                  onClick={sendSpecialRequest}
+                  disabled={!message.trim()}
+                  className={`w-full py-2 rounded-lg text-sm font-medium ${
+                    message.trim() ? 'bg-purple-600 text-white hover:bg-purple-700' : 'bg-gray-200 text-gray-500'
+                  }`}
+                >
+                  Send to Venue
+                </button>
+              </div>
+            )}
+          </div>
         </div>
 
         <div className="space-y-3">

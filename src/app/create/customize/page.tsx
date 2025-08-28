@@ -56,6 +56,7 @@ const EVENT_TYPES = [
   { id: 'holiday-party', name: 'Holiday Party', icon: '🎄', description: 'Festive celebrations' },
   { id: 'vacation', name: 'Vacation', icon: '✈️', description: 'Travel experiences' },
   { id: 'sporting', name: 'Sporting Event', icon: '⚽', description: 'Sports and recreation' },
+  { id: 'kids-event', name: 'Kid\'s Event', icon: '🧸', description: 'Fun for the little ones' },
   { id: 'networking', name: 'Networking Mixer', icon: '🤝', description: 'Professional connections' },
 ]
 

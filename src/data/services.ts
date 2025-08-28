@@ -11,6 +11,25 @@ export interface Service {
 }
 
 export const SERVICES: Service[] = [
+  // Restaurant Venues
+  {
+    id: 'restaurant-venue-upscale',
+    name: 'Upscale Restaurant Venue',
+    category: 'Restaurants',
+    description: 'Premium restaurant venue for private events. Includes dedicated staff and customized menu options.',
+    price: 3000,
+    priceDescription: '$3,000 base fee',
+    icon: '🍽️'
+  },
+  {
+    id: 'restaurant-venue-casual',
+    name: 'Casual Restaurant Venue',
+    category: 'Restaurants',
+    description: 'Relaxed restaurant setting for casual gatherings and celebrations.',
+    price: 1500,
+    priceDescription: '$1,500 base fee',
+    icon: '🍽️'
+  },
   // DJ Services
   {
     id: 'dj-ceo',
@@ -57,18 +76,18 @@ export const SERVICES: Service[] = [
     id: 'isit-corp',
     name: 'I-sit Corp',
     category: 'Car Services',
-    description: 'Premium car service for 3 hours',
+    description: 'Premium car service for up to 3 hours',
     price: 250,
-    priceDescription: '$250 for 3 hours',
+    priceDescription: '$250 up to 3 hours',
     icon: '🚗'
   },
   {
     id: 'car-standard',
     name: 'Standard Car Service',
     category: 'Car Services',
-    description: 'Professional car service for 2 hours',
+    description: 'Professional car service for up to 2 hours',
     price: 150,
-    priceDescription: '$150 for 2 hours',
+    priceDescription: '$150 up to 2 hours',
     icon: '🚗'
   },
   
@@ -184,12 +203,30 @@ export const SERVICES: Service[] = [
     priceDescription: '$50,000 for 250 guests',
     icon: '💒'
   },
+  {
+    id: 'wedding-venue-garden',
+    name: 'Garden Wedding Venue',
+    category: 'Wedding',
+    description: 'Beautiful garden venue for wedding ceremonies and receptions. Perfect for outdoor celebrations.',
+    price: 15000,
+    priceDescription: '$15,000 for venue rental',
+    icon: '💒'
+  },
+  {
+    id: 'wedding-venue-ballroom',
+    name: 'Grand Ballroom Wedding Venue',
+    category: 'Wedding',
+    description: 'Elegant ballroom venue for wedding receptions. Includes basic decor and setup.',
+    price: 25000,
+    priceDescription: '$25,000 for venue rental',
+    icon: '💒'
+  },
 
   // Sports Birthday Package
   {
     id: 'sports-knicks-birthday',
     name: 'NY Knicks Birthday Package',
-    category: 'Sports',
+    category: 'Sporting Events',
     description: 'NY Knicks game experience. 5 lower-level tickets (Sections 100-200). Includes drinks and birthday shoutout on Jumbotron.',
     price: 1000,
     priceDescription: '$1,000 for 5 tickets',
@@ -198,7 +235,7 @@ export const SERVICES: Service[] = [
   {
     id: 'sports-knicks-jersey-signing',
     name: 'NY Knicks with Jersey Signing',
-    category: 'Sports',
+    category: 'Sporting Events',
     description: 'NY Knicks game experience with player jersey signing. 5 lower-level tickets. Includes drinks, birthday shoutout, and jersey signing.',
     price: 1500,
     priceDescription: '$1,500 for 5 tickets + signing',
@@ -247,7 +284,7 @@ export const SERVICES: Service[] = [
   {
     id: 'mobile-barber',
     name: 'Mobile Barber',
-    category: 'Beauty',
+    category: 'Mobile Professionals',
     description: 'Professional mobile barber service. Comes to your location for haircuts and grooming.',
     price: 100,
     priceDescription: '$100 per service',
@@ -256,7 +293,7 @@ export const SERVICES: Service[] = [
   {
     id: 'golf-lessons-access',
     name: 'Access Golf by Kelly Pierre',
-    category: 'Golf',
+    category: 'Sporting Events',
     description: 'Professional golf lessons. 10 people for 2 hours. Expert instruction from Kelly Pierre.',
     price: 1000,
     priceDescription: '$1,000 for 10 people (2 hours)',
@@ -328,12 +365,12 @@ export const SERVICE_CATEGORIES = [
   'Vacation',
   'Kids',
   'Wedding',
-  'Sports',
+  'Sporting Events',
   'Venues',
-  'Beauty',
-  'Golf',
+  'Mobile Professionals',
   'Exotic Cars',
-  'Yacht'
+  'Yacht',
+  'Restaurants'
 ]
 
 export function getServicesByCategory(category: string): Service[] {

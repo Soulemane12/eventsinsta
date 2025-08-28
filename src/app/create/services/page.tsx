@@ -221,10 +221,10 @@ function ServicesContent() {
 
   return (
     <div className="max-w-md mx-auto min-h-screen bg-gray-50">
-      <StepHeader step={4} title="Select Services" />
+      <StepHeader step={4} title="Curate Your Experience" />
       <div className="p-6 space-y-6">
         <div className="text-center">
-          <h2 className="text-xl font-semibold mb-2">Choose your services</h2>
+          <h2 className="text-xl font-semibold mb-2">Curate Your Experience</h2>
           <p className="text-sm text-gray-600">Select the services you need for your event</p>
           {eventType && location && (
             <div className="mt-2 text-sm text-purple-600 font-medium">
