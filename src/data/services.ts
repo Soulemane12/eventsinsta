@@ -38,7 +38,8 @@ export const SERVICES: Service[] = [
     description: 'Professional DJ with premium sound system and lighting',
     price: 600,
     priceDescription: '$600 for full event',
-    icon: '🎵'
+    icon: '🎵',
+    image: '/dj-ceo.svg'
   },
   {
     id: 'dj-standard',
@@ -59,7 +60,8 @@ export const SERVICES: Service[] = [
     price: 750,
     priceDescription: '$750 for 4 hours',
     icon: '📸',
-    instagram: '@capturemoments_nyc'
+    instagram: '@capturemoments_nyc',
+    image: '/photography-premium.svg'
   },
   {
     id: 'photographer-standard',
@@ -68,7 +70,8 @@ export const SERVICES: Service[] = [
     description: 'Professional photography service with basic editing',
     price: 400,
     priceDescription: '$400 for full event',
-    icon: '📸'
+    icon: '📸',
+    image: '/photography-standard.svg'
   },
   
   // Car Services
@@ -79,7 +82,8 @@ export const SERVICES: Service[] = [
     description: 'Premium car service for up to 3 hours',
     price: 250,
     priceDescription: '$250 up to 3 hours',
-    icon: '🚗'
+    icon: '🚗',
+    image: '/l-sit.png'
   },
   {
     id: 'car-standard',
@@ -99,7 +103,8 @@ export const SERVICES: Service[] = [
     description: 'Full-service catering with wait staff',
     price: 1200,
     priceDescription: '$1200 for 50 guests',
-    icon: '🍽️'
+    icon: '🍽️',
+    image: '/catering-premium.svg'
   },
   {
     id: 'catering-standard',

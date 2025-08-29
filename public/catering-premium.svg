@@ -1,0 +1,6 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="200" height="200" fill="#F3F4F6"/>
+<circle cx="100" cy="100" r="40" fill="#8B5AB0"/>
+<path d="M75 85H125V95H75V85ZM80 95H120V105H80V95ZM85 105H115V115H85V105Z" fill="white"/>
+<text x="100" y="160" text-anchor="middle" fill="#374151" font-family="Arial" font-size="12">Catering</text>
+</svg>

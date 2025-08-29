@@ -1,0 +1,10 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="200" height="200" fill="#F3F4F6"/>
+<circle cx="100" cy="100" r="40" fill="#8B5AB0"/>
+<path d="M70 90C70 85 75 80 80 80H120C125 80 130 85 130 90V110C130 115 125 120 120 120H80C75 120 70 115 70 110V90Z" fill="white"/>
+<circle cx="85" cy="100" r="3" fill="#8B5AB0"/>
+<circle cx="95" cy="100" r="3" fill="#8B5AB0"/>
+<circle cx="105" cy="100" r="3" fill="#8B5AB0"/>
+<circle cx="115" cy="100" r="3" fill="#8B5AB0"/>
+<text x="100" y="160" text-anchor="middle" fill="#374151" font-family="Arial" font-size="12">DJ Service</text>
+</svg>
