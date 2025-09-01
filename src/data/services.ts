@@ -11,43 +11,6 @@ export interface Service {
 }
 
 export const SERVICES: Service[] = [
-  // Venue Services
-  {
-    id: 'venue-private-home',
-    name: 'Private Home Venue',
-    category: 'Venue',
-    description: 'Luxury private homes available for events. Various locations and sizes to accommodate different group sizes.',
-    price: 5000,
-    priceDescription: '$5,000 base fee',
-    icon: '🏠'
-  },
-  {
-    id: 'venue-boat',
-    name: 'Boat Venue',
-    category: 'Venue',
-    description: 'Private yacht and boat rentals for unique waterfront events and celebrations.',
-    price: 3000,
-    priceDescription: '$3,000 base fee',
-    icon: '🛥️'
-  },
-  {
-    id: 'venue-restaurant',
-    name: 'Restaurant Venue',
-    category: 'Venue',
-    description: 'Private dining rooms and restaurant venues for intimate or large gatherings.',
-    price: 2500,
-    priceDescription: '$2,500 base fee',
-    icon: '🍽️'
-  },
-  {
-    id: 'venue-event-space',
-    name: 'Event Space Venue',
-    category: 'Venue',
-    description: 'Dedicated event spaces and halls perfect for conferences, parties, and special occasions.',
-    price: 4000,
-    priceDescription: '$4,000 base fee',
-    icon: '🏛️'
-  },
   // Restaurant Venues
   {
     id: 'restaurant-venue-upscale',
@@ -399,7 +362,6 @@ export const SERVICES: Service[] = [
 ]
 
 export const SERVICE_CATEGORIES = [
-  'Venue',
   'DJ',
   'Photography',
   'Car Services',
@@ -425,3 +387,43 @@ export function getServicesByCategory(category: string): Service[] {
 export function getServiceById(id: string): Service | undefined {
   return SERVICES.find(service => service.id === id)
 }
+
+// Venue services for the dedicated venue selection page
+export const VENUE_SERVICES: Service[] = [
+  {
+    id: 'venue-private-home',
+    name: 'Private Home Venue',
+    category: 'Venue',
+    description: 'Luxury private homes available for events. Various locations and sizes to accommodate different group sizes.',
+    price: 5000,
+    priceDescription: '$5,000 base fee',
+    icon: '🏠'
+  },
+  {
+    id: 'venue-boat',
+    name: 'Boat Venue',
+    category: 'Venue',
+    description: 'Private yacht and boat rentals for unique waterfront events and celebrations.',
+    price: 3000,
+    priceDescription: '$3,000 base fee',
+    icon: '🛥️'
+  },
+  {
+    id: 'venue-restaurant',
+    name: 'Restaurant Venue',
+    category: 'Venue',
+    description: 'Private dining rooms and restaurant venues for intimate or large gatherings.',
+    price: 2500,
+    priceDescription: '$2,500 base fee',
+    icon: '🍽️'
+  },
+  {
+    id: 'venue-event-space',
+    name: 'Event Space Venue',
+    category: 'Venue',
+    description: 'Dedicated event spaces and halls perfect for conferences, parties, and special occasions.',
+    price: 4000,
+    priceDescription: '$4,000 base fee',
+    icon: '🏛️'
+  }
+]

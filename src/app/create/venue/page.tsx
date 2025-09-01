@@ -2,7 +2,7 @@
 
 import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { SERVICES, Service } from '@/data/services'
+import { VENUE_SERVICES, Service } from '@/data/services'
 
 const BrandPurple = 'bg-purple-800'
 const BrandPurpleHover = 'hover:bg-purple-900'
@@ -110,7 +110,7 @@ function VenueContent() {
     if (budgetParam) setBudget(budgetParam)
   }, [searchParams])
 
-  const venueServices = SERVICES.filter(service => service.category === 'Venue')
+  const venueServices = VENUE_SERVICES
 
   const valid = selectedVenue
 

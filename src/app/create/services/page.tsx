@@ -544,6 +544,41 @@ function ServicesContent() {
           </div>
         )}
 
+        {/* Custom Budget Range Input */}
+        <div className="bg-purple-50 p-4 rounded-xl">
+          <div className="text-sm font-medium text-purple-800 mb-2">💰 Set Your Budget</div>
+          <div className="space-y-3">
+            <div className="text-xs text-gray-600">
+              Set your custom budget range to help guide your service selection
+            </div>
+            <div className="flex gap-2">
+              <div className="flex-1">
+                <label className="block text-xs font-medium text-purple-800 mb-1">Minimum Budget</label>
+                <input
+                  type="number"
+                  placeholder="Min"
+                  value={minBudget}
+                  onChange={(e) => setMinBudget(parseInt(e.target.value) || 0)}
+                  className="w-full p-3 border border-purple-200 rounded-lg focus:outline-none focus:border-purple-500 text-sm"
+                />
+              </div>
+              <div className="flex-1">
+                <label className="block text-xs font-medium text-purple-800 mb-1">Maximum Budget</label>
+                <input
+                  type="number"
+                  placeholder="Max"
+                  value={maxBudget}
+                  onChange={(e) => setMaxBudget(parseInt(e.target.value) || 0)}
+                  className="w-full p-3 border border-purple-200 rounded-lg focus:outline-none focus:border-purple-500 text-sm"
+                />
+              </div>
+            </div>
+            <div className="text-sm text-purple-800 font-medium">
+              Your Budget: ${minBudget.toLocaleString()} - ${maxBudget.toLocaleString()}
+            </div>
+          </div>
+        </div>
+
         {/* Cost Summary */}
         {selectedServices.length > 0 && (
           <div className="bg-purple-50 p-4 rounded-xl">
@@ -564,28 +599,6 @@ function ServicesContent() {
                   <span className="text-purple-800">${totalCost}</span>
                 </div>
                 
-                {/* Custom Budget Range Input */}
-                <div className="mt-3 space-y-2">
-                  <div className="text-xs font-medium text-purple-800">Custom Budget Range</div>
-                  <div className="flex gap-2">
-                    <input
-                      type="number"
-                      placeholder="Min"
-                      value={minBudget}
-                      onChange={(e) => setMinBudget(parseInt(e.target.value) || 0)}
-                      className="flex-1 p-2 text-xs border border-purple-200 rounded-lg focus:outline-none focus:border-purple-500"
-                    />
-                    <span className="text-xs text-purple-600 self-center">to</span>
-                    <input
-                      type="number"
-                      placeholder="Max"
-                      value={maxBudget}
-                      onChange={(e) => setMaxBudget(parseInt(e.target.value) || 0)}
-                      className="flex-1 p-2 text-xs border border-purple-200 rounded-lg focus:outline-none focus:border-purple-500"
-                    />
-                  </div>
-                </div>
-                
                 <div className="flex justify-between text-sm mt-1">
                   <span className="text-gray-600">Your Budget</span>
                   <span className="text-gray-600">
@@ -597,7 +610,7 @@ function ServicesContent() {
                     {isOverBudget ? "Over Budget" : "Remaining"}
                   </span>
                   <span className={isOverBudget ? "text-red-600 font-bold" : "text-green-600 font-bold"}>
-                    {isOverBudget ? `+$${Math.abs(budgetRemaining)}` : `$${budgetRemaining}`}
+                    {isOverBudget ? `+$${Math.abs(budgetRemaining)}` : `$${Math.abs(budgetRemaining)}`}
                   </span>
                 </div>
               </div>
