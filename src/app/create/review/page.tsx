@@ -42,7 +42,7 @@ function StepHeader({ step, title }: { step: number; title: string }) {
     <div className="sticky top-0 bg-white z-10">
       <div className="flex items-center gap-2 p-4">
         <BackBtn />
-        <div className="text-2xl font-semibold">{step} of 6: {title}</div>
+        <div className="text-2xl font-semibold">{step} of 7: {title}</div>
       </div>
       <div className="w-full h-1 bg-gray-200">
         <div className="h-1 bg-green-500" style={{ width: pct + '%' }} />
@@ -114,6 +114,7 @@ function ReviewContent() {
   const [bookingData, setBookingData] = useState({
     name: '',
     phone: '',
+    email: '',
     dateOfBirth: ''
   })
 
@@ -158,7 +159,20 @@ function ReviewContent() {
     return getRestaurantCost() + eventData.servicesTotal
   }
 
-  const isFormValid = bookingData.name && bookingData.phone && bookingData.dateOfBirth
+  // Age verification logic
+  const isOver18 = (() => {
+    if (!bookingData.dateOfBirth) return false
+    const birthDate = new Date(bookingData.dateOfBirth)
+    const today = new Date()
+    const age = today.getFullYear() - birthDate.getFullYear()
+    const monthDiff = today.getMonth() - birthDate.getMonth()
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+      return age - 1 >= 18
+    }
+    return age >= 18
+  })()
+
+  const isFormValid = bookingData.name && bookingData.phone && bookingData.email && bookingData.dateOfBirth && isOver18
 
   function bookEvent() {
     // In a real app, this would process the booking with the collected data
@@ -188,7 +202,7 @@ function ReviewContent() {
   if (!eventData) {
     return (
       <div className="max-w-md mx-auto min-h-screen bg-gray-50">
-        <StepHeader step={6} title="Book & Celebrate!" />
+        <StepHeader step={7} title="Book & Celebrate!" />
         <div className="p-6">
           <div className="text-center py-8">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto mb-4"></div>
@@ -201,7 +215,7 @@ function ReviewContent() {
 
   return (
     <div className="max-w-md mx-auto min-h-screen bg-gray-50">
-      <StepHeader step={6} title="Book & Celebrate!" />
+              <StepHeader step={7} title="Book & Celebrate!" />
       <div className="p-6 space-y-6">
         <div className="text-center">
           <h2 className="text-xl font-semibold mb-2">Ready to book your perfect event?</h2>
@@ -229,6 +243,15 @@ function ReviewContent() {
               />
             </Field>
             
+            <Field label="Email">
+              <Input 
+                placeholder="Enter your email address" 
+                type="email"
+                value={bookingData.email}
+                onChange={(e) => handleInputChange('email', e.target.value)}
+              />
+            </Field>
+            
             <Field label="Date of Birth">
               <Input 
                 placeholder="MM/DD/YYYY" 
@@ -237,6 +260,15 @@ function ReviewContent() {
                 onChange={(e) => handleInputChange('dateOfBirth', e.target.value)}
               />
             </Field>
+            
+            {/* Age Verification */}
+            {bookingData.dateOfBirth && (
+              <div className={`p-3 rounded-lg text-sm ${
+                isOver18 ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200'
+              }`}>
+                {isOver18 ? '✅ Age verified: You are 18 or older' : '❌ You must be 18 or older to book an event'}
+              </div>
+            )}
           </div>
         </Card>
 

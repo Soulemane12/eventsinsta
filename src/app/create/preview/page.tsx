@@ -38,7 +38,7 @@ function StepHeader({ step, title }: { step: number; title: string }) {
     <div className="sticky top-0 bg-white z-10">
       <div className="flex items-center gap-2 p-4">
         <BackBtn />
-        <div className="text-2xl font-semibold">{step} of 6: {title}</div>
+        <div className="text-2xl font-semibold">{step} of 7: {title}</div>
       </div>
       <div className="w-full h-1 bg-gray-200">
         <div className="h-1 bg-green-500" style={{ width: pct + '%' }} />
@@ -207,7 +207,7 @@ function PreviewContent() {
   if (!eventData) {
     return (
       <div className="max-w-md mx-auto min-h-screen bg-gray-50">
-        <StepHeader step={5} title="Review Your Event" />
+        <StepHeader step={6} title="Review Your Event" />
         <div className="p-6">
           <div className="text-center py-8">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto mb-4"></div>
@@ -220,7 +220,7 @@ function PreviewContent() {
 
   return (
     <div className="max-w-md mx-auto min-h-screen bg-gray-50">
-      <StepHeader step={5} title="Review Your Event" />
+              <StepHeader step={6} title="Review Your Event" />
       <div className="p-6 space-y-6">
         <div className="text-center">
           <h2 className="text-xl font-semibold mb-2">🍽️ Perfect Restaurant Matches</h2>

@@ -221,6 +221,9 @@ function SuccessContent() {
           <Button onClick={()=>router.push('/home')}>
             View My Events
           </Button>
+          <GhostButton onClick={() => router.push(`/create/guest-list?eventId=${encodeURIComponent(JSON.stringify(eventData))}`)}>
+            Manage Guest List
+          </GhostButton>
           <GhostButton onClick={()=>router.push('/create/customize')}>
             Plan Another Event
           </GhostButton>

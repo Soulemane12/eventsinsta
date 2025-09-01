@@ -30,12 +30,12 @@ function BackBtn() {
 }
 
 function StepHeader({ step, title }: { step: number; title: string }) {
-  const pct = (step / 6) * 100
+  const pct = (step / 7) * 100
   return (
     <div className="sticky top-0 bg-white z-10">
       <div className="flex items-center gap-2 p-4">
         <BackBtn />
-        <div className="text-2xl font-semibold">{step} of 6: {title}</div>
+        <div className="text-2xl font-semibold">{step} of 7: {title}</div>
       </div>
       <div className="w-full h-1 bg-gray-200">
         <div className="h-1 bg-green-500" style={{ width: pct + '%' }} />
@@ -208,6 +208,8 @@ function ServicesContent() {
   const [time, setTime] = useState('')
   const [guestCount, setGuestCount] = useState('')
   const [budget, setBudget] = useState('')
+  const [minBudget, setMinBudget] = useState(1000)
+  const [maxBudget, setMaxBudget] = useState(3000)
   const [recommendedServices, setRecommendedServices] = useState<string[]>([])
   const [isLoadingRecommendations, setIsLoadingRecommendations] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
@@ -245,6 +247,13 @@ function ServicesContent() {
           console.error('Error parsing saved services:', error)
         }
       }
+    }
+    
+    // Initialize custom budget range from URL parameter
+    if (budgetParam) {
+      const budgetRange = getBudgetRange(budgetParam)
+      setMinBudget(budgetRange.min)
+      setMaxBudget(budgetRange.max)
     }
   }, [searchParams])
 
@@ -299,10 +308,8 @@ function ServicesContent() {
       default: return { min: 1000, max: 3000 }
     }
   }
-  
-  const budgetRangeValues = getBudgetRange(budget)
-  const minBudget = budgetRangeValues.min
-  const maxBudget = budgetRangeValues.max
+
+  // Budget flexibility features - now using custom budget range
   const isOverBudget = totalCost > maxBudget
   const budgetRemaining = maxBudget - totalCost
 
@@ -363,7 +370,7 @@ function ServicesContent() {
 
   return (
     <div className="max-w-md mx-auto min-h-screen bg-gray-50">
-      <StepHeader step={4} title="Curate Your Experience" />
+      <StepHeader step={5} title="Select Services" />
       <div className="p-6 space-y-6">
         <div className="text-center">
           <h2 className="text-xl font-semibold mb-2">Curate Your Experience</h2>
@@ -556,10 +563,33 @@ function ServicesContent() {
                   <span className="text-purple-800">Total Services Cost</span>
                   <span className="text-purple-800">${totalCost}</span>
                 </div>
+                
+                {/* Custom Budget Range Input */}
+                <div className="mt-3 space-y-2">
+                  <div className="text-xs font-medium text-purple-800">Custom Budget Range</div>
+                  <div className="flex gap-2">
+                    <input
+                      type="number"
+                      placeholder="Min"
+                      value={minBudget}
+                      onChange={(e) => setMinBudget(parseInt(e.target.value) || 0)}
+                      className="flex-1 p-2 text-xs border border-purple-200 rounded-lg focus:outline-none focus:border-purple-500"
+                    />
+                    <span className="text-xs text-purple-600 self-center">to</span>
+                    <input
+                      type="number"
+                      placeholder="Max"
+                      value={maxBudget}
+                      onChange={(e) => setMaxBudget(parseInt(e.target.value) || 0)}
+                      className="flex-1 p-2 text-xs border border-purple-200 rounded-lg focus:outline-none focus:border-purple-500"
+                    />
+                  </div>
+                </div>
+                
                 <div className="flex justify-between text-sm mt-1">
                   <span className="text-gray-600">Your Budget</span>
                   <span className="text-gray-600">
-                    {budget === 'budget-4' ? '$5,000+' : `$${minBudget.toLocaleString()} - $${maxBudget.toLocaleString()}`}
+                    ${minBudget.toLocaleString()} - ${maxBudget.toLocaleString()}
                   </span>
                 </div>
                 <div className="flex justify-between text-sm mt-1">
@@ -631,9 +661,7 @@ function ServicesContent() {
           </div>
         )}
 
-        <Button onClick={next}>
-          Next: Review Your Event
-        </Button>
+
       </div>
     </div>
   )

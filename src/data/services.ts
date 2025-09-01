@@ -11,6 +11,43 @@ export interface Service {
 }
 
 export const SERVICES: Service[] = [
+  // Venue Services
+  {
+    id: 'venue-private-home',
+    name: 'Private Home Venue',
+    category: 'Venue',
+    description: 'Luxury private homes available for events. Various locations and sizes to accommodate different group sizes.',
+    price: 5000,
+    priceDescription: '$5,000 base fee',
+    icon: '🏠'
+  },
+  {
+    id: 'venue-boat',
+    name: 'Boat Venue',
+    category: 'Venue',
+    description: 'Private yacht and boat rentals for unique waterfront events and celebrations.',
+    price: 3000,
+    priceDescription: '$3,000 base fee',
+    icon: '🛥️'
+  },
+  {
+    id: 'venue-restaurant',
+    name: 'Restaurant Venue',
+    category: 'Venue',
+    description: 'Private dining rooms and restaurant venues for intimate or large gatherings.',
+    price: 2500,
+    priceDescription: '$2,500 base fee',
+    icon: '🍽️'
+  },
+  {
+    id: 'venue-event-space',
+    name: 'Event Space Venue',
+    category: 'Venue',
+    description: 'Dedicated event spaces and halls perfect for conferences, parties, and special occasions.',
+    price: 4000,
+    priceDescription: '$4,000 base fee',
+    icon: '🏛️'
+  },
   // Restaurant Venues
   {
     id: 'restaurant-venue-upscale',
@@ -285,43 +322,7 @@ export const SERVICES: Service[] = [
     icon: '🏊‍♂️'
   },
 
-  // Venue Types
-  {
-    id: 'venue-type-private-home',
-    name: 'Private Home Venue',
-    category: 'Venue Type',
-    description: 'Luxury private homes available for events. Various locations and sizes to accommodate different group sizes.',
-    price: 5000,
-    priceDescription: '$5,000 base fee',
-    icon: '🏠'
-  },
-  {
-    id: 'venue-type-boat',
-    name: 'Boat Venue',
-    category: 'Venue Type',
-    description: 'Private yacht and boat rentals for unique waterfront events and celebrations.',
-    price: 3000,
-    priceDescription: '$3,000 base fee',
-    icon: '🛥️'
-  },
-  {
-    id: 'venue-type-restaurant',
-    name: 'Restaurant Venue',
-    category: 'Venue Type',
-    description: 'Private dining rooms and restaurant venues for intimate or large gatherings.',
-    price: 2500,
-    priceDescription: '$2,500 base fee',
-    icon: '🍽️'
-  },
-  {
-    id: 'venue-type-event-space',
-    name: 'Event Space Venue',
-    category: 'Venue Type',
-    description: 'Dedicated event spaces and halls perfect for conferences, parties, and special occasions.',
-    price: 4000,
-    priceDescription: '$4,000 base fee',
-    icon: '🏛️'
-  },
+
 
   // Additional Services
   {
@@ -398,6 +399,7 @@ export const SERVICES: Service[] = [
 ]
 
 export const SERVICE_CATEGORIES = [
+  'Venue',
   'DJ',
   'Photography',
   'Car Services',
@@ -405,12 +407,11 @@ export const SERVICE_CATEGORIES = [
   'Makeup & Hair',
   'Decorations',
   'Entertainment',
-  'Vacation',
   'Kids',
   'Wedding',
   'Sporting Events',
+  'Vacation',
   'Private Home Rentals',
-  'Venue Type',
   'Mobile Professionals',
   'Exotic Cars',
   'Yacht',

@@ -47,7 +47,7 @@ function StepHeader({ step, title }: { step: number; title: string }) {
     <div className="sticky top-0 bg-white z-10">
       <div className="flex items-center gap-2 p-4">
         <BackBtn />
-        <div className="text-2xl font-semibold">{step} of 6: {title}</div>
+        <div className="text-2xl font-semibold">{step} of 7: {title}</div>
       </div>
       <div className="w-full h-1 bg-gray-200">
         <div className="h-1 bg-green-500" style={{ width: pct + '%' }} />
@@ -99,7 +99,7 @@ function GuestsContent() {
         guestCount: guestCount,
         budget: selectedBudget
       })
-      router.push(`/create/services?${params.toString()}`)
+      router.push(`/create/venue?${params.toString()}`)
     }
   }
 
