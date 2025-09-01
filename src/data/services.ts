@@ -11,25 +11,6 @@ export interface Service {
 }
 
 export const SERVICES: Service[] = [
-  // Restaurant Venues
-  {
-    id: 'restaurant-venue-upscale',
-    name: 'Upscale Restaurant Venue',
-    category: 'Restaurants',
-    description: 'Premium restaurant venue for private events. Includes dedicated staff and customized menu options.',
-    price: 3000,
-    priceDescription: '$3,000 base fee',
-    icon: '🍽️'
-  },
-  {
-    id: 'restaurant-venue-casual',
-    name: 'Casual Restaurant Venue',
-    category: 'Restaurants',
-    description: 'Relaxed restaurant setting for casual gatherings and celebrations.',
-    price: 1500,
-    priceDescription: '$1,500 base fee',
-    icon: '🍽️'
-  },
   // DJ Services
   {
     id: 'dj-ceo',
@@ -209,24 +190,7 @@ export const SERVICES: Service[] = [
     priceDescription: '$50,000 for 250 guests',
     icon: '💒'
   },
-  {
-    id: 'wedding-venue-garden',
-    name: 'Garden Wedding Venue',
-    category: 'Wedding',
-    description: 'Beautiful garden venue for wedding ceremonies and receptions. Perfect for outdoor celebrations.',
-    price: 15000,
-    priceDescription: '$15,000 for venue rental',
-    icon: '💒'
-  },
-  {
-    id: 'wedding-venue-ballroom',
-    name: 'Grand Ballroom Wedding Venue',
-    category: 'Wedding',
-    description: 'Elegant ballroom venue for wedding receptions. Includes basic decor and setup.',
-    price: 25000,
-    priceDescription: '$25,000 for venue rental',
-    icon: '💒'
-  },
+
 
   // Sports Birthday Package
   {
@@ -248,43 +212,7 @@ export const SERVICES: Service[] = [
     icon: '🏀'
   },
 
-  // Private Home Rentals
-  {
-    id: 'venue-hamptons-3br',
-    name: 'The Hamptons 3BR/2BA with Basement',
-    category: 'Private Home Rentals',
-    description: 'Luxury vacation rental in The Hamptons. 3 bedrooms, 2 bathrooms with finished basement. Perfect for events and gatherings.',
-    price: 7000,
-    priceDescription: '$7,000 per week',
-    icon: '🏠'
-  },
-  {
-    id: 'venue-hamptons-pool',
-    name: 'The Hamptons House with Pool',
-    category: 'Private Home Rentals',
-    description: 'Premium Hamptons rental with private pool. Perfect for summer events and celebrations.',
-    price: 15000,
-    priceDescription: '$15,000 per week',
-    icon: '🏊‍♂️'
-  },
-  {
-    id: 'venue-marthas-vineyard-3br',
-    name: 'Martha\'s Vineyard 3BR/2BA with Basement',
-    category: 'Private Home Rentals',
-    description: 'Beautiful Martha\'s Vineyard rental. 3 bedrooms, 2 bathrooms with finished basement. Ideal for destination events.',
-    price: 7000,
-    priceDescription: '$7,000 per week',
-    icon: '🏠'
-  },
-  {
-    id: 'venue-marthas-vineyard-pool',
-    name: 'Martha\'s Vineyard House with Pool',
-    category: 'Private Home Rentals',
-    description: 'Luxury Martha\'s Vineyard rental with private pool. Perfect for upscale events and celebrations.',
-    price: 15000,
-    priceDescription: '$15,000 per week',
-    icon: '🏊‍♂️'
-  },
+
 
 
 
@@ -374,11 +302,9 @@ export const SERVICE_CATEGORIES = [
   'Wedding',
   'Sporting Events',
   'Vacation',
-  'Private Home Rentals',
   'Mobile Professionals',
   'Exotic Cars',
-  'Yacht',
-  'Restaurants'
+  'Yacht'
 ]
 
 export function getServicesByCategory(category: string): Service[] {
