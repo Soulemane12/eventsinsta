@@ -58,6 +58,7 @@ interface EventData {
   time: string
   guestCount: number
   budget: string
+  venue: string
   services: string[]
   servicesTotal: number
 }
@@ -133,6 +134,7 @@ function PreviewContent() {
     const time = searchParams.get('time') || ''
     const guestCount = parseInt(searchParams.get('guestCount') || '2')
     const budget = searchParams.get('budget') || 'budget-2'
+    const venue = searchParams.get('venue') || ''
     const services = searchParams.get('services')?.split(',').filter(Boolean) || []
     const servicesTotal = parseInt(searchParams.get('servicesTotal') || '0')
 
@@ -143,6 +145,7 @@ function PreviewContent() {
       time,
       guestCount,
       budget,
+      venue,
       services,
       servicesTotal
     }
@@ -223,8 +226,15 @@ function PreviewContent() {
               <StepHeader step={6} title="Review Your Event" />
       <div className="p-6 space-y-6">
         <div className="text-center">
-          <h2 className="text-xl font-semibold mb-2">🍽️ Perfect Restaurant Matches</h2>
-          <p className="text-sm text-gray-600">We've found the best restaurants for your event</p>
+          <h2 className="text-xl font-semibold mb-2">
+            {eventData.venue ? '🏛️ Venue & Services Summary' : '🍽️ Perfect Restaurant Matches'}
+          </h2>
+          <p className="text-sm text-gray-600">
+            {eventData.venue 
+              ? `Your event will be held at your selected venue with the services you've chosen`
+              : 'We\'ve found the best restaurants for your event'
+            }
+          </p>
         </div>
 
         {/* Event Summary */}
@@ -237,8 +247,30 @@ function PreviewContent() {
             <div>👥 {eventData.guestCount} guests</div>
             <div>💰 {getBudgetDisplay(eventData.budget)}</div>
             <div>🕐 {formatTime(eventData.time)}</div>
+            {eventData.venue && <div>🏛️ {eventData.venue.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}</div>}
           </div>
         </Card>
+
+        {/* Venue Information */}
+        {eventData.venue && (
+          <Card className="p-4">
+            <div className="text-sm font-medium text-purple-800 mb-2">🏛️ Selected Venue</div>
+            <div className="bg-purple-50 p-3 rounded-lg">
+              <div className="text-sm font-semibold text-purple-800 mb-1">
+                {eventData.venue.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+              </div>
+              <div className="text-xs text-purple-700">
+                {eventData.venue === 'venue-boat' && 'Private yacht and boat rentals for unique waterfront events'}
+                {eventData.venue === 'venue-private-home' && 'Luxury private homes available for events'}
+                {eventData.venue === 'venue-restaurant' && 'Private dining rooms and restaurant venues'}
+                {eventData.venue === 'venue-event-space' && 'Dedicated event spaces and halls'}
+              </div>
+              <div className="text-xs text-purple-600 mt-2">
+                ✅ Venue is confirmed for your event
+              </div>
+            </div>
+          </Card>
+        )}
 
         {/* Services Summary */}
         {eventData.services.length > 0 && (
@@ -268,7 +300,7 @@ function PreviewContent() {
         )}
 
         {/* Loading State */}
-        {loading && (
+        {!eventData.venue && loading && (
           <div className="text-center py-8">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto mb-4"></div>
             <p className="text-sm text-gray-600">Finding perfect restaurants for your event...</p>
@@ -276,7 +308,7 @@ function PreviewContent() {
         )}
 
         {/* AI Recommendations */}
-        {!loading && recommendedRestaurants.length > 0 && (
+        {!eventData.venue && !loading && recommendedRestaurants.length > 0 && (
         <div>
             <h3 className="text-lg font-semibold mb-3">🍽️ Recommended Restaurants</h3>
             <div className="space-y-4">
@@ -296,7 +328,7 @@ function PreviewContent() {
         )}
 
         {/* No Recommendations */}
-        {!loading && recommendedRestaurants.length === 0 && (
+        {!eventData.venue && !loading && recommendedRestaurants.length === 0 && (
           <div className="bg-yellow-50 p-6 rounded-2xl text-center">
             <div className="text-yellow-800 font-medium mb-2">🤖 AI Analysis: No Perfect Matches Found</div>
             <div className="text-yellow-700 text-sm mb-4">
@@ -380,14 +412,22 @@ function PreviewContent() {
         )}
 
         {/* Cost Summary */}
-        {selectedRestaurant && (
+        {(selectedRestaurant || eventData.venue) && (
           <Card className="p-4">
             <div className="text-sm font-medium text-purple-800 mb-2">💰 Cost Summary</div>
             <div className="space-y-2 text-xs">
-              <div className="flex justify-between">
-                <span>Restaurant Cost ({eventData.guestCount} guests):</span>
-                <span className="font-semibold">${getRestaurantPriceByGuestCount(selectedRestaurant, eventData.guestCount)}</span>
-              </div>
+              {selectedRestaurant && (
+                <div className="flex justify-between">
+                  <span>Restaurant Cost ({eventData.guestCount} guests):</span>
+                  <span className="font-semibold">${getRestaurantPriceByGuestCount(selectedRestaurant, eventData.guestCount)}</span>
+                </div>
+              )}
+              {eventData.venue && (
+                <div className="flex justify-between">
+                  <span>Venue Cost:</span>
+                  <span className="font-semibold">$3,000 - $5,000</span>
+                </div>
+              )}
               {eventData.servicesTotal > 0 && (
                 <div className="flex justify-between">
                   <span>Services Cost:</span>
@@ -397,26 +437,26 @@ function PreviewContent() {
               <div className="border-t border-gray-200 pt-2 mt-2">
                 <div className="flex justify-between font-bold">
                   <span>Total Cost:</span>
-                  <span className={isWithinBudget() ? 'text-green-600' : 'text-red-600'}>
-                    ${getTotalCost()}
+                  <span className="text-purple-600">
+                    ${eventData.servicesTotal + (selectedRestaurant ? getRestaurantPriceByGuestCount(selectedRestaurant, eventData.guestCount) : 0) + (eventData.venue ? 4000 : 0)}
                   </span>
                 </div>
-                {!isWithinBudget() && (
-                  <div className="text-red-600 text-xs mt-1">
-                    ⚠️ Total exceeds your budget range of {getBudgetDisplay(eventData.budget)}
-                  </div>
-                )}
-          </div>
-        </div>
+              </div>
+            </div>
           </Card>
         )}
 
         {/* Success Message */}
-        {selectedRestaurant && (
+        {(selectedRestaurant || eventData.venue) && (
         <div className="bg-green-50 p-4 rounded-xl">
-            <div className="text-sm font-medium text-green-800 mb-2">✅ Restaurant Selected!</div>
+            <div className="text-sm font-medium text-green-800 mb-2">
+              {selectedRestaurant ? '✅ Restaurant Selected!' : '✅ Venue Confirmed!'}
+            </div>
           <div className="text-xs text-green-700">
-              Great choice! This restaurant is perfect for your {eventData.eventType.toLowerCase()} celebration.
+              {selectedRestaurant 
+                ? `Great choice! This restaurant is perfect for your ${eventData.eventType.toLowerCase()} celebration.`
+                : `Perfect! Your ${eventData.venue.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())} venue is confirmed for your event.`
+              }
             </div>
           </div>
         )}
@@ -430,13 +470,14 @@ function PreviewContent() {
               time: eventData.time,
               guestCount: eventData.guestCount.toString(),
               budget: eventData.budget,
+              venue: eventData.venue,
               services: eventData.services.join(','),
               servicesTotal: eventData.servicesTotal.toString(),
               selectedRestaurant: selectedRestaurant
             })
             router.push(`/create/review?${params.toString()}`)
           }}
-          disabled={!selectedRestaurant}
+          disabled={!selectedRestaurant && !eventData.venue}
         >
           Next: Book & Celebrate!
         </Button>

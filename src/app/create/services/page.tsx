@@ -208,6 +208,7 @@ function ServicesContent() {
   const [time, setTime] = useState('')
   const [guestCount, setGuestCount] = useState('')
   const [budget, setBudget] = useState('')
+  const [venue, setVenue] = useState('')
 
   const [recommendedServices, setRecommendedServices] = useState<string[]>([])
   const [isLoadingRecommendations, setIsLoadingRecommendations] = useState(false)
@@ -222,6 +223,7 @@ function ServicesContent() {
     const timeParam = searchParams.get('time')
     const guestCountParam = searchParams.get('guestCount')
     const budgetParam = searchParams.get('budget')
+    const venueParam = searchParams.get('venue')
     const servicesParam = searchParams.get('services')
     
     if (eventTypeParam) setEventType(eventTypeParam)
@@ -230,6 +232,7 @@ function ServicesContent() {
     if (timeParam) setTime(timeParam)
     if (guestCountParam) setGuestCount(guestCountParam)
     if (budgetParam) setBudget(budgetParam)
+    if (venueParam) setVenue(venueParam)
     
     // Restore previously selected services
     if (servicesParam) {
@@ -369,6 +372,7 @@ function ServicesContent() {
       time: time,
       guestCount: guestCount,
       budget: budget,
+      venue: venue,
       services: selectedServices.join(','),
       servicesTotal: totalCost.toString()
     })
