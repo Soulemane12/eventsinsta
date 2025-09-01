@@ -195,7 +195,7 @@ function GuestsContent() {
                       const value = e.target.value.replace(/[^0-9]/g, '')
                       setCustomMaxBudget(value)
                     }}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-300 text-sm"
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-300 text-sm"
                   />
                 </div>
               </div>
