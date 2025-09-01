@@ -93,7 +93,7 @@ export const SERVICES: Service[] = [
     price: 150,
     priceDescription: '$150 up to 2 hours',
     icon: '🚗',
-    image: '/car-standard.svg'
+    image: '/car-standard.jpg'
   },
   
   // Catering
@@ -317,7 +317,7 @@ export const SERVICES: Service[] = [
     price: 2000,
     priceDescription: '$2,000 for 5 days',
     icon: '🚗',
-    image: '/bmw-2025.svg'
+    image: '/bmw-2025.jpg'
   },
   {
     id: 'exotic-car-rolls-royce-ghost',
@@ -327,7 +327,7 @@ export const SERVICES: Service[] = [
     price: 7500,
     priceDescription: '$7,500 for 5 days',
     icon: '🚗',
-    image: '/rolls-royce-ghost-2025.svg'
+    image: '/rolls-royce-ghost-2025.jpg'
   },
   {
     id: 'exotic-car-mercedes-gwagon',
@@ -337,7 +337,7 @@ export const SERVICES: Service[] = [
     price: 5000,
     priceDescription: '$5,000 for 5 days',
     icon: '🚗',
-    image: '/mercedes-gwagon-2025.svg'
+    image: '/mercedes-gwagon-2025.jpg'
   },
   {
     id: 'exotic-car-range-rover',
@@ -347,7 +347,7 @@ export const SERVICES: Service[] = [
     price: 5000,
     priceDescription: '$5,000 for 5 days',
     icon: '🚗',
-    image: '/range-rover-2025.svg'
+    image: '/range-rover-2025.jpg'
   },
 
   // Yacht Party
