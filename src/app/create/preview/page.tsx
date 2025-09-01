@@ -411,7 +411,7 @@ function PreviewContent() {
           </div>
         )}
 
-        {/* Cost Summary */}
+                {/* Cost Summary */}
         {(selectedRestaurant || eventData.venue) && (
           <Card className="p-4">
             <div className="text-sm font-medium text-purple-800 mb-2">💰 Cost Summary</div>

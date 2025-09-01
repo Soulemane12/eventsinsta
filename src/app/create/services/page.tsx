@@ -435,11 +435,67 @@ function ServicesContent() {
           </div>
         </div>
 
+        {/* Venue Information */}
+        {venue && (
+          <div className="bg-purple-50 p-4 rounded-xl border border-purple-200">
+            <div className="text-sm font-medium text-purple-800 mb-2">🏛️ Selected Venue</div>
+            <div className="text-xs text-purple-700">
+              {venue === 'venue-boat' && '🚢 Boat Venue - Perfect for waterfront events and unique experiences'}
+              {venue === 'venue-private-home' && '🏠 Private Home Venue - Intimate gatherings in luxury settings'}
+              {venue === 'venue-restaurant' && '🍽️ Restaurant Venue - Professional dining with private spaces'}
+              {venue === 'venue-event-space' && '🎪 Event Space Venue - Versatile venues for any event type'}
+            </div>
+            <div className="text-xs text-purple-600 mt-2">
+              💡 Services below are tailored to complement your venue choice
+            </div>
+          </div>
+        )}
+
         {/* Services by Category */}
         <div className="space-y-6">
           {SERVICE_CATEGORIES.map(category => {
             // Filter services based on search term and category filter
             let categoryServices = SERVICES.filter(service => service.category === category)
+            
+            // Apply venue-specific filtering
+            if (venue) {
+              categoryServices = categoryServices.filter(service => {
+                // Boat venue: prioritize water-related and premium services
+                if (venue === 'venue-boat') {
+                  return service.category === 'Photography' || 
+                         service.category === 'Entertainment' || 
+                         service.category === 'Catering' ||
+                         service.category === 'Transportation' ||
+                         service.category === 'Kids' ||
+                         service.category === 'Vacation' ||
+                         service.category === 'Sporting Event'
+                }
+                // Private home: prioritize intimate and luxury services
+                if (venue === 'venue-private-home') {
+                  return service.category === 'Photography' || 
+                         service.category === 'Entertainment' || 
+                         service.category === 'Catering' ||
+                         service.category === 'Transportation' ||
+                         service.category === 'Kids' ||
+                         service.category === 'Vacation' ||
+                         service.category === 'Sporting Event'
+                }
+                // Restaurant venue: prioritize complementary services
+                if (venue === 'venue-restaurant') {
+                  return service.category === 'Photography' || 
+                         service.category === 'Entertainment' || 
+                         service.category === 'Transportation' ||
+                         service.category === 'Kids' ||
+                         service.category === 'Vacation' ||
+                         service.category === 'Sporting Event'
+                }
+                // Event space: all services available
+                if (venue === 'venue-event-space') {
+                  return true
+                }
+                return true
+              })
+            }
             
             // Apply search filter
             if (searchTerm) {
