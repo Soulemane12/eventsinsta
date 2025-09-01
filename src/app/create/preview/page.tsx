@@ -298,24 +298,70 @@ function PreviewContent() {
         {/* No Recommendations */}
         {!loading && recommendedRestaurants.length === 0 && (
           <div className="bg-yellow-50 p-6 rounded-2xl text-center">
-            <div className="text-yellow-800 font-medium mb-2">No Perfect Matches Found</div>
+            <div className="text-yellow-800 font-medium mb-2">🤖 AI Analysis: No Perfect Matches Found</div>
             <div className="text-yellow-700 text-sm mb-4">
-              We couldn't find restaurants that perfectly match your event requirements among our current partners.
-              <br /><br />
-              <strong>Your Event Details:</strong><br />
-              • Event Type: {eventData.eventType}<br />
-              • Guest Count: {eventData.guestCount} guests<br />
-              • Budget: {getBudgetDisplay(eventData.budget)}<br />
-              • Location: {eventData.location}<br /><br />
-              <strong>Why no matches?</strong><br />
-              This could be due to:
-              <ul className="mt-2 text-left max-w-md mx-auto space-y-1">
-                <li>• Guest count outside restaurant capacities</li>
-                <li>• Budget range mismatch</li>
-                <li>• Event type not currently supported</li>
-                <li>• Specific requirements not met</li>
-              </ul>
+              <div className="mb-4">
+                <strong>Your Event Details:</strong><br />
+                • Event Type: {eventData.eventType}<br />
+                • Guest Count: {eventData.guestCount} guests<br />
+                • Budget: {getBudgetDisplay(eventData.budget)}<br />
+                • Location: {eventData.location}
+              </div>
+              
+              <div className="bg-white p-4 rounded-lg text-left">
+                <div className="font-semibold text-yellow-800 mb-2">🤖 AI Reasoning:</div>
+                {aiRecommendations.length === 0 ? (
+                  <div className="space-y-2 text-sm">
+                    <div className="text-gray-700">
+                      <strong>Why no matches were found:</strong>
+                    </div>
+                    <ul className="space-y-1 ml-4">
+                      {eventData.guestCount > 200 && (
+                        <li>• <span className="text-red-600">Guest count ({eventData.guestCount}) exceeds maximum restaurant capacity (200)</span></li>
+                      )}
+                      {eventData.guestCount < 2 && (
+                        <li>• <span className="text-red-600">Guest count ({eventData.guestCount}) is too low for group events</span></li>
+                      )}
+                      {eventData.budget === 'budget-1' && eventData.guestCount > 20 && (
+                        <li>• <span className="text-red-600">Budget too low for {eventData.guestCount} guests - need higher budget tier</span></li>
+                      )}
+                      {eventData.eventType.toLowerCase().includes('corporate') && eventData.budget === 'budget-1' && (
+                        <li>• <span className="text-red-600">Corporate events require higher budget tier for professional service</span></li>
+                      )}
+                      {eventData.eventType.toLowerCase().includes('wedding') && eventData.guestCount > 50 && (
+                        <li>• <span className="text-red-600">Large wedding events need premium venues with higher capacity</span></li>
+                      )}
+                      <li>• <span className="text-orange-600">Location preferences may not match available restaurant locations</span></li>
+                      <li>• <span className="text-orange-600">Specific event type requirements not met by current partners</span></li>
+                    </ul>
+                  </div>
+                ) : (
+                  <div className="text-sm text-gray-700">
+                    <div className="mb-2">
+                      <strong>AI found {aiRecommendations.length} potential matches, but they don't meet your specific criteria:</strong>
+                    </div>
+                    {aiRecommendations.map((rec, index) => (
+                      <div key={index} className="mb-2 p-2 bg-gray-50 rounded">
+                        <div className="font-medium">{rec.restaurantId.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}</div>
+                        <div className="text-xs text-gray-600">Confidence: {Math.round(rec.confidence * 100)}%</div>
+                        <div className="text-xs text-gray-600">{rec.reasoning}</div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+              
+              <div className="mt-4 text-sm">
+                <strong>💡 Suggestions:</strong>
+                <ul className="mt-2 text-left max-w-md mx-auto space-y-1">
+                  <li>• Adjust guest count to fit restaurant capacities</li>
+                  <li>• Increase budget for premium venues</li>
+                  <li>• Try a different event type</li>
+                  <li>• Consider different location options</li>
+                </ul>
+              </div>
             </div>
+            
             <div className="space-y-2">
               <button
                 onClick={() => router.push('/create/guests')}
@@ -328,8 +374,8 @@ function PreviewContent() {
                 className="w-full px-4 py-2 bg-gray-600 text-white rounded-lg text-sm font-medium hover:bg-gray-700"
               >
                 Try Different Event Type
-                  </button>
-                </div>
+              </button>
+            </div>
           </div>
         )}
 
