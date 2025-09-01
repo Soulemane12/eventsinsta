@@ -92,7 +92,8 @@ export const SERVICES: Service[] = [
     description: 'Professional car service for up to 2 hours',
     price: 150,
     priceDescription: '$150 up to 2 hours',
-    icon: '🚗'
+    icon: '🚗',
+    image: '/car-standard.svg'
   },
   
   // Catering

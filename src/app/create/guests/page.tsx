@@ -69,8 +69,8 @@ function GuestsContent() {
   
   const [guestCount, setGuestCount] = useState('')
   const [selectedBudget, setSelectedBudget] = useState('')
-  const [customMinBudget, setCustomMinBudget] = useState(0)
-  const [customMaxBudget, setCustomMaxBudget] = useState(0)
+  const [customMinBudget, setCustomMinBudget] = useState('')
+  const [customMaxBudget, setCustomMaxBudget] = useState('')
   const [eventType, setEventType] = useState('')
   const [location, setLocation] = useState('')
   const [date, setDate] = useState('')
@@ -89,13 +89,13 @@ function GuestsContent() {
     if (timeParam) setTime(timeParam)
   }, [searchParams])
 
-  const valid = guestCount && selectedBudget && (selectedBudget !== 'custom' || (customMinBudget > 0 && customMaxBudget > 0 && customMinBudget < customMaxBudget))
+  const valid = guestCount && selectedBudget && (selectedBudget !== 'custom' || (customMinBudget && customMaxBudget && parseInt(customMinBudget) > 0 && parseInt(customMaxBudget) > 0 && parseInt(customMinBudget) < parseInt(customMaxBudget)))
 
   function next(){
     if (valid) {
       let budgetParam = selectedBudget
       if (selectedBudget === 'custom') {
-        budgetParam = `custom-${customMinBudget}-${customMaxBudget}`
+        budgetParam = `custom-${parseInt(customMinBudget)}-${parseInt(customMaxBudget)}`
       }
       
       const params = new URLSearchParams({
@@ -175,31 +175,41 @@ function GuestsContent() {
                 <div className="flex-1">
                   <label className="block text-xs font-medium text-gray-700 mb-1">Minimum</label>
                   <input
-                    type="number"
+                    type="text"
                     placeholder="Min"
                     value={customMinBudget}
-                    onChange={(e) => setCustomMinBudget(parseInt(e.target.value) || 0)}
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/[^0-9]/g, '')
+                      setCustomMinBudget(value)
+                    }}
                     className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-300 text-sm"
                   />
                 </div>
                 <div className="flex-1">
                   <label className="block text-xs font-medium text-gray-700 mb-1">Maximum</label>
                   <input
-                    type="number"
+                    type="text"
                     placeholder="Max"
                     value={customMaxBudget}
-                    onChange={(e) => setCustomMaxBudget(parseInt(e.target.value) || 0)}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-300 text-sm"
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/[^0-9]/g, '')
+                      setCustomMaxBudget(value)
+                    }}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-300 text-sm"
                   />
                 </div>
               </div>
-              {customMinBudget > 0 && customMaxBudget > 0 && (
+              {customMinBudget && customMaxBudget && (
                 <div className="mt-3 text-sm text-purple-600 font-medium">
-                  Your Custom Budget: ${customMinBudget.toLocaleString()} - ${customMaxBudget.toLocaleString()}
+                  Your Custom Budget: ${parseInt(customMinBudget).toLocaleString()} - ${parseInt(customMaxBudget).toLocaleString()}
                 </div>
               )}
               <button
-                onClick={() => setSelectedBudget('custom')}
+                onClick={() => {
+                  console.log('Custom budget button clicked')
+                  console.log('Setting selectedBudget to custom')
+                  setSelectedBudget('custom')
+                }}
                 className={`w-full mt-3 py-2 px-4 rounded-lg text-sm font-medium transition-colors ${
                   selectedBudget === 'custom' 
                     ? 'bg-purple-600 text-white' 
@@ -209,6 +219,17 @@ function GuestsContent() {
                 Use Custom Budget
               </button>
             </div>
+          </div>
+        </div>
+
+        {/* Debug Info */}
+        <div className="bg-gray-50 p-4 rounded-xl">
+          <div className="text-sm font-medium text-gray-800 mb-2">Debug Info</div>
+          <div className="text-xs text-gray-600 space-y-1">
+            <div>Selected Budget: {selectedBudget}</div>
+            <div>Custom Min: {customMinBudget}</div>
+            <div>Custom Max: {customMaxBudget}</div>
+            <div>Form Valid: {valid ? 'Yes' : 'No'}</div>
           </div>
         </div>
 
