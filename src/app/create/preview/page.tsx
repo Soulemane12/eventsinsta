@@ -227,12 +227,15 @@ function PreviewContent() {
       <div className="p-6 space-y-6">
         <div className="text-center">
           <h2 className="text-xl font-semibold mb-2">
-            {eventData.venue ? '🏛️ Venue & Services Summary' : '🍽️ Perfect Restaurant Matches'}
+            {eventData.venue === 'venue-restaurant' ? '🍽️ Choose Your Restaurant' : 
+             eventData.venue ? '🏛️ Venue & Services Summary' : '🍽️ Perfect Restaurant Matches'}
           </h2>
           <p className="text-sm text-gray-600">
-            {eventData.venue 
-              ? `Your event will be held at your selected venue with the services you've chosen`
-              : 'We\'ve found the best restaurants for your event'
+            {eventData.venue === 'venue-restaurant' 
+              ? 'Select from our curated list of restaurant venues for your event'
+              : eventData.venue 
+                ? `Your event will be held at your selected venue with the services you've chosen`
+                : 'We\'ve found the best restaurants for your event'
             }
           </p>
         </div>
@@ -252,7 +255,7 @@ function PreviewContent() {
         </Card>
 
         {/* Venue Information */}
-        {eventData.venue && (
+        {eventData.venue && eventData.venue !== 'venue-restaurant' && (
           <Card className="p-4">
             <div className="text-sm font-medium text-purple-800 mb-2">🏛️ Selected Venue</div>
             <div className="bg-purple-50 p-3 rounded-lg">
@@ -262,11 +265,28 @@ function PreviewContent() {
               <div className="text-xs text-purple-700">
                 {eventData.venue === 'venue-boat' && 'Private yacht and boat rentals for unique waterfront events'}
                 {eventData.venue === 'venue-private-home' && 'Luxury private homes available for events'}
-                {eventData.venue === 'venue-restaurant' && 'Private dining rooms and restaurant venues'}
                 {eventData.venue === 'venue-event-space' && 'Dedicated event spaces and halls'}
               </div>
               <div className="text-xs text-purple-600 mt-2">
                 ✅ Venue is confirmed for your event
+              </div>
+            </div>
+          </Card>
+        )}
+
+        {/* Restaurant Venue Selection Info */}
+        {eventData.venue === 'venue-restaurant' && (
+          <Card className="p-4">
+            <div className="text-sm font-medium text-purple-800 mb-2">🍽️ Restaurant Venue Selected</div>
+            <div className="bg-blue-50 p-3 rounded-lg">
+              <div className="text-sm font-semibold text-blue-800 mb-1">
+                Restaurant Venue
+              </div>
+              <div className="text-xs text-blue-700">
+                You've chosen to host your event at a restaurant venue. Below you'll find our recommended restaurants that are perfect for your event type, guest count, and budget.
+              </div>
+              <div className="text-xs text-blue-600 mt-2">
+                💡 Select a restaurant below to proceed with your booking
               </div>
             </div>
           </Card>
@@ -412,7 +432,7 @@ function PreviewContent() {
         )}
 
                 {/* Cost Summary */}
-        {(selectedRestaurant || eventData.venue) && (
+        {(selectedRestaurant || (eventData.venue && eventData.venue !== 'venue-restaurant')) && (
           <Card className="p-4">
             <div className="text-sm font-medium text-purple-800 mb-2">💰 Cost Summary</div>
             <div className="space-y-2 text-xs">
@@ -422,7 +442,7 @@ function PreviewContent() {
                   <span className="font-semibold">${getRestaurantPriceByGuestCount(selectedRestaurant, eventData.guestCount)}</span>
                 </div>
               )}
-              {eventData.venue && (
+              {eventData.venue && eventData.venue !== 'venue-restaurant' && (
                 <div className="flex justify-between">
                   <span>Venue Cost:</span>
                   <span className="font-semibold">$3,000 - $5,000</span>
@@ -438,7 +458,7 @@ function PreviewContent() {
                 <div className="flex justify-between font-bold">
                   <span>Total Cost:</span>
                   <span className="text-purple-600">
-                    ${eventData.servicesTotal + (selectedRestaurant ? getRestaurantPriceByGuestCount(selectedRestaurant, eventData.guestCount) : 0) + (eventData.venue ? 4000 : 0)}
+                    ${eventData.servicesTotal + (selectedRestaurant ? getRestaurantPriceByGuestCount(selectedRestaurant, eventData.guestCount) : 0) + (eventData.venue && eventData.venue !== 'venue-restaurant' ? 4000 : 0)}
                   </span>
                 </div>
               </div>
@@ -447,7 +467,7 @@ function PreviewContent() {
         )}
 
         {/* Success Message */}
-        {(selectedRestaurant || eventData.venue) && (
+        {(selectedRestaurant || (eventData.venue && eventData.venue !== 'venue-restaurant')) && (
         <div className="bg-green-50 p-4 rounded-xl">
             <div className="text-sm font-medium text-green-800 mb-2">
               {selectedRestaurant ? '✅ Restaurant Selected!' : '✅ Venue Confirmed!'}
@@ -477,7 +497,7 @@ function PreviewContent() {
             })
             router.push(`/create/review?${params.toString()}`)
           }}
-          disabled={!selectedRestaurant && !eventData.venue}
+          disabled={!selectedRestaurant && eventData.venue !== 'venue-restaurant'}
         >
           Next: Book & Celebrate!
         </Button>
