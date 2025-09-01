@@ -125,14 +125,7 @@ function VenueContent() {
         budget: budget,
         venue: selectedVenue
       })
-      
-      // If restaurant venue is selected, go to preview page to show restaurant options
-      if (selectedVenue === 'venue-restaurant') {
-        router.push(`/create/preview?${params.toString()}`)
-      } else {
-        // For other venues, go to services page
-        router.push(`/create/services?${params.toString()}`)
-      }
+      router.push(`/create/services?${params.toString()}`)
     }
   }
 

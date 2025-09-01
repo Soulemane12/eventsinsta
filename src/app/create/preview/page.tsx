@@ -132,22 +132,22 @@ function PreviewContent() {
     const location = searchParams.get('location') || 'New York, NY'
     const date = searchParams.get('date') || ''
     const time = searchParams.get('time') || ''
-    const guestCount = parseInt(searchParams.get('guestCount') || '2')
-    const budget = searchParams.get('budget') || 'budget-2'
-    const venue = searchParams.get('venue') || ''
-    const services = searchParams.get('services')?.split(',').filter(Boolean) || []
-    const servicesTotal = parseInt(searchParams.get('servicesTotal') || '0')
+          const guestCount = parseInt(searchParams.get('guestCount') || '2')
+      const budget = searchParams.get('budget') || 'budget-2'
+      const venue = searchParams.get('venue') || ''
+      const services = searchParams.get('services')?.split(',').filter(Boolean) || []
+      const servicesTotal = parseInt(searchParams.get('servicesTotal') || '0')
 
     const data: EventData = {
       eventType,
       location,
       date,
       time,
-      guestCount,
-      budget,
-      venue,
-      services,
-      servicesTotal
+              guestCount,
+        budget,
+        venue,
+        services,
+        servicesTotal
     }
 
     setEventData(data)
@@ -224,21 +224,21 @@ function PreviewContent() {
   return (
     <div className="max-w-md mx-auto min-h-screen bg-gray-50">
               <StepHeader step={6} title="Review Your Event" />
-      <div className="p-6 space-y-6">
-        <div className="text-center">
-          <h2 className="text-xl font-semibold mb-2">
-            {eventData.venue === 'venue-restaurant' ? '🍽️ Choose Your Restaurant' : 
-             eventData.venue ? '🏛️ Venue & Services Summary' : '🍽️ Perfect Restaurant Matches'}
-          </h2>
-          <p className="text-sm text-gray-600">
-            {eventData.venue === 'venue-restaurant' 
-              ? 'Select from our curated list of restaurant venues for your event'
-              : eventData.venue 
-                ? `Your event will be held at your selected venue with the services you've chosen`
-                : 'We\'ve found the best restaurants for your event'
-            }
-          </p>
-        </div>
+              <div className="p-6 space-y-6">
+          <div className="text-center">
+            <h2 className="text-xl font-semibold mb-2">
+              {eventData.venue === 'venue-restaurant' ? '🍽️ Choose Your Restaurant' : 
+               eventData.venue ? '🏛️ Venue & Services Summary' : '🍽️ Perfect Restaurant Matches'}
+            </h2>
+            <p className="text-sm text-gray-600">
+              {eventData.venue === 'venue-restaurant' 
+                ? 'Select from our curated list of restaurant venues for your event'
+                : eventData.venue 
+                  ? `Your event will be held at your selected venue with the services you've chosen`
+                  : 'We\'ve found the best restaurants for your event'
+              }
+            </p>
+          </div>
 
         {/* Event Summary */}
         <Card className="p-4">
@@ -319,7 +319,7 @@ function PreviewContent() {
               </Card>
         )}
 
-        {/* Loading State */}
+        {/* Loading State - Only for Restaurant Venues */}
         {!eventData.venue && loading && (
           <div className="text-center py-8">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto mb-4"></div>
@@ -327,7 +327,7 @@ function PreviewContent() {
           </div>
         )}
 
-        {/* AI Recommendations */}
+        {/* AI Recommendations - Only for Restaurant Venues */}
         {!eventData.venue && !loading && recommendedRestaurants.length > 0 && (
         <div>
             <h3 className="text-lg font-semibold mb-3">🍽️ Recommended Restaurants</h3>
@@ -347,7 +347,7 @@ function PreviewContent() {
                   </div>
         )}
 
-        {/* No Recommendations */}
+        {/* No Recommendations - Only for Restaurant Venues */}
         {!eventData.venue && !loading && recommendedRestaurants.length === 0 && (
           <div className="bg-yellow-50 p-6 rounded-2xl text-center">
             <div className="text-yellow-800 font-medium mb-2">🤖 AI Analysis: No Perfect Matches Found</div>
@@ -431,7 +431,7 @@ function PreviewContent() {
           </div>
         )}
 
-                {/* Cost Summary */}
+        {/* Cost Summary */}
         {(selectedRestaurant || (eventData.venue && eventData.venue !== 'venue-restaurant')) && (
           <Card className="p-4">
             <div className="text-sm font-medium text-purple-800 mb-2">💰 Cost Summary</div>
@@ -481,26 +481,26 @@ function PreviewContent() {
           </div>
         )}
 
-        <Button
-          onClick={() => {
-            const params = new URLSearchParams({
-              eventType: eventData.eventType,
-              location: eventData.location,
-              date: eventData.date,
-              time: eventData.time,
-              guestCount: eventData.guestCount.toString(),
-              budget: eventData.budget,
-              venue: eventData.venue,
-              services: eventData.services.join(','),
-              servicesTotal: eventData.servicesTotal.toString(),
-              selectedRestaurant: selectedRestaurant
-            })
-            router.push(`/create/review?${params.toString()}`)
-          }}
-          disabled={!selectedRestaurant && eventData.venue !== 'venue-restaurant'}
-        >
-          Next: Book & Celebrate!
-        </Button>
+                  <Button
+            onClick={() => {
+              const params = new URLSearchParams({
+                eventType: eventData.eventType,
+                location: eventData.location,
+                date: eventData.date,
+                time: eventData.time,
+                guestCount: eventData.guestCount.toString(),
+                budget: eventData.budget,
+                venue: eventData.venue,
+                services: eventData.services.join(','),
+                servicesTotal: eventData.servicesTotal.toString(),
+                selectedRestaurant: selectedRestaurant
+              })
+              router.push(`/create/review?${params.toString()}`)
+            }}
+            disabled={!selectedRestaurant && eventData.venue !== 'venue-restaurant'}
+          >
+            Next: Book & Celebrate!
+          </Button>
       </div>
     </div>
   )
