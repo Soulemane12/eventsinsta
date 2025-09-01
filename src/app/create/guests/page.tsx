@@ -69,6 +69,8 @@ function GuestsContent() {
   
   const [guestCount, setGuestCount] = useState('')
   const [selectedBudget, setSelectedBudget] = useState('')
+  const [customMinBudget, setCustomMinBudget] = useState(0)
+  const [customMaxBudget, setCustomMaxBudget] = useState(0)
   const [eventType, setEventType] = useState('')
   const [location, setLocation] = useState('')
   const [date, setDate] = useState('')
@@ -87,17 +89,22 @@ function GuestsContent() {
     if (timeParam) setTime(timeParam)
   }, [searchParams])
 
-  const valid = guestCount && selectedBudget
+  const valid = guestCount && selectedBudget && (selectedBudget !== 'custom' || (customMinBudget > 0 && customMaxBudget > 0 && customMinBudget < customMaxBudget))
 
   function next(){
     if (valid) {
+      let budgetParam = selectedBudget
+      if (selectedBudget === 'custom') {
+        budgetParam = `custom-${customMinBudget}-${customMaxBudget}`
+      }
+      
       const params = new URLSearchParams({
         eventType: eventType,
         location: location,
         date: date,
         time: time,
         guestCount: guestCount,
-        budget: selectedBudget
+        budget: budgetParam
       })
       router.push(`/create/venue?${params.toString()}`)
     }
@@ -154,6 +161,53 @@ function GuestsContent() {
                   </div>
                 </button>
               ))}
+            </div>
+          </div>
+
+          {/* Custom Budget Range Input */}
+          <div>
+            <div className="text-sm font-medium text-gray-700 mb-3">Custom Budget Range</div>
+            <div className="bg-white rounded-2xl p-4 shadow border border-gray-200">
+              <div className="text-xs text-gray-600 mb-3">
+                Set your own custom budget range
+              </div>
+              <div className="flex gap-3">
+                <div className="flex-1">
+                  <label className="block text-xs font-medium text-gray-700 mb-1">Minimum</label>
+                  <input
+                    type="number"
+                    placeholder="Min"
+                    value={customMinBudget}
+                    onChange={(e) => setCustomMinBudget(parseInt(e.target.value) || 0)}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-300 text-sm"
+                  />
+                </div>
+                <div className="flex-1">
+                  <label className="block text-xs font-medium text-gray-700 mb-1">Maximum</label>
+                  <input
+                    type="number"
+                    placeholder="Max"
+                    value={customMaxBudget}
+                    onChange={(e) => setCustomMaxBudget(parseInt(e.target.value) || 0)}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-300 text-sm"
+                  />
+                </div>
+              </div>
+              {customMinBudget > 0 && customMaxBudget > 0 && (
+                <div className="mt-3 text-sm text-purple-600 font-medium">
+                  Your Custom Budget: ${customMinBudget.toLocaleString()} - ${customMaxBudget.toLocaleString()}
+                </div>
+              )}
+              <button
+                onClick={() => setSelectedBudget('custom')}
+                className={`w-full mt-3 py-2 px-4 rounded-lg text-sm font-medium transition-colors ${
+                  selectedBudget === 'custom' 
+                    ? 'bg-purple-600 text-white' 
+                    : 'bg-purple-100 text-purple-700 hover:bg-purple-200'
+                }`}
+              >
+                Use Custom Budget
+              </button>
             </div>
           </div>
         </div>

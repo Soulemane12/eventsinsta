@@ -208,8 +208,7 @@ function ServicesContent() {
   const [time, setTime] = useState('')
   const [guestCount, setGuestCount] = useState('')
   const [budget, setBudget] = useState('')
-  const [minBudget, setMinBudget] = useState(1000)
-  const [maxBudget, setMaxBudget] = useState(3000)
+
   const [recommendedServices, setRecommendedServices] = useState<string[]>([])
   const [isLoadingRecommendations, setIsLoadingRecommendations] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
@@ -249,12 +248,7 @@ function ServicesContent() {
       }
     }
     
-    // Initialize custom budget range from URL parameter
-    if (budgetParam) {
-      const budgetRange = getBudgetRange(budgetParam)
-      setMinBudget(budgetRange.min)
-      setMaxBudget(budgetRange.max)
-    }
+
   }, [searchParams])
 
   // Save selected services to localStorage whenever they change
@@ -300,6 +294,16 @@ function ServicesContent() {
 
   // Budget flexibility features
   const getBudgetRange = (budgetId: string): { min: number; max: number } => {
+    // Handle custom budget format: custom-min-max
+    if (budgetId.startsWith('custom-')) {
+      const parts = budgetId.split('-')
+      if (parts.length === 3) {
+        const min = parseInt(parts[1]) || 1000
+        const max = parseInt(parts[2]) || 3000
+        return { min, max }
+      }
+    }
+    
     switch (budgetId) {
       case 'budget-1': return { min: 500, max: 1000 }
       case 'budget-2': return { min: 1000, max: 3000 }
@@ -309,7 +313,10 @@ function ServicesContent() {
     }
   }
 
-  // Budget flexibility features - now using custom budget range
+  // Get budget values from URL parameter
+  const budgetRange = getBudgetRange(budget)
+  const minBudget = budgetRange.min
+  const maxBudget = budgetRange.max
   const isOverBudget = totalCost > maxBudget
   const budgetRemaining = maxBudget - totalCost
 
@@ -544,40 +551,7 @@ function ServicesContent() {
           </div>
         )}
 
-        {/* Custom Budget Range Input */}
-        <div className="bg-purple-50 p-4 rounded-xl">
-          <div className="text-sm font-medium text-purple-800 mb-2">💰 Set Your Budget</div>
-          <div className="space-y-3">
-            <div className="text-xs text-gray-600">
-              Set your custom budget range to help guide your service selection
-            </div>
-            <div className="flex gap-2">
-              <div className="flex-1">
-                <label className="block text-xs font-medium text-purple-800 mb-1">Minimum Budget</label>
-                <input
-                  type="number"
-                  placeholder="Min"
-                  value={minBudget}
-                  onChange={(e) => setMinBudget(parseInt(e.target.value) || 0)}
-                  className="w-full p-3 border border-purple-200 rounded-lg focus:outline-none focus:border-purple-500 text-sm"
-                />
-              </div>
-              <div className="flex-1">
-                <label className="block text-xs font-medium text-purple-800 mb-1">Maximum Budget</label>
-                <input
-                  type="number"
-                  placeholder="Max"
-                  value={maxBudget}
-                  onChange={(e) => setMaxBudget(parseInt(e.target.value) || 0)}
-                  className="w-full p-3 border border-purple-200 rounded-lg focus:outline-none focus:border-purple-500 text-sm"
-                />
-              </div>
-            </div>
-            <div className="text-sm text-purple-800 font-medium">
-              Your Budget: ${minBudget.toLocaleString()} - ${maxBudget.toLocaleString()}
-            </div>
-          </div>
-        </div>
+
 
         {/* Cost Summary */}
         {selectedServices.length > 0 && (
