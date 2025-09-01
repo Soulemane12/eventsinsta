@@ -205,11 +205,7 @@ function GuestsContent() {
                 </div>
               )}
               <button
-                onClick={() => {
-                  console.log('Custom budget button clicked')
-                  console.log('Setting selectedBudget to custom')
-                  setSelectedBudget('custom')
-                }}
+                onClick={() => setSelectedBudget('custom')}
                 className={`w-full mt-3 py-2 px-4 rounded-lg text-sm font-medium transition-colors ${
                   selectedBudget === 'custom' 
                     ? 'bg-purple-600 text-white' 
@@ -222,16 +218,7 @@ function GuestsContent() {
           </div>
         </div>
 
-        {/* Debug Info */}
-        <div className="bg-gray-50 p-4 rounded-xl">
-          <div className="text-sm font-medium text-gray-800 mb-2">Debug Info</div>
-          <div className="text-xs text-gray-600 space-y-1">
-            <div>Selected Budget: {selectedBudget}</div>
-            <div>Custom Min: {customMinBudget}</div>
-            <div>Custom Max: {customMaxBudget}</div>
-            <div>Form Valid: {valid ? 'Yes' : 'No'}</div>
-          </div>
-        </div>
+
 
         <div className="bg-purple-50 p-4 rounded-xl">
           <div className="text-sm font-medium text-purple-800 mb-2">💰 Budget Tip</div>
