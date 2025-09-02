@@ -155,9 +155,15 @@ function PreviewContent() {
 
   useEffect(() => {
     if (!eventData) return
-    if (eventData.venue !== 'venue-restaurant') return
 
     async function loadRecommendations() {
+      // Only load recommendations for restaurant venues
+      if (eventData!.venue !== 'venue-restaurant') {
+        setLoading(false)
+        setAiRecommendations([])
+        return
+      }
+
       setLoading(true)
       try {
         const recommendations = await getAIRecommendations({
@@ -179,12 +185,14 @@ function PreviewContent() {
   }, [eventData])
 
   const getRecommendationForRestaurant = (restaurantId: string) => {
-    return aiRecommendations?.find(rec => rec.restaurantId === restaurantId)
+    if (!aiRecommendations || aiRecommendations.length === 0) return undefined
+    return aiRecommendations.find(rec => rec.restaurantId === restaurantId)
   }
 
-  const recommendedRestaurants = RESTAURANTS.filter(restaurant =>
-    aiRecommendations?.some(rec => rec.restaurantId === restaurant.id) || false
-  )
+  const recommendedRestaurants = RESTAURANTS.filter(restaurant => {
+    if (!aiRecommendations || aiRecommendations.length === 0) return false
+    return aiRecommendations.some(rec => rec.restaurantId === restaurant.id)
+  })
 
   const getTotalCost = () => {
     if (!eventData || !selectedRestaurant) return 0
