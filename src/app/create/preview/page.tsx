@@ -155,6 +155,7 @@ function PreviewContent() {
 
   useEffect(() => {
     if (!eventData) return
+    if (eventData.venue !== 'venue-restaurant') return
 
     async function loadRecommendations() {
       setLoading(true)
@@ -321,7 +322,7 @@ function PreviewContent() {
         )}
 
         {/* Loading State - Only for Restaurant Venues */}
-        {!eventData.venue && loading && (
+        {eventData.venue === 'venue-restaurant' && loading && (
           <div className="text-center py-8">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto mb-4"></div>
             <p className="text-sm text-gray-600">Finding perfect restaurants for your event...</p>
@@ -329,7 +330,7 @@ function PreviewContent() {
         )}
 
         {/* AI Recommendations - Only for Restaurant Venues */}
-        {!eventData.venue && !loading && recommendedRestaurants.length > 0 && (
+        {eventData.venue === 'venue-restaurant' && !loading && recommendedRestaurants.length > 0 && (
         <div>
             <h3 className="text-lg font-semibold mb-3">🍽️ Recommended Restaurants</h3>
             <div className="space-y-4">
@@ -349,7 +350,7 @@ function PreviewContent() {
         )}
 
         {/* No Recommendations - Only for Restaurant Venues */}
-        {!eventData.venue && !loading && recommendedRestaurants.length === 0 && (
+        {eventData.venue === 'venue-restaurant' && !loading && recommendedRestaurants.length === 0 && (
           <div className="bg-yellow-50 p-6 rounded-2xl text-center">
             <div className="text-yellow-800 font-medium mb-2">🤖 AI Analysis: No Perfect Matches Found</div>
             <div className="text-yellow-700 text-sm mb-4">
