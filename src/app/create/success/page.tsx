@@ -73,6 +73,8 @@ function SuccessContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [eventData, setEventData] = useState<EventData | null>(null)
+  const [message, setMessage] = useState('')
+  const [messageSent, setMessageSent] = useState(false)
 
   useEffect(() => {
     // Get event data from URL parameters
@@ -148,9 +150,6 @@ function SuccessContent() {
       </div>
     )
   }
-
-  const [message, setMessage] = useState('')
-  const [messageSent, setMessageSent] = useState(false)
   
   const sendSpecialRequest = () => {
     // In a real app, this would send the message to the backend
