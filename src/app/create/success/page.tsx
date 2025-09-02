@@ -34,6 +34,7 @@ interface EventData {
   time: string
   guestCount: number
   budget: string
+  venue: string
   services: string[]
   servicesTotal: number
   selectedRestaurant: string
@@ -81,6 +82,7 @@ function SuccessContent() {
     const time = searchParams.get('time') || ''
     const guestCount = parseInt(searchParams.get('guestCount') || '2')
     const budget = searchParams.get('budget') || 'budget-2'
+    const venue = searchParams.get('venue') || ''
     const services = searchParams.get('services')?.split(',').filter(Boolean) || []
     const servicesTotal = parseInt(searchParams.get('servicesTotal') || '0')
     const selectedRestaurant = searchParams.get('selectedRestaurant') || ''
@@ -93,6 +95,7 @@ function SuccessContent() {
       time,
       guestCount,
       budget,
+      venue,
       services,
       servicesTotal,
       selectedRestaurant,
