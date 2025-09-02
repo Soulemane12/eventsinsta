@@ -132,22 +132,22 @@ function PreviewContent() {
     const location = searchParams.get('location') || 'New York, NY'
     const date = searchParams.get('date') || ''
     const time = searchParams.get('time') || ''
-          const guestCount = parseInt(searchParams.get('guestCount') || '2')
-      const budget = searchParams.get('budget') || 'budget-2'
-      const venue = searchParams.get('venue') || ''
-      const services = searchParams.get('services')?.split(',').filter(Boolean) || []
-      const servicesTotal = parseInt(searchParams.get('servicesTotal') || '0')
+    const guestCount = parseInt(searchParams.get('guestCount') || '2')
+    const budget = searchParams.get('budget') || 'budget-2'
+    const venue = searchParams.get('venue') || ''
+    const services = searchParams.get('services')?.split(',').filter(Boolean) || []
+    const servicesTotal = parseInt(searchParams.get('servicesTotal') || '0')
 
     const data: EventData = {
       eventType,
       location,
       date,
       time,
-              guestCount,
-        budget,
-        venue,
-        services,
-        servicesTotal
+      guestCount,
+      budget,
+      venue,
+      services,
+      servicesTotal
     }
 
     setEventData(data)
@@ -165,9 +165,10 @@ function PreviewContent() {
           budget: eventData!.budget,
           location: eventData!.location
         })
-        setAiRecommendations(recommendations)
+        setAiRecommendations(recommendations || [])
       } catch (error) {
         console.error('Failed to load AI recommendations:', error)
+        setAiRecommendations([])
       } finally {
         setLoading(false)
       }
@@ -177,11 +178,11 @@ function PreviewContent() {
   }, [eventData])
 
   const getRecommendationForRestaurant = (restaurantId: string) => {
-    return aiRecommendations.find(rec => rec.restaurantId === restaurantId)
+    return aiRecommendations?.find(rec => rec.restaurantId === restaurantId)
   }
 
   const recommendedRestaurants = RESTAURANTS.filter(restaurant =>
-    aiRecommendations.some(rec => rec.restaurantId === restaurant.id)
+    aiRecommendations?.some(rec => rec.restaurantId === restaurant.id) || false
   )
 
   const getTotalCost = () => {
@@ -223,17 +224,17 @@ function PreviewContent() {
 
   return (
     <div className="max-w-md mx-auto min-h-screen bg-gray-50">
-              <StepHeader step={6} title="Review Your Event" />
-              <div className="p-6 space-y-6">
-          <div className="text-center">
+      <StepHeader step={6} title="Review Your Event" />
+      <div className="p-6 space-y-6">
+        <div className="text-center">
             <h2 className="text-xl font-semibold mb-2">
               {eventData.venue === 'venue-restaurant' ? '🍽️ Choose Your Restaurant' : 
-               eventData.venue ? '🏛️ Venue & Services Summary' : '🍽️ Perfect Restaurant Matches'}
+               (eventData.venue && eventData.venue !== '') ? '🏛️ Venue & Services Summary' : '🍽️ Perfect Restaurant Matches'}
             </h2>
             <p className="text-sm text-gray-600">
               {eventData.venue === 'venue-restaurant' 
                 ? 'Select from our curated list of restaurant venues for your event'
-                : eventData.venue 
+                : (eventData.venue && eventData.venue !== '') 
                   ? `Your event will be held at your selected venue with the services you've chosen`
                   : 'We\'ve found the best restaurants for your event'
               }
