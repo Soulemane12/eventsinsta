@@ -29,81 +29,29 @@ async function getAIServiceRecommendations(request: ServiceRecommendationRequest
     const { default: Groq } = await import('groq-sdk')
     const groq = new Groq()
 
-    const prompt = `
-You are an expert event planning AI assistant. You need to recommend services from the following list based on the user's event requirements.
+    const prompt = `For a ${request.eventType} at ${request.venue || 'any venue'}, return ONLY a JSON array with appropriate services from this list:
 
-Available Services:
-${SERVICES.map(service => `
-- ${service.name} (${service.category}): ${service.priceDescription}
-  Description: ${service.description}
-  Price: $${service.price}
-`).join('\n')}
+${SERVICES.map(service => `- ${service.id}: ${service.name} (${service.category}) - $${service.price}`).join('\n')}
 
-You are an expert event planning AI. Analyze the event context and ONLY recommend services that make perfect logical sense for this specific event type and venue combination.
+FILTERING RULES:
+- Birthday Party + Restaurant: Include DJ, photography, catering, decorations, exotic cars, car services, makeup, entertainment. EXCLUDE: kids-birthday-package, sports-knicks-birthday, yacht-party-jboogie, baby-shower-package, wedding services, wellness services
+- Sporting Events: Include sports services, DJ, photography, catering. EXCLUDE: baby-shower-package, wedding services, wellness services
+- Wedding: Include wedding services, DJ, photography, catering, makeup, decorations. EXCLUDE: kids-birthday-package, sports services, baby-shower-package
 
-EVENT CONTEXT ANALYSIS:
-- Event Type: ${request.eventType}
-- Venue: ${request.venue || 'Not specified'}
-- Guest Count: ${request.guestCount}
-- Budget: ${request.budget}
-- Location: ${request.location || 'New York City'}
+CRITICAL: Return ONLY the JSON array, no other text. Start with [ and end with ].
 
-FILTERING RULES - BE VERY SELECTIVE:
-
-1. EVENT TYPE FILTERING:
-   - Birthday Parties: Include entertainment, catering, photography, decorations, exotic cars. EXCLUDE: baby shower, wedding, kids birthday, wellness, spa, coaching, boxing, vacation, sporting events
-   - Wedding Events: Include wedding services, entertainment, photography, catering. EXCLUDE: kids birthday, baby shower, boxing, vacation, wellness, sporting events
-   - Sporting Events: Include sports activities (NY Knicks, golf, boxing), entertainment, photography. EXCLUDE: baby shower, wedding, kids birthday, wellness, spa, vacation
-   - Corporate Events: Include professional services, team building, entertainment. EXCLUDE: baby shower, kids birthday, wedding, vacation, wellness, sporting events
-   - Baby Shower: Include baby shower services, gentle entertainment, photography. EXCLUDE: wedding, kids birthday, boxing, vacation, wellness, sporting events
-
-2. VENUE FILTERING:
-   - Restaurant: Include most services. EXCLUDE: yacht, boat services
-   - Sports Arena: Include sports, entertainment, catering, photography. EXCLUDE: wellness, spa, yacht, boat, makeup, barber
-   - Private Home: Include most services. EXCLUDE: venue services (since venue already selected)
-   - Boat/Yacht: Include entertainment, photography, catering. EXCLUDE: exotic cars, venue services
-   - Health & Wellness: Include wellness services, photography. EXCLUDE: exotic cars, sports, yacht, boat
-
-3. STRICT EXCLUSIONS:
-   - Always exclude venue services when a venue is already selected
-   - Never show baby shower services for birthday parties
-   - Never show wedding services for non-wedding events
-   - Never show yacht services for non-water venues
-   - Never show exotic cars for boat venues
-   - Never show wellness services for sporting events
-
-BE VERY SELECTIVE: Only include services that are 100% appropriate for this specific event type AND venue combination.
-
-User Request:
-- Event Type: ${request.eventType}
-- Venue: ${request.venue || 'Not specified'}
-- Guest Count: ${request.guestCount}
-- Budget: ${request.budget}
-- Location: ${request.location || 'New York City'}
-- Additional Preferences: ${request.preferences || 'None specified'}
-
-RESPOND WITH A JSON ARRAY of services that are 100% appropriate for this event. Each service should include:
-- serviceId: the exact service ID from the list above
-- confidence: 0.9-1.0 score (only include services you're 90%+ confident about)
-- reasoning: specific explanation of why this service is perfect for this event type + venue combination
-- whyPerfect: what makes this service ideal for this specific event context
-
-CRITICAL: Be extremely selective. If you have any doubt about a service's appropriateness, DO NOT include it. Better to show fewer, perfectly relevant services than to include anything questionable.
-
-EXAMPLES OF PERFECT MATCHES:
-- Birthday + Restaurant: DJ services, photography, catering, decorations, exotic cars
-- Sporting Events + Sports Arena: NY Knicks packages, golf lessons, boxing lessons, photography, catering
-- Wedding + Private Home: wedding services, formal entertainment, photography, catering
-
-EXAMPLES OF BAD MATCHES (NEVER INCLUDE):
-- Baby shower services for birthday parties
-- Yacht services for sports arenas
-- Wedding services for sporting events
-- Wellness services for birthday parties
-`
+Example format:
+[
+  {
+    "serviceId": "dj-ceo",
+    "confidence": 0.9,
+    "reasoning": "Perfect for birthday party entertainment",
+    "whyPerfect": "Professional DJ with premium sound system"
+  }
+]`
 
     const response = await groq.chat.completions.create({
-      model: 'llama-3.3-70b-versatile',
+      model: 'llama-3.1-8b-instant',
       messages: [
         {
           role: 'user',
@@ -111,11 +59,20 @@ EXAMPLES OF BAD MATCHES (NEVER INCLUDE):
         }
       ],
       temperature: 0.1,
-      max_tokens: 1000
+      max_tokens: 2000
     })
 
-    const result = JSON.parse(response.choices[0].message.content || '{}')
-    return result.recommendations || []
+    const aiResponse = response.choices[0].message.content || '{}'
+    console.log('AI Response:', aiResponse)
+    
+    try {
+      const result = JSON.parse(aiResponse)
+      return result.recommendations || result || []
+    } catch (parseError) {
+      console.error('JSON Parse Error:', parseError)
+      console.error('Raw AI Response:', aiResponse)
+      throw new Error('AI returned invalid JSON: ' + aiResponse.substring(0, 100))
+    }
   } catch (error) {
     console.error('AI service recommendation error:', error)
     throw new Error('AI filtering failed: ' + (error instanceof Error ? error.message : String(error)))
