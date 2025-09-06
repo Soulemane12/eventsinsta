@@ -207,7 +207,9 @@ function ServicesContent() {
   const [eventType, setEventType] = useState('')
   const [location, setLocation] = useState('')
   const [date, setDate] = useState('')
-  const [time, setTime] = useState('')
+  const [hostName, setHostName] = useState('')
+  const [startTime, setStartTime] = useState('')
+  const [endTime, setEndTime] = useState('')
   const [guestCount, setGuestCount] = useState('')
   const [budget, setBudget] = useState('')
   const [venue, setVenue] = useState('')
@@ -250,7 +252,9 @@ function ServicesContent() {
     const eventTypeParam = searchParams.get('eventType')
     const locationParam = searchParams.get('location')
     const dateParam = searchParams.get('date')
-    const timeParam = searchParams.get('time')
+    const hostNameParam = searchParams.get('hostName')
+    const startTimeParam = searchParams.get('startTime')
+    const endTimeParam = searchParams.get('endTime')
     const guestCountParam = searchParams.get('guestCount')
     const budgetParam = searchParams.get('budget')
     const venueParam = searchParams.get('venue')
@@ -259,7 +263,9 @@ function ServicesContent() {
     if (eventTypeParam) setEventType(eventTypeParam)
     if (locationParam) setLocation(locationParam)
     if (dateParam) setDate(dateParam)
-    if (timeParam) setTime(timeParam)
+    if (hostNameParam) setHostName(hostNameParam)
+    if (startTimeParam) setStartTime(startTimeParam)
+    if (endTimeParam) setEndTime(endTimeParam)
     if (guestCountParam) setGuestCount(guestCountParam)
     if (budgetParam) setBudget(budgetParam)
     if (venueParam) setVenue(venueParam)
@@ -426,7 +432,9 @@ function ServicesContent() {
       eventType: eventType,
       location: location,
       date: date,
-      time: time,
+      hostName: hostName,
+      startTime: startTime,
+      endTime: endTime,
       guestCount: guestCount,
       budget: budget,
       venue: venue,

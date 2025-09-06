@@ -76,19 +76,25 @@ function GuestsContent() {
   const [eventType, setEventType] = useState('')
   const [location, setLocation] = useState('')
   const [date, setDate] = useState('')
-  const [time, setTime] = useState('')
+  const [hostName, setHostName] = useState('')
+  const [startTime, setStartTime] = useState('')
+  const [endTime, setEndTime] = useState('')
 
   useEffect(() => {
     // Get previous parameters from URL
     const eventTypeParam = searchParams.get('eventType')
     const locationParam = searchParams.get('location')
     const dateParam = searchParams.get('date')
-    const timeParam = searchParams.get('time')
+    const hostNameParam = searchParams.get('hostName')
+    const startTimeParam = searchParams.get('startTime')
+    const endTimeParam = searchParams.get('endTime')
     
     if (eventTypeParam) setEventType(eventTypeParam)
     if (locationParam) setLocation(locationParam)
     if (dateParam) setDate(dateParam)
-    if (timeParam) setTime(timeParam)
+    if (hostNameParam) setHostName(hostNameParam)
+    if (startTimeParam) setStartTime(startTimeParam)
+    if (endTimeParam) setEndTime(endTimeParam)
   }, [searchParams])
 
   const valid = guestCount && selectedBudget && (selectedBudget !== 'custom' || (customMinBudget && customMaxBudget && parseInt(customMinBudget) > 0 && parseInt(customMaxBudget) > 0 && parseInt(customMinBudget) < parseInt(customMaxBudget)))
@@ -104,7 +110,9 @@ function GuestsContent() {
         eventType: eventType,
         location: location,
         date: date,
-        time: time,
+        hostName: hostName,
+        startTime: startTime,
+        endTime: endTime,
         guestCount: guestCount,
         budget: budgetParam
       })

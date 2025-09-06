@@ -65,7 +65,19 @@ function DetailsContent() {
 
   const [location, setLocation] = useState('')
   const [date, setDate] = useState('')
+  const [hostName, setHostName] = useState('')
+  const [startTime, setStartTime] = useState('')
+  const [endTime, setEndTime] = useState('')
   const [eventType, setEventType] = useState('')
+
+  const timeOptions = [
+    '6:00 AM', '6:30 AM', '7:00 AM', '7:30 AM', '8:00 AM', '8:30 AM', '9:00 AM', '9:30 AM',
+    '10:00 AM', '10:30 AM', '11:00 AM', '11:30 AM', '12:00 PM', '12:30 PM', '1:00 PM', '1:30 PM',
+    '2:00 PM', '2:30 PM', '3:00 PM', '3:30 PM', '4:00 PM', '4:30 PM', '5:00 PM', '5:30 PM',
+    '6:00 PM', '6:30 PM', '7:00 PM', '7:30 PM', '8:00 PM', '8:30 PM', '9:00 PM', '9:30 PM',
+    '10:00 PM', '10:30 PM', '11:00 PM', '11:30 PM', '12:00 AM', '12:30 AM', '1:00 AM', '1:30 AM',
+    '2:00 AM', '2:30 AM', '3:00 AM', '3:30 AM', '4:00 AM', '4:30 AM', '5:00 AM', '5:30 AM'
+  ]
 
   useEffect(() => {
     // Get event type from URL parameters
@@ -75,14 +87,17 @@ function DetailsContent() {
     }
   }, [searchParams])
 
-  const valid = location.trim().length > 0 && date
+  const valid = location.trim().length > 0 && date && hostName.trim().length > 0 && startTime && endTime
 
   function next(){
     if (valid) {
       const params = new URLSearchParams({
         eventType: eventType,
         location: location,
-        date: date
+        date: date,
+        hostName: hostName,
+        startTime: startTime,
+        endTime: endTime
       })
       router.push(`/create/guests?${params.toString()}`)
     }
@@ -93,8 +108,8 @@ function DetailsContent() {
       <StepHeader step={2} title="Location & Date" />
       <div className="p-6 space-y-6">
         <div className="text-center">
-          <h2 className="text-xl font-semibold mb-2">Where and when is your event?</h2>
-          <p className="text-sm text-gray-600">Tell us about your event location and date</p>
+          <h2 className="text-xl font-semibold mb-2">Event Details</h2>
+          <p className="text-sm text-gray-600">Tell us about your event location, date, and timing</p>
           {eventType && (
             <div className="mt-2 text-sm text-purple-600 font-medium">
               Planning: {eventType}
@@ -103,6 +118,14 @@ function DetailsContent() {
         </div>
 
         <div className="space-y-4">
+          <Field label="Host Name">
+            <Input 
+              placeholder="Enter your name"
+              value={hostName}
+              onChange={e => setHostName(e.target.value)}
+            />
+          </Field>
+
           <Field label="Event Location">
             <LocationAutocomplete
               value={location}
@@ -120,12 +143,38 @@ function DetailsContent() {
             />
           </Field>
 
+          <Field label="Start Time">
+            <select 
+              value={startTime} 
+              onChange={e => setStartTime(e.target.value)}
+              className="w-full h-12 rounded-xl border border-gray-300 px-4 outline-none focus:ring-2 focus:ring-purple-300 text-base"
+            >
+              <option value="">Select start time</option>
+              {timeOptions.map(time => (
+                <option key={time} value={time}>{time}</option>
+              ))}
+            </select>
+          </Field>
+
+          <Field label="End Time">
+            <select 
+              value={endTime} 
+              onChange={e => setEndTime(e.target.value)}
+              className="w-full h-12 rounded-xl border border-gray-300 px-4 outline-none focus:ring-2 focus:ring-purple-300 text-base"
+            >
+              <option value="">Select end time</option>
+              {timeOptions.map(time => (
+                <option key={time} value={time}>{time}</option>
+              ))}
+            </select>
+          </Field>
+
         </div>
 
         <div className="bg-purple-50 p-4 rounded-xl">
           <div className="text-sm font-medium text-purple-800 mb-2">💡 Tip</div>
           <div className="text-xs text-purple-700">
-            Start typing a city or state name and we'll suggest options. We'll use this information to find the best venues and services available in your area for your chosen date.
+            Start typing a city or state name and we'll suggest options. We'll use this information to find the best venues and services available in your area for your chosen date and time.
           </div>
         </div>
 
