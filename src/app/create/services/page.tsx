@@ -576,6 +576,54 @@ function ServicesContent() {
               categoryServices = categoryServices.filter(service => 
                 aiFilteredServices.includes(service.id)
               )
+            } else if (eventType && venue && !isLoadingAiFilter) {
+              // Apply fallback filtering when AI filtering is not available
+              categoryServices = categoryServices.filter(service => {
+                const eventTypeLower = eventType.toLowerCase()
+                const venueLower = venue.toLowerCase()
+                const serviceNameLower = service.name.toLowerCase()
+                const serviceCategoryLower = service.category.toLowerCase()
+                
+                // Always exclude venue services when a venue is already selected
+                if (service.category === 'Venue') {
+                  return false
+                }
+                
+                // Event type specific filtering
+                if (eventTypeLower.includes('birthday')) {
+                  if (serviceNameLower.includes('baby shower') || 
+                      serviceNameLower.includes('wedding') ||
+                      serviceNameLower.includes('kids birthday') ||
+                      serviceNameLower.includes('wellness') ||
+                      serviceNameLower.includes('spa') ||
+                      serviceNameLower.includes('biohack') ||
+                      serviceNameLower.includes('coaching') ||
+                      serviceNameLower.includes('boxing') ||
+                      serviceNameLower.includes('aruba') ||
+                      serviceNameLower.includes('vacation') ||
+                      serviceCategoryLower.includes('wedding') ||
+                      serviceCategoryLower.includes('kids') ||
+                      serviceCategoryLower.includes('health') ||
+                      serviceCategoryLower.includes('vacation')) {
+                    return false
+                  }
+                }
+                
+                // Venue specific filtering
+                if (venueLower.includes('restaurant')) {
+                  if (serviceNameLower.includes('exotic car') || 
+                      serviceNameLower.includes('bmw') ||
+                      serviceNameLower.includes('rolls royce') ||
+                      serviceNameLower.includes('mercedes') ||
+                      serviceNameLower.includes('range rover') ||
+                      serviceNameLower.includes('yacht') ||
+                      serviceNameLower.includes('boat')) {
+                    return false
+                  }
+                }
+                
+                return true
+              })
             }
             
             // Apply search filter
