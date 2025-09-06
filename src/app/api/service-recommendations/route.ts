@@ -33,19 +33,52 @@ async function getAIServiceRecommendations(request: ServiceRecommendationRequest
 
 ${SERVICES.map(service => `- ${service.id}: ${service.name} (${service.category}) - $${service.price}`).join('\n')}
 
-FILTERING RULES:
-- Birthday Party + Restaurant: Include DJ, photography, catering, decorations, exotic cars, car services, makeup, entertainment. EXCLUDE: kids-birthday-package, sports-knicks-birthday, yacht-party-jboogie, baby-shower-package, wedding services, wellness services
-- Sporting Events: Include sports services, DJ, photography, catering. EXCLUDE: baby-shower-package, wedding services, wellness services
-- Wedding: Include wedding services, DJ, photography, catering, makeup, decorations. EXCLUDE: kids-birthday-package, sports services, baby-shower-package
+VERY SPECIFIC FILTERING RULES WITH EXAMPLES:
 
-CRITICAL: Return ONLY the JSON array, no other text. Start with [ and end with ].
+1. BIRTHDAY PARTY + RESTAURANT:
+   ✅ INCLUDE: dj-ceo, dj-standard, photographer-premium, photographer-standard, catering-premium, catering-standard, decorations-premium, decorations-standard, exotic-car-bmw-2025, exotic-car-rolls-royce-ghost, exotic-car-mercedes-gwagon, exotic-car-range-rover, car-service-premium, car-service-standard, isit-corp, makeup-premium, makeup-standard, entertainment-live-band, entertainment-magician
+   ❌ EXCLUDE: kids-birthday-package, sports-knicks-birthday, sports-knicks-jersey-signing, boxing-lessons-eric-kelly, golf-lessons-access, yacht-party-jboogie, baby-shower-package, wedding-metropolitan-package, wedding-venues, wellness-midtown-biohack, wellness-platinum-spa, coaching-ifs-ty-cutner
+
+2. BIRTHDAY PARTY + SPORTS ARENA:
+   ✅ INCLUDE: sports-knicks-birthday, sports-knicks-jersey-signing, boxing-lessons-eric-kelly, golf-lessons-access, dj-ceo, dj-standard, photographer-premium, photographer-standard, catering-premium, catering-standard
+   ❌ EXCLUDE: kids-birthday-package, yacht-party-jboogie, baby-shower-package, wedding-metropolitan-package, wedding-venues, wellness-midtown-biohack, wellness-platinum-spa, coaching-ifs-ty-cutner, makeup-premium, makeup-standard, barber-mobile
+
+3. BIRTHDAY PARTY + PRIVATE HOME:
+   ✅ INCLUDE: dj-ceo, dj-standard, photographer-premium, photographer-standard, catering-premium, catering-standard, decorations-premium, decorations-standard, exotic-car-bmw-2025, exotic-car-rolls-royce-ghost, exotic-car-mercedes-gwagon, exotic-car-range-rover, car-service-premium, car-service-standard, isit-corp, makeup-premium, makeup-standard, entertainment-live-band, entertainment-magician
+   ❌ EXCLUDE: kids-birthday-package, sports-knicks-birthday, sports-knicks-jersey-signing, boxing-lessons-eric-kelly, golf-lessons-access, yacht-party-jboogie, baby-shower-package, wedding-metropolitan-package, wedding-venues, wellness-midtown-biohack, wellness-platinum-spa, coaching-ifs-ty-cutner
+
+4. SPORTING EVENTS + ANY VENUE:
+   ✅ INCLUDE: sports-knicks-birthday, sports-knicks-jersey-signing, boxing-lessons-eric-kelly, golf-lessons-access, dj-ceo, dj-standard, photographer-premium, photographer-standard, catering-premium, catering-standard
+   ❌ EXCLUDE: kids-birthday-package, yacht-party-jboogie, baby-shower-package, wedding-metropolitan-package, wedding-venues, wellness-midtown-biohack, wellness-platinum-spa, coaching-ifs-ty-cutner, makeup-premium, makeup-standard, barber-mobile
+
+5. WEDDING + ANY VENUE:
+   ✅ INCLUDE: wedding-metropolitan-package, wedding-venues, dj-ceo, dj-standard, photographer-premium, photographer-standard, catering-premium, catering-standard, makeup-premium, makeup-standard, decorations-premium, decorations-standard, exotic-car-bmw-2025, exotic-car-rolls-royce-ghost, exotic-car-mercedes-gwagon, exotic-car-range-rover, car-service-premium, car-service-standard, isit-corp
+   ❌ EXCLUDE: kids-birthday-package, sports-knicks-birthday, sports-knicks-jersey-signing, boxing-lessons-eric-kelly, golf-lessons-access, yacht-party-jboogie, baby-shower-package, wellness-midtown-biohack, wellness-platinum-spa, coaching-ifs-ty-cutner
+
+6. BABY SHOWER + ANY VENUE:
+   ✅ INCLUDE: baby-shower-package, photographer-premium, photographer-standard, catering-premium, catering-standard, decorations-premium, decorations-standard, entertainment-magician
+   ❌ EXCLUDE: kids-birthday-package, sports-knicks-birthday, sports-knicks-jersey-signing, boxing-lessons-eric-kelly, golf-lessons-access, yacht-party-jboogie, wedding-metropolitan-package, wedding-venues, wellness-midtown-biohack, wellness-platinum-spa, coaching-ifs-ty-cutner, makeup-premium, makeup-standard, barber-mobile
+
+7. CORPORATE EVENTS + ANY VENUE:
+   ✅ INCLUDE: dj-ceo, dj-standard, photographer-premium, photographer-standard, catering-premium, catering-standard, decorations-premium, decorations-standard, car-service-premium, car-service-standard, isit-corp, entertainment-live-band, entertainment-magician
+   ❌ EXCLUDE: kids-birthday-package, sports-knicks-birthday, sports-knicks-jersey-signing, boxing-lessons-eric-kelly, golf-lessons-access, yacht-party-jboogie, baby-shower-package, wedding-metropolitan-package, wedding-venues, wellness-midtown-biohack, wellness-platinum-spa, coaching-ifs-ty-cutner, makeup-premium, makeup-standard, barber-mobile
+
+8. HEALTH & WELLNESS + ANY VENUE:
+   ✅ INCLUDE: wellness-midtown-biohack, wellness-platinum-spa, coaching-ifs-ty-cutner, photographer-premium, photographer-standard, catering-premium, catering-standard
+   ❌ EXCLUDE: kids-birthday-package, sports-knicks-birthday, sports-knicks-jersey-signing, boxing-lessons-eric-kelly, golf-lessons-access, yacht-party-jboogie, baby-shower-package, wedding-metropolitan-package, wedding-venues, makeup-premium, makeup-standard, barber-mobile, entertainment-live-band, entertainment-magician
+
+CRITICAL: 
+1. Return ONLY the JSON array, no other text. Start with [ and end with ].
+2. Use the EXACT event type "${request.eventType}" in your reasoning
+3. Follow the filtering rules EXACTLY - only include services from the INCLUDE lists
+4. NEVER include services from the EXCLUDE lists
 
 Example format:
 [
   {
     "serviceId": "dj-ceo",
     "confidence": 0.9,
-    "reasoning": "Perfect for birthday party entertainment",
+    "reasoning": "Perfect for ${request.eventType} entertainment",
     "whyPerfect": "Professional DJ with premium sound system"
   }
 ]`
