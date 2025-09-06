@@ -132,7 +132,13 @@ function VenueContent() {
         budget: budget,
         venue: selectedVenue
       })
-      router.push(`/create/services?${params.toString()}`)
+      
+      // Redirect to sports venue selection if Sports Arena is selected
+      if (selectedVenue === 'venue-sports-arena') {
+        router.push(`/create/sports-venue?${params.toString()}`)
+      } else {
+        router.push(`/create/services?${params.toString()}`)
+      }
     }
   }
 

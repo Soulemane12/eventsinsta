@@ -267,7 +267,7 @@ function PreviewContent() {
         </Card>
 
         {/* Venue Information */}
-        {eventData.venue && eventData.venue !== 'venue-restaurant' && (
+        {eventData.venue && eventData.venue !== 'venue-restaurant' && eventData.venue !== 'venue-sports-arena' && (
           <Card className="p-4">
             <div className="text-sm font-medium text-purple-800 mb-2">🏛️ Selected Venue</div>
             <div className="bg-purple-50 p-3 rounded-lg">
@@ -278,9 +278,29 @@ function PreviewContent() {
                 {eventData.venue === 'venue-boat' && 'Private yacht and boat rentals for unique waterfront events'}
                 {eventData.venue === 'venue-private-home' && 'Luxury private homes available for events'}
                 {eventData.venue === 'venue-event-space' && 'Dedicated event spaces and halls'}
+                {eventData.venue === 'venue-health-wellness' && 'Wellness centers, spas, and health facilities perfect for wellness retreats'}
+                {eventData.venue === 'venue-madison-square-garden' && 'The world\'s most famous arena, perfect for large-scale events'}
               </div>
               <div className="text-xs text-purple-600 mt-2">
                 ✅ Venue is confirmed for your event
+              </div>
+            </div>
+          </Card>
+        )}
+
+        {/* Sports Venue Selection Info */}
+        {eventData.venue === 'venue-sports-arena' && (
+          <Card className="p-4">
+            <div className="text-sm font-medium text-purple-800 mb-2">🏟️ Sports Venue Selected</div>
+            <div className="bg-blue-50 p-3 rounded-lg">
+              <div className="text-sm font-semibold text-blue-800 mb-1">
+                Sports Venue
+              </div>
+              <div className="text-xs text-blue-700">
+                You've chosen to host your event at a sports venue. Below you'll find our recommended sports venues that are perfect for your event type, guest count, and budget.
+              </div>
+              <div className="text-xs text-blue-600 mt-2">
+                💡 Select a sports venue below to proceed with your booking
               </div>
             </div>
           </Card>
@@ -357,6 +377,82 @@ function PreviewContent() {
               ))}
                     </div>
                   </div>
+        )}
+
+        {/* Sports Venue Recommendations - Only for Sports Arena Venues */}
+        {eventData.venue === 'venue-sports-arena' && (
+          <div>
+            <h3 className="text-lg font-semibold mb-3">🏟️ Recommended Sports Venues</h3>
+            <div className="space-y-4">
+              <Card className="p-4">
+                <div className="flex items-start justify-between mb-3">
+                  <div className="flex items-center gap-3">
+                    <div className="text-2xl">🏟️</div>
+                    <div>
+                      <h3 className="font-semibold text-gray-900">Madison Square Garden</h3>
+                      <p className="text-sm text-gray-600">The world's most famous arena, perfect for large-scale events, corporate gatherings, and special celebrations.</p>
+                    </div>
+                  </div>
+                  <div className="px-2 py-1 rounded-full text-xs font-medium text-green-600 bg-green-50">
+                    Perfect Match
+                  </div>
+                </div>
+                
+                <div className="text-xs text-gray-600 mb-3">
+                  📍 New York, NY
+                </div>
+                
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="text-xs text-gray-500">⭐</span>
+                  <span className="text-xs font-medium text-gray-700">
+                    Perfect Match
+                  </span>
+                  <span className="text-xs text-gray-500">
+                    (95% match)
+                  </span>
+                </div>
+                
+                <div className="text-xs text-gray-600 mb-3">
+                  Guest count is within capacity, and it's a premium sports venue in New York, NY
+                </div>
+                
+                <div className="text-sm font-semibold text-purple-600 mb-2">
+                  Best Package: Sports Event Package
+                </div>
+                
+                <div className="text-sm text-gray-700 mb-2">
+                  Price for {eventData.guestCount} guests
+                </div>
+                
+                <div className="text-lg font-bold text-purple-600 mb-3">
+                  $15,000 - $50,000
+                </div>
+                
+                <div className="text-xs text-gray-600 mb-2">
+                  Capacity: 2-20,000 guests
+                </div>
+                
+                <div className="flex flex-wrap gap-1 mb-3">
+                  <span className="px-2 py-1 bg-gray-100 text-xs text-gray-600 rounded">NY Knicks Games</span>
+                  <span className="px-2 py-1 bg-gray-100 text-xs text-gray-600 rounded">Boxing Matches</span>
+                  <span className="px-2 py-1 bg-gray-100 text-xs text-gray-600 rounded">Basketball Tournaments</span>
+                  <span className="px-2 py-1 bg-gray-100 text-xs text-gray-600 rounded">Private Suites</span>
+                  <span className="px-2 py-1 bg-gray-100 text-xs text-gray-600 rounded">+2 more</span>
+                </div>
+                
+                <div className="text-xs text-blue-600 mb-3">
+                  Show Details
+                </div>
+                
+                <Button 
+                  className="!h-10 text-sm"
+                  onClick={() => setSelectedRestaurant('madison-square-garden')}
+                >
+                  Select This Venue
+                </Button>
+              </Card>
+            </div>
+          </div>
         )}
 
         {/* No Recommendations - Only for Restaurant Venues */}
@@ -444,17 +540,23 @@ function PreviewContent() {
         )}
 
         {/* Cost Summary */}
-        {(selectedRestaurant || (eventData.venue && eventData.venue !== 'venue-restaurant')) && (
+        {(selectedRestaurant || (eventData.venue && eventData.venue !== 'venue-restaurant' && eventData.venue !== 'venue-sports-arena')) && (
           <Card className="p-4">
             <div className="text-sm font-medium text-purple-800 mb-2">💰 Cost Summary</div>
             <div className="space-y-2 text-xs">
-              {selectedRestaurant && (
+              {selectedRestaurant && eventData.venue === 'venue-restaurant' && (
                 <div className="flex justify-between">
                   <span>Restaurant Cost ({eventData.guestCount} guests):</span>
                   <span className="font-semibold">${getRestaurantPriceByGuestCount(selectedRestaurant, eventData.guestCount)}</span>
                 </div>
               )}
-              {eventData.venue && eventData.venue !== 'venue-restaurant' && (
+              {selectedRestaurant && eventData.venue === 'venue-sports-arena' && (
+                <div className="flex justify-between">
+                  <span>Sports Venue Cost ({eventData.guestCount} guests):</span>
+                  <span className="font-semibold">$15,000 - $50,000</span>
+                </div>
+              )}
+              {eventData.venue && eventData.venue !== 'venue-restaurant' && eventData.venue !== 'venue-sports-arena' && (
                 <div className="flex justify-between">
                   <span>Venue Cost:</span>
                   <span className="font-semibold">$3,000 - $5,000</span>
@@ -470,7 +572,7 @@ function PreviewContent() {
                 <div className="flex justify-between font-bold">
                   <span>Total Cost:</span>
                   <span className="text-purple-600">
-                    ${eventData.servicesTotal + (selectedRestaurant ? getRestaurantPriceByGuestCount(selectedRestaurant, eventData.guestCount) : 0) + (eventData.venue && eventData.venue !== 'venue-restaurant' ? 4000 : 0)}
+                    ${eventData.servicesTotal + (selectedRestaurant ? (eventData.venue === 'venue-sports-arena' ? 32500 : getRestaurantPriceByGuestCount(selectedRestaurant, eventData.guestCount)) : 0) + (eventData.venue && eventData.venue !== 'venue-restaurant' && eventData.venue !== 'venue-sports-arena' ? 4000 : 0)}
                   </span>
                 </div>
               </div>
@@ -479,17 +581,19 @@ function PreviewContent() {
         )}
 
         {/* Success Message */}
-        {(selectedRestaurant || (eventData.venue && eventData.venue !== 'venue-restaurant')) && (
+        {(selectedRestaurant || (eventData.venue && eventData.venue !== 'venue-restaurant' && eventData.venue !== 'venue-sports-arena')) && (
         <div className="bg-green-50 p-4 rounded-xl">
             <div className="text-sm font-medium text-green-800 mb-2">
-              {selectedRestaurant ? '✅ Restaurant Selected!' : '✅ Venue Confirmed!'}
+              {selectedRestaurant ? (eventData.venue === 'venue-sports-arena' ? '✅ Sports Venue Selected!' : '✅ Restaurant Selected!') : '✅ Venue Confirmed!'}
             </div>
           <div className="text-xs text-green-700">
-              {selectedRestaurant 
-                ? `Great choice! This restaurant is perfect for your ${eventData.eventType.toLowerCase()} celebration.`
-                : eventData.venue === 'venue-sports-arena' || eventData.venue === 'venue-madison-square-garden'
-                  ? `Perfect! Your ${eventData.venue.replace('venue-', '').replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())} venue is confirmed for your event. 🏀 Perfect for sporting events like NY Knicks games, boxing matches, or basketball tournaments!`
-                  : `Perfect! Your ${eventData.venue.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())} venue is confirmed for your event.`
+              {selectedRestaurant && eventData.venue === 'venue-sports-arena'
+                ? `Great choice! This sports venue is perfect for your ${eventData.eventType.toLowerCase()} celebration. 🏀 Perfect for sporting events like NY Knicks games, boxing matches, or basketball tournaments!`
+                : selectedRestaurant && eventData.venue === 'venue-restaurant'
+                  ? `Great choice! This restaurant is perfect for your ${eventData.eventType.toLowerCase()} celebration.`
+                  : eventData.venue === 'venue-madison-square-garden'
+                    ? `Perfect! Your ${eventData.venue.replace('venue-', '').replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())} venue is confirmed for your event. 🏀 Perfect for sporting events like NY Knicks games, boxing matches, or basketball tournaments!`
+                    : `Perfect! Your ${eventData.venue.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())} venue is confirmed for your event.`
               }
             </div>
           </div>
@@ -511,7 +615,7 @@ function PreviewContent() {
               })
               router.push(`/create/review?${params.toString()}`)
             }}
-            disabled={!selectedRestaurant && eventData.venue !== 'venue-restaurant'}
+            disabled={!selectedRestaurant && eventData.venue !== 'venue-restaurant' && eventData.venue !== 'venue-sports-arena'}
           >
             Next: Book & Celebrate!
           </Button>
