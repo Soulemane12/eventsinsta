@@ -122,28 +122,35 @@ function DetailsContent() {
 
           <Field label="Event Time">
             <div className="space-y-2">
-              <Input 
-                type="time" 
-                value={time} 
-                onChange={e=>setTime(e.target.value)}
-                className="text-base"
-              />
-              <div className="text-xs text-gray-500">
-                💡 Tip: You can also type the time manually in HH:MM format (24-hour)
+              {/* Mobile: Show native time picker */}
+              <div className="block md:hidden">
+                <Input 
+                  type="time" 
+                  value={time} 
+                  onChange={e=>setTime(e.target.value)}
+                  className="text-base"
+                />
               </div>
-              <input
-                type="text"
-                placeholder="HH:MM (e.g., 19:30 for 7:30 PM)"
-                value={time}
-                onChange={(e) => {
-                  const value = e.target.value
-                  // Basic validation for HH:MM format
-                  if (value === '' || /^\d{2}:\d{2}$/.test(value) || /^\d{1,2}:\d{2}$/.test(value)) {
-                    setTime(value)
-                  }
-                }}
-                className="w-full h-12 rounded-xl border border-gray-300 px-4 outline-none focus:ring-2 focus:ring-purple-300 text-sm"
-              />
+              
+              {/* Desktop: Show manual text input only */}
+              <div className="hidden md:block">
+                <div className="text-xs text-gray-500 mb-2">
+                  💡 Type the time in HH:MM format (24-hour)
+                </div>
+                <input
+                  type="text"
+                  placeholder="HH:MM (e.g., 19:30 for 7:30 PM)"
+                  value={time}
+                  onChange={(e) => {
+                    const value = e.target.value
+                    // Basic validation for HH:MM format
+                    if (value === '' || /^\d{2}:\d{2}$/.test(value) || /^\d{1,2}:\d{2}$/.test(value)) {
+                      setTime(value)
+                    }
+                  }}
+                  className="w-full h-12 rounded-xl border border-gray-300 px-4 outline-none focus:ring-2 focus:ring-purple-300 text-base"
+                />
+              </div>
             </div>
           </Field>
         </div>
