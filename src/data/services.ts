@@ -190,6 +190,15 @@ export const SERVICES: Service[] = [
     priceDescription: '$50,000 for 250 guests',
     icon: '💒'
   },
+  {
+    id: 'wedding-venues',
+    name: 'Wedding Venues',
+    category: 'Wedding',
+    description: 'Premium wedding venues with full-service packages. Various locations and capacities available.',
+    price: 15000,
+    priceDescription: '$15,000 starting price',
+    icon: '💒'
+  },
 
 
   // Sports Birthday Package
@@ -210,6 +219,15 @@ export const SERVICES: Service[] = [
     price: 1500,
     priceDescription: '$1,500 for 5 tickets + signing',
     icon: '🏀'
+  },
+  {
+    id: 'sporting-events',
+    name: 'Sporting Events',
+    category: 'Sporting Events',
+    description: 'Premium sporting event experiences including tickets, VIP access, and exclusive packages.',
+    price: 2000,
+    priceDescription: '$2,000 starting price',
+    icon: '⚽'
   },
 
 
@@ -278,6 +296,37 @@ export const SERVICES: Service[] = [
     image: '/range-rover-2025.jpg'
   },
 
+  // Baby Shower
+  {
+    id: 'baby-shower-package',
+    name: 'Baby Shower Package',
+    category: 'Baby Shower',
+    description: 'Complete baby shower celebration package. Includes decorations, catering, games, and entertainment for up to 30 guests.',
+    price: 1200,
+    priceDescription: '$1,200 for up to 30 guests',
+    icon: '👶'
+  },
+
+  // Health & Wellness
+  {
+    id: 'health-wellness-midtown-biohack',
+    name: 'Midtown Biohack',
+    category: 'Health & Wellness',
+    description: 'Premium health and wellness experience at Midtown Biohack. Includes personalized wellness assessment, treatments, and recovery services.',
+    price: 1000,
+    priceDescription: '$1,000 per session',
+    icon: '🧘'
+  },
+  {
+    id: 'health-wellness-platinum-spa',
+    name: 'Platinum Wellness Spa',
+    category: 'Health & Wellness',
+    description: 'Luxury wellness spa experience with premium treatments, relaxation services, and personalized wellness programs.',
+    price: 1000,
+    priceDescription: '$1,000 per session',
+    icon: '🧘'
+  },
+
   // Yacht Party
   {
     id: 'yacht-party-jboogie',
@@ -304,7 +353,9 @@ export const SERVICE_CATEGORIES = [
   'Vacation',
   'Mobile Professionals',
   'Exotic Cars',
-  'Yacht'
+  'Yacht',
+  'Baby Shower',
+  'Health & Wellness'
 ]
 
 export function getServicesByCategory(category: string): Service[] {
