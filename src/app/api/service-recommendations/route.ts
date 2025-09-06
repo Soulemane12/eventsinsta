@@ -155,42 +155,102 @@ function getFallbackServiceRecommendations(request: ServiceRecommendationRequest
     return service && service.price <= maxBudget
   })
   
-  // Filter by venue compatibility - be more inclusive
-  const venueFilteredRecommendations = budgetFilteredRecommendations.filter(rec => {
+  // Filter by event type and venue compatibility - be intelligent about what makes sense
+  const smartFilteredRecommendations = budgetFilteredRecommendations.filter(rec => {
     const service = SERVICES.find(s => s.id === rec.serviceId)
-    if (!service || !venue) return true // If no venue specified, include all
+    if (!service) return false
     
-    // Venue-specific filtering logic - only exclude completely incompatible services
-    const venueLower = venue.toLowerCase()
-    
-    // Exclude venue services when a venue is already selected
+    // Always exclude venue services when a venue is already selected
     if (service.category === 'Venue') {
       return false
     }
     
-    // Boat venues - be more inclusive
+    const eventTypeLower = eventType.toLowerCase()
+    const venueLower = venue?.toLowerCase() || ''
+    const serviceNameLower = service.name.toLowerCase()
+    const serviceCategoryLower = service.category.toLowerCase()
+    
+    // Event type specific filtering
+    if (eventTypeLower.includes('birthday')) {
+      // For birthdays, exclude baby shower and wedding services
+      if (serviceNameLower.includes('baby shower') || 
+          serviceNameLower.includes('wedding') ||
+          serviceCategoryLower.includes('wedding')) {
+        return false
+      }
+    }
+    
+    if (eventTypeLower.includes('wedding')) {
+      // For weddings, exclude kids birthday and baby shower services
+      if (serviceNameLower.includes('kids birthday') || 
+          serviceNameLower.includes('baby shower') ||
+          serviceNameLower.includes('kids') ||
+          serviceCategoryLower.includes('kids')) {
+        return false
+      }
+    }
+    
+    if (eventTypeLower.includes('baby shower')) {
+      // For baby showers, exclude wedding and kids birthday services
+      if (serviceNameLower.includes('wedding') || 
+          serviceNameLower.includes('kids birthday') ||
+          serviceCategoryLower.includes('wedding') ||
+          serviceCategoryLower.includes('kids')) {
+        return false
+      }
+    }
+    
+    if (eventTypeLower.includes('corporate')) {
+      // For corporate events, exclude personal services like baby shower, kids birthday, wedding
+      if (serviceNameLower.includes('baby shower') || 
+          serviceNameLower.includes('kids birthday') ||
+          serviceNameLower.includes('wedding') ||
+          serviceNameLower.includes('kids') ||
+          serviceCategoryLower.includes('kids') ||
+          serviceCategoryLower.includes('wedding')) {
+        return false
+      }
+    }
+    
+    // Venue specific filtering
     if (venueLower.includes('boat')) {
-      // Most services can work on boats, just exclude very large items
-      return !['venue-hamptons-pool', 'venue-boat', 'exotic-car-rolls-royce-ghost', 'exotic-car-bmw-2025', 'exotic-car-mercedes-gwagon', 'exotic-car-range-rover'].includes(service.id)
+      // For boat venues, exclude large items and venue services
+      if (serviceNameLower.includes('exotic car') || 
+          serviceNameLower.includes('bmw') ||
+          serviceNameLower.includes('rolls royce') ||
+          serviceNameLower.includes('mercedes') ||
+          serviceNameLower.includes('range rover')) {
+        return false
+      }
     }
     
-    // Sports Arena venues - be more inclusive
     if (venueLower.includes('sports-arena')) {
-      // Most services work in sports arenas, just exclude venue services
-      return service.category !== 'Venue'
+      // For sports arenas, focus on entertainment and corporate services
+      if (serviceNameLower.includes('wellness') || 
+          serviceNameLower.includes('spa') ||
+          serviceNameLower.includes('biohack') ||
+          serviceNameLower.includes('coaching')) {
+        return false
+      }
     }
     
-    // Health & Wellness venues - be more inclusive
     if (venueLower.includes('health-wellness')) {
-      // Most services work in wellness venues, just exclude venue services
-      return service.category !== 'Venue'
+      // For health & wellness venues, focus on wellness services
+      if (serviceNameLower.includes('exotic car') || 
+          serviceNameLower.includes('bmw') ||
+          serviceNameLower.includes('rolls royce') ||
+          serviceNameLower.includes('mercedes') ||
+          serviceNameLower.includes('range rover') ||
+          serviceNameLower.includes('sports') ||
+          serviceNameLower.includes('knicks')) {
+        return false
+      }
     }
     
-    // For all other venues, include most services except venue services
-    return service.category !== 'Venue'
+    return true // Include all other services
   })
   
-  return venueFilteredRecommendations // Return all compatible services, not just top 5
+  return smartFilteredRecommendations
 }
 
 async function getAIServiceRecommendations(request: ServiceRecommendationRequest): Promise<ServiceRecommendation[]> {
@@ -215,12 +275,17 @@ ${SERVICES.map(service => `
   Price: $${service.price}
 `).join('\n')}
 
-Based on the user's request, identify ALL services that make sense for this event type and venue combination. Consider:
-- Event type compatibility
-- Venue type compatibility (if specified)
+Based on the user's request, identify services that make logical sense for this specific event type and venue combination. Consider:
+- Event type compatibility (e.g., don't show baby shower services for birthday parties)
+- Venue type compatibility (e.g., don't show exotic cars for boat venues)
 - Service relevance to the event type and venue combination
 
-IMPORTANT: Include ALL services that are compatible with the event type and venue, not just the "best" ones. The goal is to show users all relevant options, not to limit their choices. Only exclude services that are completely incompatible.
+IMPORTANT: Only show services that logically make sense for this specific event type and venue. For example:
+- Birthday + Restaurant: Show entertainment, catering, photography, but NOT baby shower services
+- Wedding + Private Home: Show wedding services, entertainment, catering, but NOT kids birthday services
+- Corporate + Sports Arena: Show corporate services, team building, but NOT personal wellness services
+
+Be selective and only include services that are actually relevant to the specific event type and venue combination.
 
 User Request:
 - Event Type: ${request.eventType}
@@ -230,13 +295,13 @@ User Request:
 - Location: ${request.location || 'New York City'}
 - Additional Preferences: ${request.preferences || 'None specified'}
 
-Respond with a JSON array of compatible services, each containing:
+Respond with a JSON array of relevant services, each containing:
 - serviceId: the exact service ID from the list above
-- confidence: 0-1 score indicating compatibility (0.5+ means compatible)
-- reasoning: brief explanation of why this service works for this event/venue
-- whyPerfect: what makes this service suitable for this event
+- confidence: 0-1 score indicating relevance (0.7+ means highly relevant)
+- reasoning: brief explanation of why this service makes sense for this specific event type and venue
+- whyPerfect: what makes this service appropriate for this event
 
-Include ALL services that are compatible with the event type and venue. Only exclude services that are completely incompatible (e.g., venue services when a venue is already selected).
+Only include services that are actually relevant to the specific event type and venue combination. Be selective and logical in your choices.
 `
 
     const response = await groq.chat.completions.create({
