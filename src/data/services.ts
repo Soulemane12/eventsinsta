@@ -354,6 +354,48 @@ export const SERVICES: Service[] = [
     price: 2500,
     priceDescription: '$2,500 for 3 hours',
     icon: '🛥️'
+  },
+
+  // Exotic Cars
+  {
+    id: 'bmw-2025',
+    name: 'BMW 2025',
+    category: 'Exotic Cars',
+    description: 'Luxury BMW 2025 model. Premium driving experience for special occasions.',
+    price: 2000,
+    priceDescription: '$2,000 for 5 days',
+    icon: '🚗',
+    image: '/bmw-2025.jpg'
+  },
+  {
+    id: 'rolls-royce-ghost-2025',
+    name: 'Rolls Royce Ghost 2025',
+    category: 'Exotic Cars',
+    description: 'Ultra-luxury Rolls Royce Ghost 2025. The ultimate in automotive excellence.',
+    price: 7500,
+    priceDescription: '$7,500 for 5 days',
+    icon: '🚗',
+    image: '/rolls-royce-ghost-2025.jpg'
+  },
+  {
+    id: 'mercedes-gwagon-2025',
+    name: 'Mercedes-Benz G-Wagon 2025',
+    category: 'Exotic Cars',
+    description: 'Luxury Mercedes-Benz G-Wagon 2025. Iconic SUV for the discerning driver.',
+    price: 5000,
+    priceDescription: '$5,000 for 5 days',
+    icon: '🚗',
+    image: '/mercedes-gwagon-2025.jpg'
+  },
+  {
+    id: 'range-rover-2025',
+    name: 'Range Rover 2025',
+    category: 'Exotic Cars',
+    description: 'Premium Range Rover 2025. Luxury SUV with exceptional performance.',
+    price: 5000,
+    priceDescription: '$5,000 for 5 days',
+    icon: '🚗',
+    image: '/range-rover-2025.jpg'
   }
 ]
 
