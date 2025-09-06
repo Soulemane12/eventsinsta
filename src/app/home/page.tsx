@@ -42,7 +42,7 @@ export default function Home() {
   return (
     <div className="max-w-md mx-auto min-h-screen pb-24 bg-gray-50">
       <div className="p-6">
-        <div className="flex items-center gap-3 mb-4">
+        <div className="flex items-center gap-4 mb-6">
           <Logo size="lg" />
           <h1 className="text-3xl font-bold">Welcome to EventsInsta!</h1>
         </div>

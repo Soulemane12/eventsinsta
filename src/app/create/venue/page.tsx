@@ -34,9 +34,9 @@ function StepHeader({ step, title }: { step: number; title: string }) {
   const pct = (step / 7) * 100
   return (
     <div className="sticky top-0 bg-white z-10">
-      <div className="flex items-center gap-2 p-4">
+      <div className="flex items-center gap-3 p-4">
         <BackBtn />
-        <Logo size="sm" />
+        <Logo size="md" />
         <div className="text-2xl font-semibold">{step} of 7: {title}</div>
       </div>
       <div className="w-full h-1 bg-gray-200">
@@ -67,10 +67,7 @@ function VenueCard({
       <div className="flex items-start gap-3">
         <div className="text-3xl">{venue.icon}</div>
         <div className="flex-1">
-          <div className="flex items-center justify-between mb-1">
-            <div className="font-semibold text-sm">{venue.name}</div>
-            <div className="text-sm font-bold text-purple-600">{venue.priceDescription}</div>
-          </div>
+          <div className="font-semibold text-sm mb-1">{venue.name}</div>
           <div className="text-xs text-gray-600 mb-2">{venue.description}</div>
           {isSelected && (
             <div className="w-4 h-4 bg-purple-600 rounded-full flex items-center justify-center ml-auto">

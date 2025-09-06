@@ -163,7 +163,7 @@ function SuccessContent() {
   return (
     <div className="max-w-md mx-auto min-h-screen grid place-items-center p-6 text-center bg-gray-50">
       <div className="w-full">
-        <Logo size="lg" className="justify-center mb-4" />
+        <Logo size="lg" className="justify-center mb-6" />
         <div className="text-6xl mb-4">🎉</div>
         <h1 className="text-2xl font-bold mb-2">Hello {eventData.customerName}!</h1>
         <h2 className="text-xl font-bold mb-2">Booking Confirmed!</h2>

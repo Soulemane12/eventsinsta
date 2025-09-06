@@ -37,9 +37,9 @@ function StepHeader({ step, title }: { step: number; title: string }) {
   const pct = (step / 6) * 100
   return (
     <div className="sticky top-0 bg-white z-10">
-      <div className="flex items-center gap-2 p-4">
+      <div className="flex items-center gap-3 p-4">
         <BackBtn />
-        <Logo size="sm" />
+        <Logo size="md" />
         <div className="text-2xl font-semibold">{step} of 7: {title}</div>
       </div>
       <div className="w-full h-1 bg-gray-200">

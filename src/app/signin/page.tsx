@@ -52,7 +52,7 @@ export default function SignIn() {
   const router = useRouter()
   return (
     <div className="max-w-md mx-auto min-h-screen px-6 py-6">
-      <div className="flex items-center gap-2 mb-6">
+      <div className="flex items-center gap-3 mb-6">
         <BackBtn />
         <Logo size="md" />
         <h1 className="text-2xl font-semibold">Sign In</h1>

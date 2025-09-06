@@ -38,9 +38,9 @@ function BackBtn() {
 function StepHeader({ title }: { title: string }) {
   return (
     <div className="sticky top-0 bg-white z-10">
-      <div className="flex items-center gap-2 p-4">
+      <div className="flex items-center gap-3 p-4">
         <BackBtn />
-        <Logo size="sm" />
+        <Logo size="md" />
         <div className="text-2xl font-semibold">{title}</div>
       </div>
     </div>

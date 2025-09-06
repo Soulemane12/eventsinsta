@@ -8,9 +8,9 @@ interface LogoProps {
 
 export default function Logo({ size = 'md', className = '' }: LogoProps) {
   const sizeClasses = {
-    sm: 'h-6 w-auto',
-    md: 'h-8 w-auto', 
-    lg: 'h-12 w-auto'
+    sm: 'h-8 w-auto',
+    md: 'h-12 w-auto', 
+    lg: 'h-16 w-auto'
   }
 
   return (
@@ -18,8 +18,8 @@ export default function Logo({ size = 'md', className = '' }: LogoProps) {
       <Image
         src="/eventinsta_logo.png"
         alt="EventsInsta"
-        width={size === 'sm' ? 24 : size === 'md' ? 32 : 48}
-        height={size === 'sm' ? 24 : size === 'md' ? 32 : 48}
+        width={size === 'sm' ? 32 : size === 'md' ? 48 : 64}
+        height={size === 'sm' ? 32 : size === 'md' ? 48 : 64}
         className={sizeClasses[size]}
         priority
       />
