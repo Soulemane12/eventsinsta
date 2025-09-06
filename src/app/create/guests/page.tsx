@@ -49,9 +49,7 @@ function StepHeader({ step, title }: { step: number; title: string }) {
       <div className="flex items-center gap-2 p-4">
         <BackBtn />
         <Logo size="sm" />
-      </div>
-      <div className="px-4 pb-2">
-        <div className="text-lg font-semibold">{step} of 7: {title}</div>
+        <div className="text-2xl font-semibold">{step} of 7: {title}</div>
       </div>
       <div className="w-full h-1 bg-gray-200">
         <div className="h-1 bg-green-500" style={{ width: pct + '%' }} />

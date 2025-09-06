@@ -1,36 +1,28 @@
 import React from 'react'
+import Image from 'next/image'
 
 interface LogoProps {
-  size?: 'sm' | 'md' | 'lg' | 'xl'
-  showTagline?: boolean
+  size?: 'sm' | 'md' | 'lg'
   className?: string
 }
 
-export default function Logo({ size = 'md', showTagline = false, className = '' }: LogoProps) {
+export default function Logo({ size = 'md', className = '' }: LogoProps) {
   const sizeClasses = {
-    sm: 'text-2xl',
-    md: 'text-3xl',
-    lg: 'text-4xl',
-    xl: 'text-5xl'
-  }
-
-  const taglineSizeClasses = {
-    sm: 'text-xs',
-    md: 'text-sm',
-    lg: 'text-base',
-    xl: 'text-lg'
+    sm: 'h-6 w-auto',
+    md: 'h-8 w-auto', 
+    lg: 'h-12 w-auto'
   }
 
   return (
-    <div className={`text-center ${className}`}>
-      <div className={`text-purple-800 font-black tracking-wide ${sizeClasses[size]}`}>
-        EVENTSINSTA
-      </div>
-      {showTagline && (
-        <div className={`text-purple-500 tracking-wide mt-1 ${taglineSizeClasses[size]}`}>
-          Plan. Create. Celebrate
-        </div>
-      )}
+    <div className={`flex items-center ${className}`}>
+      <Image
+        src="/eventinsta_logo.png"
+        alt="EventsInsta"
+        width={size === 'sm' ? 24 : size === 'md' ? 32 : 48}
+        height={size === 'sm' ? 24 : size === 'md' ? 32 : 48}
+        className={sizeClasses[size]}
+        priority
+      />
     </div>
   )
 }

@@ -25,7 +25,11 @@ export default function Onboarding() {
     <div className="max-w-md mx-auto min-h-screen bg-white flex flex-col">
       {/* Centered Logo Section */}
       <div className="flex-1 flex items-center justify-center px-6">
-        <Logo size="xl" showTagline={true} />
+        <div className="text-center">
+          <Logo size="lg" className="justify-center mb-4" />
+          <div className={`${BrandText} text-5xl font-black tracking-wide mb-2`}>EVENTSINSTA</div>
+          <div className="text-purple-500 text-xs tracking-wide mb-4">Plan. Create. Celebrate</div>
+        </div>
       </div>
 
       {/* Bottom CTA Section */}

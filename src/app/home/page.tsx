@@ -41,13 +41,11 @@ export default function Home() {
   const router = useRouter()
   return (
     <div className="max-w-md mx-auto min-h-screen pb-24 bg-gray-50">
-      {/* Header with Logo */}
-      <div className="bg-white border-b border-gray-200 px-6 py-4">
-        <Logo size="md" showTagline={true} />
-      </div>
-      
       <div className="p-6">
-        <h1 className="text-3xl font-bold">Welcome to EventsInsta!</h1>
+        <div className="flex items-center gap-3 mb-4">
+          <Logo size="lg" />
+          <h1 className="text-3xl font-bold">Welcome to EventsInsta!</h1>
+        </div>
         <Card className="mt-4 p-5 bg-purple-100">
           <div className="text-gray-700">Ready to plan your next unforgettable event? Let's find the perfect venues and services for you!</div>
           <div className="mt-4"><Button onClick={()=>router.push('/create/customize')} className="!h-12">Plan an Event</Button></div>
