@@ -183,10 +183,14 @@ function getFallbackServiceRecommendations(request: ServiceRecommendationRequest
           serviceNameLower.includes('boxing') ||
           serviceNameLower.includes('aruba') ||
           serviceNameLower.includes('vacation') ||
+          serviceNameLower.includes('knicks') ||
+          serviceNameLower.includes('golf') ||
+          serviceNameLower.includes('sporting') ||
           serviceCategoryLower.includes('wedding') ||
           serviceCategoryLower.includes('kids') ||
           serviceCategoryLower.includes('health') ||
-          serviceCategoryLower.includes('vacation')) {
+          serviceCategoryLower.includes('vacation') ||
+          serviceCategoryLower.includes('sporting')) {
         return false
       }
     }
