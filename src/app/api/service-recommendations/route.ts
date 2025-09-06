@@ -155,54 +155,42 @@ function getFallbackServiceRecommendations(request: ServiceRecommendationRequest
     return service && service.price <= maxBudget
   })
   
-  // Filter by venue compatibility
+  // Filter by venue compatibility - be more inclusive
   const venueFilteredRecommendations = budgetFilteredRecommendations.filter(rec => {
     const service = SERVICES.find(s => s.id === rec.serviceId)
     if (!service || !venue) return true // If no venue specified, include all
     
-    // Venue-specific filtering logic
+    // Venue-specific filtering logic - only exclude completely incompatible services
     const venueLower = venue.toLowerCase()
     
-    // Private Home venues
-    if (venueLower.includes('private-home')) {
-      // Most services work in private homes
-      return !['venue-hamptons-pool', 'venue-boat'].includes(service.id)
+    // Exclude venue services when a venue is already selected
+    if (service.category === 'Venue') {
+      return false
     }
     
-    // Boat venues
+    // Boat venues - be more inclusive
     if (venueLower.includes('boat')) {
-      // Limited services on boats
-      return ['dj-ceo', 'dj-standard', 'photographer-premium', 'photographer-standard', 'catering-premium', 'catering-standard'].includes(service.id)
+      // Most services can work on boats, just exclude very large items
+      return !['venue-hamptons-pool', 'venue-boat', 'exotic-car-rolls-royce-ghost', 'exotic-car-bmw-2025', 'exotic-car-mercedes-gwagon', 'exotic-car-range-rover'].includes(service.id)
     }
     
-    // Restaurant venues
-    if (venueLower.includes('restaurant')) {
-      // Most services work in restaurants
-      return !['venue-hamptons-pool', 'venue-boat'].includes(service.id)
-    }
-    
-    // Event Space venues
-    if (venueLower.includes('event-space')) {
-      // Most services work in event spaces
-      return !['venue-hamptons-pool', 'venue-boat'].includes(service.id)
-    }
-    
-    // Sports Arena venues
+    // Sports Arena venues - be more inclusive
     if (venueLower.includes('sports-arena')) {
-      // Sports-related services and entertainment
-      return ['sports-knicks-birthday', 'dj-ceo', 'dj-standard', 'photographer-premium', 'photographer-standard', 'catering-premium', 'catering-standard'].includes(service.id)
+      // Most services work in sports arenas, just exclude venue services
+      return service.category !== 'Venue'
     }
     
-    // Health & Wellness venues
+    // Health & Wellness venues - be more inclusive
     if (venueLower.includes('health-wellness')) {
-      // Wellness-focused services
-      return ['emotional-mental-coaching', 'midtown-biohack', 'platinum-wellness-spa', 'photographer-premium', 'photographer-standard'].includes(service.id)
+      // Most services work in wellness venues, just exclude venue services
+      return service.category !== 'Venue'
     }
     
-    return true // Default: include all services
+    // For all other venues, include most services except venue services
+    return service.category !== 'Venue'
   })
   
-  return venueFilteredRecommendations.slice(0, 5) // Limit to top 5 recommendations
+  return venueFilteredRecommendations // Return all compatible services, not just top 5
 }
 
 async function getAIServiceRecommendations(request: ServiceRecommendationRequest): Promise<ServiceRecommendation[]> {
@@ -227,14 +215,12 @@ ${SERVICES.map(service => `
   Price: $${service.price}
 `).join('\n')}
 
-Based on the user's request, recommend ONLY the services that are the best fit. Consider:
+Based on the user's request, identify ALL services that make sense for this event type and venue combination. Consider:
 - Event type compatibility
 - Venue type compatibility (if specified)
-- Guest count appropriateness
-- Budget range match
 - Service relevance to the event type and venue combination
 
-IMPORTANT: Only recommend services that make sense for the specific event type, venue, and budget combination. If no services are suitable, return an empty array.
+IMPORTANT: Include ALL services that are compatible with the event type and venue, not just the "best" ones. The goal is to show users all relevant options, not to limit their choices. Only exclude services that are completely incompatible.
 
 User Request:
 - Event Type: ${request.eventType}
@@ -244,13 +230,13 @@ User Request:
 - Location: ${request.location || 'New York City'}
 - Additional Preferences: ${request.preferences || 'None specified'}
 
-Respond with a JSON array of recommendations, each containing:
+Respond with a JSON array of compatible services, each containing:
 - serviceId: the exact service ID from the list above
-- confidence: 0-1 score indicating how well it matches
-- reasoning: brief explanation of why this service is recommended
-- whyPerfect: what makes this service perfect for this event
+- confidence: 0-1 score indicating compatibility (0.5+ means compatible)
+- reasoning: brief explanation of why this service works for this event/venue
+- whyPerfect: what makes this service suitable for this event
 
-If no services match the user's requirements, return an empty array. Be honest about limitations.
+Include ALL services that are compatible with the event type and venue. Only exclude services that are completely incompatible (e.g., venue services when a venue is already selected).
 `
 
     const response = await groq.chat.completions.create({

@@ -447,7 +447,7 @@ function ServicesContent() {
               budget: budget,
               location: location,
               venue: venue,
-              preferences: `Filter services that make sense for ${eventType} events at ${venue} venues. Only show services that are relevant and appropriate for this combination.`
+              preferences: `Show ALL services that are compatible with ${eventType} events at ${venue} venues. Include all services that make sense for this combination, not just the best ones.`
             }),
           })
 
@@ -549,7 +549,7 @@ function ServicesContent() {
           <div className="bg-blue-50 p-4 rounded-xl">
             <div className="text-sm font-medium text-blue-800 mb-2">🤖 Filtering Services...</div>
             <div className="text-xs text-blue-700">
-              Analyzing your {eventType} event at {venue} venue to show only relevant services.
+              Analyzing your {eventType} event at {venue} venue to show all compatible services.
             </div>
           </div>
         )}
@@ -559,8 +559,8 @@ function ServicesContent() {
           <div className="bg-green-50 p-4 rounded-xl">
             <div className="text-sm font-medium text-green-800 mb-2">✨ Smart Filtering Active</div>
             <div className="text-xs text-green-700">
-              Showing only services that make sense for your {eventType} event at {venue} venue. 
-              {aiFilteredServices.length} relevant services found.
+              Showing all services that are compatible with your {eventType} event at {venue} venue. 
+              {aiFilteredServices.length} compatible services available.
             </div>
           </div>
         )}
