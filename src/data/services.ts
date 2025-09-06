@@ -397,45 +397,45 @@ export const VENUE_SERVICES: Service[] = [
   },
   {
     id: 'venue-boat',
-    name: 'Boat',
+    name: 'JBoogie\'s Yacht',
     category: 'Venue',
-    description: 'Private yacht and boat rentals for unique waterfront events and celebrations.',
+    description: 'Luxurious private yacht rentals for unique waterfront events and celebrations.',
     price: 0,
     priceDescription: 'Contact for pricing',
     icon: '🛥️'
   },
   {
     id: 'venue-restaurant',
-    name: 'Restaurant',
+    name: 'The Plaza Hotel',
     category: 'Venue',
-    description: 'Private dining rooms and restaurant venues for intimate or large gatherings.',
+    description: 'Luxurious private dining rooms at The Plaza Hotel for intimate or large gatherings.',
     price: 0,
     priceDescription: 'Contact for pricing',
     icon: '🍽️'
   },
   {
     id: 'venue-event-space',
-    name: 'Event Space',
+    name: 'The Metropolitan Pavilion',
     category: 'Venue',
-    description: 'Dedicated event spaces and halls perfect for conferences, parties, and special occasions.',
+    description: 'Elegant event spaces at The Metropolitan Pavilion perfect for conferences, parties, and special occasions.',
     price: 0,
     priceDescription: 'Contact for pricing',
     icon: '🏛️'
   },
   {
     id: 'venue-sports-arena',
-    name: 'Sports Arena',
+    name: 'Madison Square Garden',
     category: 'Venue',
-    description: 'Professional sports arenas and stadiums for large-scale events, corporate gatherings, and special celebrations.',
+    description: 'The world\'s most famous arena - Madison Square Garden. Perfect for large-scale events, corporate gatherings, and special celebrations.',
     price: 0,
     priceDescription: 'Contact for pricing',
     icon: '🏟️'
   },
   {
     id: 'venue-health-wellness',
-    name: 'Health & Wellness',
+    name: 'Equinox Fitness Club',
     category: 'Venue',
-    description: 'Wellness centers, spas, and health facilities perfect for wellness retreats, corporate wellness events, and relaxation-focused gatherings.',
+    description: 'Premium wellness facilities at Equinox Fitness Club perfect for wellness retreats, corporate wellness events, and relaxation-focused gatherings.',
     price: 0,
     priceDescription: 'Contact for pricing',
     icon: '🧘‍♀️'
