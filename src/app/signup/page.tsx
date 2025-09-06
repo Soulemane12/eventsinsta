@@ -85,31 +85,12 @@ export default function SignUp() {
         </Field>
         
         <Field label="Date of Birth">
-          <div className="space-y-2">
-            <Input 
-              placeholder="MM/DD/YYYY" 
-              type="date"
-              value={formData.dateOfBirth}
-              onChange={(e) => handleInputChange('dateOfBirth', e.target.value)}
-            />
-            <div className="text-xs text-gray-500">
-              💡 Tip: You can also type the date manually in MM/DD/YYYY format
-            </div>
-            <input
-              type="text"
-              placeholder="MM/DD/YYYY (e.g., 01/15/1990)"
-              value={formData.dateOfBirth}
-              onChange={(e) => {
-                // Allow manual date input with validation
-                const value = e.target.value
-                // Basic validation for MM/DD/YYYY format
-                if (value === '' || /^\d{2}\/\d{2}\/\d{4}$/.test(value) || /^\d{1,2}\/\d{1,2}\/\d{4}$/.test(value)) {
-                  handleInputChange('dateOfBirth', value)
-                }
-              }}
-              className="w-full h-12 rounded-xl border border-gray-300 px-4 outline-none focus:ring-2 focus:ring-purple-300 text-sm"
-            />
-          </div>
+          <Input 
+            type="date"
+            value={formData.dateOfBirth}
+            onChange={(e) => handleInputChange('dateOfBirth', e.target.value)}
+            className="text-base"
+          />
         </Field>
         
         <Field label="Email">

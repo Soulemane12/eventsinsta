@@ -127,21 +127,8 @@ function GuestListContent() {
         const eventData = JSON.parse(decodeURIComponent(eventIdParam))
         setEventData(eventData)
         
-        // Initialize with some sample guests based on guest count
-        const sampleGuests: Guest[] = []
-        for (let i = 1; i <= Math.min(eventData.guestCount, 10); i++) {
-          sampleGuests.push({
-            id: `guest-${i}`,
-            name: `Guest ${i}`,
-            email: `guest${i}@example.com`,
-            phone: `(555) 000-${i.toString().padStart(4, '0')}`,
-            dietaryRestrictions: '',
-            plusOne: false,
-            rsvpStatus: 'pending',
-            inviteSent: false
-          })
-        }
-        setGuests(sampleGuests)
+        // Initialize with empty guest list - users will add their own guests
+        setGuests([])
       } catch (error) {
         console.error('Error parsing event data:', error)
       }
