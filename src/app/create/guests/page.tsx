@@ -169,50 +169,60 @@ function GuestsContent() {
             <div className="text-sm font-medium text-gray-700 mb-3">Custom Budget Range</div>
             <div className="bg-white rounded-2xl p-4 shadow border border-gray-200">
               <div className="text-xs text-gray-600 mb-3">
-                Set your own custom budget range
+                Set your own custom budget range (minimum $100)
               </div>
               <div className="flex gap-3">
                 <div className="flex-1">
-                  <label className="block text-xs font-medium text-gray-700 mb-1">Minimum</label>
+                  <label className="block text-xs font-medium text-gray-700 mb-1">Minimum ($)</label>
                   <input
-                    type="text"
-                    placeholder="Min"
+                    type="number"
+                    placeholder="1000"
                     value={customMinBudget}
                     onChange={(e) => {
-                      const value = e.target.value.replace(/[^0-9]/g, '')
+                      const value = e.target.value
                       setCustomMinBudget(value)
                     }}
+                    min="100"
+                    step="100"
                     className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-300 text-sm"
                   />
                 </div>
                 <div className="flex-1">
-                  <label className="block text-xs font-medium text-gray-700 mb-1">Maximum</label>
+                  <label className="block text-xs font-medium text-gray-700 mb-1">Maximum ($)</label>
                   <input
-                    type="text"
-                    placeholder="Max"
+                    type="number"
+                    placeholder="5000"
                     value={customMaxBudget}
                     onChange={(e) => {
-                      const value = e.target.value.replace(/[^0-9]/g, '')
+                      const value = e.target.value
                       setCustomMaxBudget(value)
                     }}
+                    min="100"
+                    step="100"
                     className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-300 text-sm"
                   />
                 </div>
               </div>
-              {customMinBudget && customMaxBudget && (
+              {customMinBudget && customMaxBudget && parseInt(customMinBudget) > 0 && parseInt(customMaxBudget) > 0 && (
                 <div className="mt-3 text-sm text-purple-600 font-medium">
                   Your Custom Budget: ${parseInt(customMinBudget).toLocaleString()} - ${parseInt(customMaxBudget).toLocaleString()}
                 </div>
               )}
+              {customMinBudget && customMaxBudget && parseInt(customMinBudget) >= parseInt(customMaxBudget) && (
+                <div className="mt-2 text-xs text-red-600">
+                  Maximum must be greater than minimum
+                </div>
+              )}
               <button
                 onClick={() => setSelectedBudget('custom')}
+                disabled={!customMinBudget || !customMaxBudget || parseInt(customMinBudget) < 100 || parseInt(customMaxBudget) <= parseInt(customMinBudget)}
                 className={`w-full mt-3 py-2 px-4 rounded-lg text-sm font-medium transition-colors ${
                   selectedBudget === 'custom' 
                     ? 'bg-purple-600 text-white' 
-                    : 'bg-purple-100 text-purple-700 hover:bg-purple-200'
+                    : 'bg-purple-100 text-purple-700 hover:bg-purple-200 disabled:opacity-50 disabled:cursor-not-allowed'
                 }`}
               >
-                Use Custom Budget
+                {selectedBudget === 'custom' ? '✓ Custom Budget Selected' : 'Use Custom Budget'}
               </button>
             </div>
           </div>

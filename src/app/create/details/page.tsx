@@ -112,19 +112,55 @@ function DetailsContent() {
           </Field>
 
           <Field label="Event Date">
-            <Input 
-              type="date" 
-              value={date} 
-              onChange={e=>setDate(e.target.value)} 
-            />
+            <div className="space-y-2">
+              <Input 
+                type="date" 
+                value={date} 
+                onChange={e=>setDate(e.target.value)} 
+              />
+              <div className="text-xs text-gray-500">
+                💡 Tip: You can also type the date manually in YYYY-MM-DD format
+              </div>
+              <input
+                type="text"
+                placeholder="YYYY-MM-DD (e.g., 2024-12-25)"
+                value={date}
+                onChange={(e) => {
+                  const value = e.target.value
+                  // Basic validation for YYYY-MM-DD format
+                  if (value === '' || /^\d{4}-\d{2}-\d{2}$/.test(value)) {
+                    setDate(value)
+                  }
+                }}
+                className="w-full h-12 rounded-xl border border-gray-300 px-4 outline-none focus:ring-2 focus:ring-purple-300 text-sm"
+              />
+            </div>
           </Field>
 
           <Field label="Event Time">
-            <Input 
-              type="time" 
-              value={time} 
-              onChange={e=>setTime(e.target.value)} 
-            />
+            <div className="space-y-2">
+              <Input 
+                type="time" 
+                value={time} 
+                onChange={e=>setTime(e.target.value)} 
+              />
+              <div className="text-xs text-gray-500">
+                💡 Tip: You can also type the time manually in HH:MM format (24-hour)
+              </div>
+              <input
+                type="text"
+                placeholder="HH:MM (e.g., 19:30 for 7:30 PM)"
+                value={time}
+                onChange={(e) => {
+                  const value = e.target.value
+                  // Basic validation for HH:MM format
+                  if (value === '' || /^\d{2}:\d{2}$/.test(value) || /^\d{1,2}:\d{2}$/.test(value)) {
+                    setTime(value)
+                  }
+                }}
+                className="w-full h-12 rounded-xl border border-gray-300 px-4 outline-none focus:ring-2 focus:ring-purple-300 text-sm"
+              />
+            </div>
           </Field>
         </div>
 

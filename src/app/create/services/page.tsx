@@ -632,6 +632,22 @@ function ServicesContent() {
           </div>
         </div>
 
+        {/* Skip Services Option */}
+        <div className="bg-gray-50 p-4 rounded-xl border-2 border-dashed border-gray-300">
+          <div className="text-center">
+            <div className="text-sm font-medium text-gray-700 mb-2">Don't need additional services?</div>
+            <div className="text-xs text-gray-600 mb-3">
+              You can skip this step and proceed with just your venue selection.
+            </div>
+            <button
+              onClick={next}
+              className="bg-gray-600 text-white px-6 py-2 rounded-xl text-sm font-medium hover:bg-gray-700 transition-colors"
+            >
+              Skip Services & Continue
+            </button>
+          </div>
+        </div>
+
         {/* Quick Actions Floating Panel */}
         {selectedServices.length > 0 && (
           <div className="fixed bottom-20 left-4 right-4 max-w-md mx-auto z-20">
