@@ -172,42 +172,79 @@ function getFallbackServiceRecommendations(request: ServiceRecommendationRequest
     
     // Event type specific filtering
     if (eventTypeLower.includes('birthday')) {
-      // For birthdays, exclude baby shower and wedding services
+      // For birthdays, exclude services that don't make sense for birthday parties
       if (serviceNameLower.includes('baby shower') || 
           serviceNameLower.includes('wedding') ||
-          serviceCategoryLower.includes('wedding')) {
+          serviceNameLower.includes('kids birthday') ||
+          serviceNameLower.includes('wellness') ||
+          serviceNameLower.includes('spa') ||
+          serviceNameLower.includes('biohack') ||
+          serviceNameLower.includes('coaching') ||
+          serviceNameLower.includes('boxing') ||
+          serviceNameLower.includes('aruba') ||
+          serviceNameLower.includes('vacation') ||
+          serviceCategoryLower.includes('wedding') ||
+          serviceCategoryLower.includes('kids') ||
+          serviceCategoryLower.includes('health') ||
+          serviceCategoryLower.includes('vacation')) {
         return false
       }
     }
     
     if (eventTypeLower.includes('wedding')) {
-      // For weddings, exclude kids birthday and baby shower services
+      // For weddings, exclude services that don't make sense for weddings
       if (serviceNameLower.includes('kids birthday') || 
           serviceNameLower.includes('baby shower') ||
           serviceNameLower.includes('kids') ||
-          serviceCategoryLower.includes('kids')) {
+          serviceNameLower.includes('boxing') ||
+          serviceNameLower.includes('aruba') ||
+          serviceNameLower.includes('vacation') ||
+          serviceNameLower.includes('wellness') ||
+          serviceNameLower.includes('spa') ||
+          serviceNameLower.includes('biohack') ||
+          serviceNameLower.includes('coaching') ||
+          serviceCategoryLower.includes('kids') ||
+          serviceCategoryLower.includes('vacation') ||
+          serviceCategoryLower.includes('health')) {
         return false
       }
     }
     
     if (eventTypeLower.includes('baby shower')) {
-      // For baby showers, exclude wedding and kids birthday services
+      // For baby showers, exclude services that don't make sense for baby showers
       if (serviceNameLower.includes('wedding') || 
           serviceNameLower.includes('kids birthday') ||
+          serviceNameLower.includes('boxing') ||
+          serviceNameLower.includes('aruba') ||
+          serviceNameLower.includes('vacation') ||
+          serviceNameLower.includes('wellness') ||
+          serviceNameLower.includes('spa') ||
+          serviceNameLower.includes('biohack') ||
+          serviceNameLower.includes('coaching') ||
           serviceCategoryLower.includes('wedding') ||
-          serviceCategoryLower.includes('kids')) {
+          serviceCategoryLower.includes('kids') ||
+          serviceCategoryLower.includes('vacation') ||
+          serviceCategoryLower.includes('health')) {
         return false
       }
     }
     
     if (eventTypeLower.includes('corporate')) {
-      // For corporate events, exclude personal services like baby shower, kids birthday, wedding
+      // For corporate events, exclude personal services
       if (serviceNameLower.includes('baby shower') || 
           serviceNameLower.includes('kids birthday') ||
           serviceNameLower.includes('wedding') ||
           serviceNameLower.includes('kids') ||
+          serviceNameLower.includes('aruba') ||
+          serviceNameLower.includes('vacation') ||
+          serviceNameLower.includes('wellness') ||
+          serviceNameLower.includes('spa') ||
+          serviceNameLower.includes('biohack') ||
+          serviceNameLower.includes('coaching') ||
           serviceCategoryLower.includes('kids') ||
-          serviceCategoryLower.includes('wedding')) {
+          serviceCategoryLower.includes('wedding') ||
+          serviceCategoryLower.includes('vacation') ||
+          serviceCategoryLower.includes('health')) {
         return false
       }
     }
@@ -243,6 +280,19 @@ function getFallbackServiceRecommendations(request: ServiceRecommendationRequest
           serviceNameLower.includes('range rover') ||
           serviceNameLower.includes('sports') ||
           serviceNameLower.includes('knicks')) {
+        return false
+      }
+    }
+    
+    if (venueLower.includes('restaurant')) {
+      // For restaurant venues, exclude services that don't make sense in restaurants
+      if (serviceNameLower.includes('exotic car') || 
+          serviceNameLower.includes('bmw') ||
+          serviceNameLower.includes('rolls royce') ||
+          serviceNameLower.includes('mercedes') ||
+          serviceNameLower.includes('range rover') ||
+          serviceNameLower.includes('yacht') ||
+          serviceNameLower.includes('boat')) {
         return false
       }
     }
