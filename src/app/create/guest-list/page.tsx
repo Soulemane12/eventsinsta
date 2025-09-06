@@ -69,7 +69,17 @@ interface Guest {
   phone: string
   dietaryRestrictions: string
   plusOne: boolean
-  rsvpStatus: 'pending' | 'confirmed' | 'declined'
+  rsvpStatus: 'pending' | 'yes' | 'no' | 'maybe'
+  inviteSent: boolean
+  inviteSentDate?: string
+}
+
+interface CoHost {
+  id: string
+  name: string
+  email: string
+  phone: string
+  role: string
 }
 
 interface EventData {
@@ -91,6 +101,7 @@ function GuestListContent() {
   const searchParams = useSearchParams()
   const [eventData, setEventData] = useState<EventData | null>(null)
   const [guests, setGuests] = useState<Guest[]>([])
+  const [coHosts, setCoHosts] = useState<CoHost[]>([])
   const [newGuest, setNewGuest] = useState({
     name: '',
     email: '',
@@ -98,7 +109,15 @@ function GuestListContent() {
     dietaryRestrictions: '',
     plusOne: false
   })
+  const [newCoHost, setNewCoHost] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    role: ''
+  })
   const [showAddForm, setShowAddForm] = useState(false)
+  const [showCoHostForm, setShowCoHostForm] = useState(false)
+  const [activeTab, setActiveTab] = useState<'guests' | 'cohosts' | 'invites'>('guests')
 
   useEffect(() => {
     // Get event data from URL parameters
@@ -118,7 +137,8 @@ function GuestListContent() {
             phone: `(555) 000-${i.toString().padStart(4, '0')}`,
             dietaryRestrictions: '',
             plusOne: false,
-            rsvpStatus: 'pending'
+            rsvpStatus: 'pending',
+            inviteSent: false
           })
         }
         setGuests(sampleGuests)
@@ -137,7 +157,8 @@ function GuestListContent() {
         phone: newGuest.phone,
         dietaryRestrictions: newGuest.dietaryRestrictions,
         plusOne: newGuest.plusOne,
-        rsvpStatus: 'pending'
+        rsvpStatus: 'pending',
+        inviteSent: false
       }
       setGuests([...guests, guest])
       setNewGuest({ name: '', email: '', phone: '', dietaryRestrictions: '', plusOne: false })
@@ -145,21 +166,66 @@ function GuestListContent() {
     }
   }
 
+  const addCoHost = () => {
+    if (newCoHost.name.trim() && coHosts.length < 3) {
+      const coHost: CoHost = {
+        id: `cohost-${Date.now()}`,
+        name: newCoHost.name,
+        email: newCoHost.email,
+        phone: newCoHost.phone,
+        role: newCoHost.role || 'Co-Host'
+      }
+      setCoHosts([...coHosts, coHost])
+      setNewCoHost({ name: '', email: '', phone: '', role: '' })
+      setShowCoHostForm(false)
+    }
+  }
+
   const removeGuest = (id: string) => {
     setGuests(guests.filter(guest => guest.id !== id))
   }
 
-  const updateGuestRSVP = (id: string, status: 'pending' | 'confirmed' | 'declined') => {
+  const removeCoHost = (id: string) => {
+    setCoHosts(coHosts.filter(coHost => coHost.id !== id))
+  }
+
+  const updateGuestRSVP = (id: string, status: 'pending' | 'yes' | 'no' | 'maybe') => {
     setGuests(guests.map(guest => 
       guest.id === id ? { ...guest, rsvpStatus: status } : guest
     ))
   }
 
+  const sendInvite = (guestId: string) => {
+    setGuests(guests.map(guest => 
+      guest.id === guestId ? { 
+        ...guest, 
+        inviteSent: true, 
+        inviteSentDate: new Date().toISOString() 
+      } : guest
+    ))
+    // In a real app, this would send an actual email/SMS
+    console.log('Invite sent to guest:', guestId)
+  }
+
+  const sendBulkInvites = () => {
+    const pendingGuests = guests.filter(guest => !guest.inviteSent)
+    setGuests(guests.map(guest => 
+      !guest.inviteSent ? { 
+        ...guest, 
+        inviteSent: true, 
+        inviteSentDate: new Date().toISOString() 
+      } : guest
+    ))
+    // In a real app, this would send actual emails/SMS
+    console.log('Bulk invites sent to:', pendingGuests.length, 'guests')
+  }
+
   const getRSVPStats = () => {
-    const confirmed = guests.filter(g => g.rsvpStatus === 'confirmed').length
-    const declined = guests.filter(g => g.rsvpStatus === 'declined').length
+    const yes = guests.filter(g => g.rsvpStatus === 'yes').length
+    const no = guests.filter(g => g.rsvpStatus === 'no').length
+    const maybe = guests.filter(g => g.rsvpStatus === 'maybe').length
     const pending = guests.filter(g => g.rsvpStatus === 'pending').length
-    return { confirmed, declined, pending }
+    return { yes, no, maybe, pending }
   }
 
   if (!eventData) {
@@ -184,10 +250,44 @@ function GuestListContent() {
       <div className="p-6 space-y-6">
         <div className="text-center">
           <h2 className="text-xl font-semibold mb-2">Manage Your Guest List</h2>
-          <p className="text-sm text-gray-600">Keep track of your guests and their RSVPs</p>
+          <p className="text-sm text-gray-600">Keep track of your guests, co-hosts, and RSVPs</p>
           <div className="mt-2 text-sm text-purple-600 font-medium">
             {eventData.eventType} • {eventData.location} • {eventData.date}
           </div>
+        </div>
+
+        {/* Tab Navigation */}
+        <div className="flex bg-white rounded-xl p-1 shadow">
+          <button
+            onClick={() => setActiveTab('guests')}
+            className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-colors ${
+              activeTab === 'guests' 
+                ? 'bg-purple-600 text-white' 
+                : 'text-gray-600 hover:text-gray-800'
+            }`}
+          >
+            👥 Guests ({guests.length})
+          </button>
+          <button
+            onClick={() => setActiveTab('cohosts')}
+            className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-colors ${
+              activeTab === 'cohosts' 
+                ? 'bg-purple-600 text-white' 
+                : 'text-gray-600 hover:text-gray-800'
+            }`}
+          >
+            🤝 Co-Hosts ({coHosts.length}/3)
+          </button>
+          <button
+            onClick={() => setActiveTab('invites')}
+            className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-colors ${
+              activeTab === 'invites' 
+                ? 'bg-purple-600 text-white' 
+                : 'text-gray-600 hover:text-gray-800'
+            }`}
+          >
+            📧 Invites
+          </button>
         </div>
 
         {/* Event & Venue Summary */}
@@ -231,17 +331,21 @@ function GuestListContent() {
         {/* RSVP Statistics */}
         <Card className="p-4">
           <div className="font-semibold mb-3">RSVP Summary</div>
-          <div className="grid grid-cols-3 gap-4 text-center mb-3">
+          <div className="grid grid-cols-4 gap-2 text-center mb-3">
             <div>
-              <div className="text-2xl font-bold text-green-600">{rsvpStats.confirmed}</div>
-              <div className="text-xs text-gray-600">Confirmed</div>
+              <div className="text-xl font-bold text-green-600">{rsvpStats.yes}</div>
+              <div className="text-xs text-gray-600">Yes</div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-red-600">{rsvpStats.declined}</div>
-              <div className="text-xs text-gray-600">Declined</div>
+              <div className="text-xl font-bold text-red-600">{rsvpStats.no}</div>
+              <div className="text-xs text-gray-600">No</div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-yellow-600">{rsvpStats.pending}</div>
+              <div className="text-xl font-bold text-yellow-600">{rsvpStats.maybe}</div>
+              <div className="text-xs text-gray-600">Maybe</div>
+            </div>
+            <div>
+              <div className="text-xl font-bold text-gray-600">{rsvpStats.pending}</div>
               <div className="text-xs text-gray-600">Pending</div>
             </div>
           </div>
@@ -251,33 +355,36 @@ function GuestListContent() {
             <div className="flex items-center justify-between text-sm">
               <span>Guest Capacity:</span>
               <span className={`font-medium ${
-                rsvpStats.confirmed > eventData.guestCount 
+                rsvpStats.yes > eventData.guestCount 
                   ? 'text-red-600' 
-                  : rsvpStats.confirmed === eventData.guestCount 
+                  : rsvpStats.yes === eventData.guestCount 
                     ? 'text-green-600' 
                     : 'text-yellow-600'
               }`}>
-                {rsvpStats.confirmed} / {eventData.guestCount}
+                {rsvpStats.yes} / {eventData.guestCount}
               </span>
             </div>
-            {rsvpStats.confirmed > eventData.guestCount && (
+            {rsvpStats.yes > eventData.guestCount && (
               <div className="text-xs text-red-600 mt-1">
                 ⚠️ Over capacity! Consider upgrading your venue or reducing guest list.
               </div>
             )}
-            {rsvpStats.confirmed === eventData.guestCount && (
+            {rsvpStats.yes === eventData.guestCount && (
               <div className="text-xs text-green-600 mt-1">
                 ✅ Perfect! All spots filled.
               </div>
             )}
-            {rsvpStats.confirmed < eventData.guestCount && (
+            {rsvpStats.yes < eventData.guestCount && (
               <div className="text-xs text-yellow-600 mt-1">
-                📝 {eventData.guestCount - rsvpStats.confirmed} spots still available.
+                📝 {eventData.guestCount - rsvpStats.yes} spots still available.
               </div>
             )}
           </div>
         </Card>
 
+        {/* Tab Content */}
+        {activeTab === 'guests' && (
+          <>
         {/* Add Guest Form */}
         {!showAddForm ? (
           <Button onClick={() => setShowAddForm(true)}>
@@ -340,21 +447,165 @@ function GuestListContent() {
             </div>
           </Card>
         )}
+          </>
+        )}
 
-        {/* Guest List */}
+        {activeTab === 'cohosts' && (
+          <>
+            {/* Add Co-Host Form */}
+            {!showCoHostForm ? (
+              <Button 
+                onClick={() => setShowCoHostForm(true)} 
+                disabled={coHosts.length >= 3}
+              >
+                {coHosts.length >= 3 ? 'Max 3 Co-Hosts' : '+ Add Co-Host'}
+              </Button>
+            ) : (
+              <Card className="p-4">
+                <div className="font-semibold mb-3">Add Co-Host</div>
+                <div className="space-y-3">
+                  <Field label="Name">
+                    <Input 
+                      placeholder="Co-host name"
+                      value={newCoHost.name}
+                      onChange={(e) => setNewCoHost({...newCoHost, name: e.target.value})}
+                    />
+                  </Field>
+                  <Field label="Email">
+                    <Input 
+                      type="email"
+                      placeholder="Email address"
+                      value={newCoHost.email}
+                      onChange={(e) => setNewCoHost({...newCoHost, email: e.target.value})}
+                    />
+                  </Field>
+                  <Field label="Phone">
+                    <Input 
+                      type="tel"
+                      placeholder="Phone number"
+                      value={newCoHost.phone}
+                      onChange={(e) => setNewCoHost({...newCoHost, phone: e.target.value})}
+                    />
+                  </Field>
+                  <Field label="Role">
+                    <Input 
+                      placeholder="e.g., Best Man, Maid of Honor, etc."
+                      value={newCoHost.role}
+                      onChange={(e) => setNewCoHost({...newCoHost, role: e.target.value})}
+                    />
+                  </Field>
+                  <div className="flex gap-2">
+                    <Button onClick={addCoHost} disabled={!newCoHost.name.trim()}>
+                      Add Co-Host
+                    </Button>
+                    <GhostButton onClick={() => setShowCoHostForm(false)}>
+                      Cancel
+                    </GhostButton>
+                  </div>
+                </div>
+              </Card>
+            )}
+
+            {/* Co-Hosts List */}
+            {coHosts.length > 0 && (
+              <Card className="p-4">
+                <div className="font-semibold mb-3">Co-Hosts ({coHosts.length}/3)</div>
+                <div className="space-y-3">
+                  {coHosts.map(coHost => (
+                    <div key={coHost.id} className="border border-gray-200 rounded-lg p-3">
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="font-medium">{coHost.name}</div>
+                        <button
+                          onClick={() => removeCoHost(coHost.id)}
+                          className="text-red-600 hover:text-red-800 text-sm"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                      <div className="text-xs text-gray-600 space-y-1">
+                        <div>📧 {coHost.email}</div>
+                        <div>📞 {coHost.phone}</div>
+                        <div>🎭 Role: {coHost.role}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </Card>
+            )}
+          </>
+        )}
+
+        {activeTab === 'invites' && (
+          <>
+            {/* Invite Management */}
+            <Card className="p-4">
+              <div className="font-semibold mb-3">Send Invites</div>
+              <div className="space-y-3">
+                <div className="text-sm text-gray-600">
+                  Send personalized invites to your guests with RSVP options.
+                </div>
+                
+                <div className="flex gap-2">
+                  <Button 
+                    onClick={sendBulkInvites}
+                    disabled={guests.filter(g => !g.inviteSent).length === 0}
+                  >
+                    📧 Send All Invites ({guests.filter(g => !g.inviteSent).length} pending)
+                  </Button>
+                </div>
+
+                <div className="text-xs text-gray-500">
+                  💡 Invites will be sent via email and SMS with RSVP links
+                </div>
+              </div>
+            </Card>
+
+            {/* Invite Status */}
+            <Card className="p-4">
+              <div className="font-semibold mb-3">Invite Status</div>
+              <div className="space-y-2">
+                {guests.map(guest => (
+                  <div key={guest.id} className="flex items-center justify-between p-2 border border-gray-200 rounded">
+                    <div className="flex-1">
+                      <div className="font-medium text-sm">{guest.name}</div>
+                      <div className="text-xs text-gray-600">{guest.email}</div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {guest.inviteSent ? (
+                        <div className="text-xs text-green-600">
+                          ✅ Sent {guest.inviteSentDate ? new Date(guest.inviteSentDate).toLocaleDateString() : ''}
+                        </div>
+                      ) : (
+                        <button
+                          onClick={() => sendInvite(guest.id)}
+                          className="px-3 py-1 text-xs bg-purple-600 text-white rounded hover:bg-purple-700"
+                        >
+                          Send
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </Card>
+          </>
+        )}
+
+        {/* Guest List - Only show in guests tab */}
+        {activeTab === 'guests' && (
         <Card className="p-4">
           <div className="flex items-center justify-between mb-3">
             <div className="font-semibold">Guest List ({guests.length})</div>
             <div className="flex gap-2">
               <button
                 onClick={() => {
-                  const confirmedCount = guests.filter(g => g.rsvpStatus === 'confirmed').length
-                  if (confirmedCount < eventData.guestCount) {
+                    const yesCount = guests.filter(g => g.rsvpStatus === 'yes').length
+                    if (yesCount < eventData.guestCount) {
                     // Auto-confirm remaining guests to fill capacity
-                    const remainingSlots = eventData.guestCount - confirmedCount
+                      const remainingSlots = eventData.guestCount - yesCount
                     const pendingGuests = guests.filter(g => g.rsvpStatus === 'pending').slice(0, remainingSlots)
                     pendingGuests.forEach(guest => {
-                      updateGuestRSVP(guest.id, 'confirmed')
+                        updateGuestRSVP(guest.id, 'yes')
                     })
                   }
                 }}
@@ -367,7 +618,7 @@ function GuestListContent() {
                 onClick={() => {
                   guests.forEach(guest => {
                     if (guest.rsvpStatus === 'pending') {
-                      updateGuestRSVP(guest.id, 'confirmed')
+                        updateGuestRSVP(guest.id, 'yes')
                     }
                   })
                 }}
@@ -397,9 +648,12 @@ function GuestListContent() {
                     <div>🥗 Dietary: {guest.dietaryRestrictions}</div>
                   )}
                   {guest.plusOne && <div>👥 Plus One</div>}
+                    {guest.inviteSent && (
+                      <div className="text-green-600">✅ Invite sent</div>
+                    )}
                 </div>
                 <div className="mt-2 flex gap-1">
-                  {(['pending', 'confirmed', 'declined'] as const).map(status => (
+                    {(['pending', 'yes', 'no', 'maybe'] as const).map(status => (
                     <button
                       key={status}
                       onClick={() => updateGuestRSVP(guest.id, status)}
@@ -417,6 +671,7 @@ function GuestListContent() {
             ))}
           </div>
         </Card>
+        )}
 
         {/* Export and Actions */}
         <Card className="p-4">
@@ -425,14 +680,15 @@ function GuestListContent() {
             <Button 
               onClick={() => {
                 const csvContent = [
-                  ['Name', 'Email', 'Phone', 'Dietary Restrictions', 'Plus One', 'RSVP Status'],
+                  ['Name', 'Email', 'Phone', 'Dietary Restrictions', 'Plus One', 'RSVP Status', 'Invite Sent'],
                   ...guests.map(guest => [
                     guest.name,
                     guest.email,
                     guest.phone,
                     guest.dietaryRestrictions || 'None',
                     guest.plusOne ? 'Yes' : 'No',
-                    guest.rsvpStatus.charAt(0).toUpperCase() + guest.rsvpStatus.slice(1)
+                    guest.rsvpStatus.charAt(0).toUpperCase() + guest.rsvpStatus.slice(1),
+                    guest.inviteSent ? 'Yes' : 'No'
                   ])
                 ].map(row => row.join(',')).join('\n')
                 
@@ -448,17 +704,44 @@ function GuestListContent() {
               📊 Export Guest List (CSV)
             </Button>
             
+            {coHosts.length > 0 && (
+              <Button 
+                onClick={() => {
+                  const csvContent = [
+                    ['Name', 'Email', 'Phone', 'Role'],
+                    ...coHosts.map(coHost => [
+                      coHost.name,
+                      coHost.email,
+                      coHost.phone,
+                      coHost.role
+                    ])
+                  ].map(row => row.join(',')).join('\n')
+                  
+                  const blob = new Blob([csvContent], { type: 'text/csv' })
+                  const url = window.URL.createObjectURL(blob)
+                  const a = document.createElement('a')
+                  a.href = url
+                  a.download = `cohosts-${eventData.eventType}-${eventData.date}.csv`
+                  a.click()
+                  window.URL.revokeObjectURL(url)
+                }}
+              >
+                🤝 Export Co-Hosts (CSV)
+              </Button>
+            )}
+            
             <GhostButton 
               onClick={() => {
-                const confirmedGuests = guests.filter(g => g.rsvpStatus === 'confirmed')
-                const text = `Event: ${eventData.eventType}\nDate: ${eventData.date}\nLocation: ${eventData.location}\n\nConfirmed Guests (${confirmedGuests.length}):\n${confirmedGuests.map(g => `- ${g.name}${g.plusOne ? ' +1' : ''}`).join('\n')}`
+                const confirmedGuests = guests.filter(g => g.rsvpStatus === 'yes')
+                const coHostsText = coHosts.length > 0 ? `\n\nCo-Hosts (${coHosts.length}):\n${coHosts.map(c => `- ${c.name} (${c.role})`).join('\n')}` : ''
+                const text = `Event: ${eventData.eventType}\nDate: ${eventData.date}\nLocation: ${eventData.location}${coHostsText}\n\nConfirmed Guests (${confirmedGuests.length}):\n${confirmedGuests.map(g => `- ${g.name}${g.plusOne ? ' +1' : ''}`).join('\n')}`
                 
                 navigator.clipboard.writeText(text).then(() => {
-                  alert('Guest list copied to clipboard!')
+                  alert('Event details copied to clipboard!')
                 })
               }}
             >
-              📋 Copy to Clipboard
+              📋 Copy Event Summary
             </GhostButton>
           </div>
         </Card>
