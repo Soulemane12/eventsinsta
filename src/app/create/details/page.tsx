@@ -63,7 +63,6 @@ function DetailsContent() {
 
   const [location, setLocation] = useState('')
   const [date, setDate] = useState('')
-  const [time, setTime] = useState('')
   const [eventType, setEventType] = useState('')
 
   useEffect(() => {
@@ -74,15 +73,14 @@ function DetailsContent() {
     }
   }, [searchParams])
 
-  const valid = location.trim().length > 0 && date && time
+  const valid = location.trim().length > 0 && date
 
   function next(){
     if (valid) {
       const params = new URLSearchParams({
         eventType: eventType,
         location: location,
-        date: date,
-        time: time
+        date: date
       })
       router.push(`/create/guests?${params.toString()}`)
     }
@@ -94,7 +92,7 @@ function DetailsContent() {
       <div className="p-6 space-y-6">
         <div className="text-center">
           <h2 className="text-xl font-semibold mb-2">Where and when is your event?</h2>
-          <p className="text-sm text-gray-600">Tell us about your event location and timing</p>
+          <p className="text-sm text-gray-600">Tell us about your event location and date</p>
           {eventType && (
             <div className="mt-2 text-sm text-purple-600 font-medium">
               Planning: {eventType}
@@ -120,45 +118,12 @@ function DetailsContent() {
             />
           </Field>
 
-          <Field label="Event Time">
-            <div className="space-y-2">
-              {/* Mobile: Show native time picker */}
-              <div className="block md:hidden">
-                <Input 
-                  type="time" 
-                  value={time} 
-                  onChange={e=>setTime(e.target.value)}
-                  className="text-base"
-                />
-              </div>
-              
-              {/* Desktop: Show manual text input only */}
-              <div className="hidden md:block">
-                <div className="text-xs text-gray-500 mb-2">
-                  💡 Type the time in HH:MM format (24-hour)
-                </div>
-                <input
-                  type="text"
-                  placeholder="HH:MM (e.g., 19:30 for 7:30 PM)"
-                  value={time}
-                  onChange={(e) => {
-                    const value = e.target.value
-                    // Allow typing - only restrict to numbers and colon
-                    if (value === '' || /^[\d:]*$/.test(value)) {
-                      setTime(value)
-                    }
-                  }}
-                  className="w-full h-12 rounded-xl border border-gray-300 px-4 outline-none focus:ring-2 focus:ring-purple-300 text-base"
-                />
-              </div>
-            </div>
-          </Field>
         </div>
 
         <div className="bg-purple-50 p-4 rounded-xl">
           <div className="text-sm font-medium text-purple-800 mb-2">💡 Tip</div>
           <div className="text-xs text-purple-700">
-            Start typing a city or state name and we'll suggest options. We'll use this information to find the best venues and services available in your area for your chosen date and time.
+            Start typing a city or state name and we'll suggest options. We'll use this information to find the best venues and services available in your area for your chosen date.
           </div>
         </div>
 
