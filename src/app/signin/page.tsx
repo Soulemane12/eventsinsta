@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import Logo from '../../components/Logo'
 
 const BrandPurple = 'bg-purple-800'
 const BrandPurpleHover = 'hover:bg-purple-900'
@@ -50,13 +51,19 @@ function BackBtn() {
 export default function SignIn() {
   const router = useRouter()
   return (
-    <div className="max-w-md mx-auto min-h-screen px-6 py-6">
-      <div className="flex items-center gap-2">
-        <BackBtn />
-        <h1 className="text-2xl font-semibold">Sign In</h1>
+    <div className="max-w-md mx-auto min-h-screen bg-gray-50">
+      {/* Header with Logo */}
+      <div className="bg-white border-b border-gray-200 px-6 py-4">
+        <div className="flex items-center gap-2">
+          <BackBtn />
+          <Logo size="sm" />
+        </div>
       </div>
+      
+      <div className="px-6 py-6">
+        <h1 className="text-2xl font-semibold mb-6">Sign In</h1>
 
-      <div className="mt-6 space-y-4">
+      <div className="space-y-4">
         <Field label="Email"><Input placeholder="Enter your email" type="email" /></Field>
         <Field label="Password"><Input placeholder="Enter your password" type="password" /></Field>
         <div className="text-right text-sm"><a className="text-purple-700" href="#">Forgot password?</a></div>
@@ -70,6 +77,7 @@ export default function SignIn() {
         <GhostButton>Sign in with Apple</GhostButton>
         <div className="text-center text-sm">Don't have an account? <Link className="text-purple-700 font-medium" href="/signup">Sign up</Link></div>
         <div className="text-center text-xs text-gray-500">For demo, you can <button onClick={()=>router.push('/home')} className="underline">skip</button>.</div>
+      </div>
       </div>
     </div>
   )

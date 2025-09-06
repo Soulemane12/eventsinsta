@@ -2,6 +2,7 @@
 
 import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
+import Logo from '../../../components/Logo'
 
 const BrandPurple = 'bg-purple-800'
 const BrandPurpleHover = 'hover:bg-purple-900'
@@ -47,7 +48,10 @@ function StepHeader({ step, title }: { step: number; title: string }) {
     <div className="sticky top-0 bg-white z-10">
       <div className="flex items-center gap-2 p-4">
         <BackBtn />
-        <div className="text-2xl font-semibold">{step} of 7: {title}</div>
+        <Logo size="sm" />
+      </div>
+      <div className="px-4 pb-2">
+        <div className="text-lg font-semibold">{step} of 7: {title}</div>
       </div>
       <div className="w-full h-1 bg-gray-200">
         <div className="h-1 bg-green-500" style={{ width: pct + '%' }} />

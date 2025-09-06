@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import Logo from '../../components/Logo'
 
 const BrandPurple = 'bg-purple-800'
 const BrandPurpleHover = 'hover:bg-purple-900'
@@ -40,6 +41,11 @@ export default function Home() {
   const router = useRouter()
   return (
     <div className="max-w-md mx-auto min-h-screen pb-24 bg-gray-50">
+      {/* Header with Logo */}
+      <div className="bg-white border-b border-gray-200 px-6 py-4">
+        <Logo size="md" showTagline={true} />
+      </div>
+      
       <div className="p-6">
         <h1 className="text-3xl font-bold">Welcome to EventsInsta!</h1>
         <Card className="mt-4 p-5 bg-purple-100">

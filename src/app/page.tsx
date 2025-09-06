@@ -1,6 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
+import Logo from '../components/Logo'
 
 const BrandPurple = 'bg-purple-800'
 const BrandPurpleHover = 'hover:bg-purple-900'
@@ -24,10 +25,7 @@ export default function Onboarding() {
     <div className="max-w-md mx-auto min-h-screen bg-white flex flex-col">
       {/* Centered Logo Section */}
       <div className="flex-1 flex items-center justify-center px-6">
-        <div className="text-center">
-        <div className={`${BrandText} text-5xl font-black tracking-wide mb-2`}>EVENTSINSTA</div>
-        <div className="text-purple-500 text-xs tracking-wide mb-4">Plan. Create. Celebrate</div>
-        </div>
+        <Logo size="xl" showTagline={true} />
       </div>
 
       {/* Bottom CTA Section */}

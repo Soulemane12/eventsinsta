@@ -4,6 +4,7 @@ import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { getRestaurantPriceByGuestCount, RESTAURANTS } from '../../../data/restaurants'
 import { SERVICES } from '../../../data/services'
+import Logo from '../../../components/Logo'
 
 const BrandPurple = 'bg-purple-800'
 const BrandPurpleHover = 'hover:bg-purple-900'
@@ -160,12 +161,18 @@ function SuccessContent() {
   }
 
   return (
-    <div className="max-w-md mx-auto min-h-screen grid place-items-center p-6 text-center bg-gray-50">
-      <div className="w-full">
-        <div className="text-6xl mb-4">🎉</div>
-        <h1 className="text-2xl font-bold mb-2">Hello {eventData.customerName}!</h1>
-        <h2 className="text-xl font-bold mb-2">Booking Confirmed!</h2>
-        <p className="text-gray-600 mb-6">Your event is officially booked and ready to celebrate!</p>
+    <div className="max-w-md mx-auto min-h-screen bg-gray-50">
+      {/* Header with Logo */}
+      <div className="bg-white border-b border-gray-200 px-6 py-4">
+        <Logo size="sm" />
+      </div>
+      
+      <div className="grid place-items-center p-6 text-center">
+        <div className="w-full">
+          <div className="text-6xl mb-4">🎉</div>
+          <h1 className="text-2xl font-bold mb-2">Hello {eventData.customerName}!</h1>
+          <h2 className="text-xl font-bold mb-2">Booking Confirmed!</h2>
+          <p className="text-gray-600 mb-6">Your event is officially booked and ready to celebrate!</p>
         
         <div className="bg-white rounded-2xl p-6 mb-6 shadow">
           <div className="text-sm font-medium text-gray-800 mb-3">Event Details</div>
@@ -234,6 +241,7 @@ function SuccessContent() {
         <div className="mt-6 text-xs text-gray-500">
           <div>You'll receive a confirmation email shortly</div>
           <div>Our team will contact you within 24 hours</div>
+        </div>
         </div>
       </div>
     </div>

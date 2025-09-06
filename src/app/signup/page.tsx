@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import Logo from '../../components/Logo'
 
 const BrandPurple = 'bg-purple-800'
 const BrandPurpleHover = 'hover:bg-purple-900'
@@ -60,13 +61,19 @@ export default function SignUp() {
   const isFormValid = formData.name && formData.phone && formData.dateOfBirth && formData.email && formData.password && agree
 
   return (
-    <div className="max-w-md mx-auto min-h-screen px-6 py-6">
-      <div className="flex items-center gap-2">
-        <BackBtn />
-        <h1 className="text-2xl font-semibold">Sign Up</h1>
+    <div className="max-w-md mx-auto min-h-screen bg-gray-50">
+      {/* Header with Logo */}
+      <div className="bg-white border-b border-gray-200 px-6 py-4">
+        <div className="flex items-center gap-2">
+          <BackBtn />
+          <Logo size="sm" />
+        </div>
       </div>
+      
+      <div className="px-6 py-6">
+        <h1 className="text-2xl font-semibold mb-6">Sign Up</h1>
 
-      <div className="mt-6 space-y-4">
+      <div className="space-y-4">
         <Field label="Full Name">
           <Input 
             placeholder="Enter your full name" 
@@ -119,6 +126,7 @@ export default function SignUp() {
         <Button onClick={()=>router.push('/home')} disabled={!isFormValid}>Sign Up</Button>
         <div className="text-center text-sm">Already have an account? <Link className="text-purple-700 font-medium" href="/signin">Sign In</Link></div>
         <div className="text-center text-xs text-gray-500">For demo, you can <button onClick={()=>router.push('/home')} className="underline">skip</button>.</div>
+      </div>
       </div>
     </div>
   )
