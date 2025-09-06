@@ -216,18 +216,33 @@ function ServicesContent() {
   const [filterCategory, setFilterCategory] = useState('')
 
   useEffect(() => {
-    // Clear any invalid localStorage data first
-    const savedServices = localStorage.getItem('event_selected_services')
-    if (savedServices) {
-      try {
-        const parsedServices = JSON.parse(savedServices)
-        if (!Array.isArray(parsedServices) || parsedServices.some(id => !id || typeof id !== 'string')) {
+    // Aggressive cleanup of corrupted localStorage data on component mount
+    const cleanupCorruptedData = () => {
+      const savedServices = localStorage.getItem('event_selected_services')
+      if (savedServices) {
+        try {
+          const parsedServices = JSON.parse(savedServices)
+          if (!Array.isArray(parsedServices)) {
+            localStorage.removeItem('event_selected_services')
+            return
+          }
+          // Check if any service IDs are invalid or don't exist
+          const hasInvalidServices = parsedServices.some(serviceId => {
+            if (!serviceId || typeof serviceId !== 'string' || serviceId.trim().length === 0) {
+              return true
+            }
+            return !SERVICES.some(service => service.id === serviceId.trim())
+          })
+          if (hasInvalidServices) {
+            localStorage.removeItem('event_selected_services')
+          }
+        } catch (error) {
           localStorage.removeItem('event_selected_services')
         }
-      } catch (error) {
-        localStorage.removeItem('event_selected_services')
       }
     }
+    
+    cleanupCorruptedData()
 
     // Get previous parameters from URL
     const eventTypeParam = searchParams.get('eventType')
@@ -252,24 +267,42 @@ function ServicesContent() {
       const services = servicesParam.split(',').filter(Boolean)
       setSelectedServices(services)
     } else {
-      // Try to restore from localStorage as fallback
+      // Try to restore from localStorage as fallback, but be very strict about validation
       const savedServices = localStorage.getItem('event_selected_services')
       if (savedServices) {
         try {
           const parsedServices = JSON.parse(savedServices)
           // Only restore if it's a valid array with actual service IDs
           if (Array.isArray(parsedServices) && parsedServices.length > 0) {
-            // Filter out any invalid/empty service IDs
-            const validServices = parsedServices.filter(serviceId => 
-              serviceId && typeof serviceId === 'string' && serviceId.trim().length > 0
-            )
+            // Filter out any invalid/empty service IDs and ensure they exist in SERVICES
+            const validServices = parsedServices.filter(serviceId => {
+              if (!serviceId || typeof serviceId !== 'string' || serviceId.trim().length === 0) {
+                return false
+              }
+              // Check if the service actually exists in our services list
+              const serviceExists = SERVICES.some(service => service.id === serviceId.trim())
+              return serviceExists
+            })
             if (validServices.length > 0) {
               setSelectedServices(validServices)
+            } else {
+              // If no valid services found, clear localStorage
+              localStorage.removeItem('event_selected_services')
+              setSelectedServices([])
             }
+          } else {
+            // Invalid data, clear it
+            localStorage.removeItem('event_selected_services')
+            setSelectedServices([])
           }
         } catch (error) {
           console.error('Error parsing saved services:', error)
+          localStorage.removeItem('event_selected_services')
+          setSelectedServices([])
         }
+      } else {
+        // No saved services, ensure we start with empty array
+        setSelectedServices([])
       }
     }
     
