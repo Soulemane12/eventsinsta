@@ -216,6 +216,19 @@ function ServicesContent() {
   const [filterCategory, setFilterCategory] = useState('')
 
   useEffect(() => {
+    // Clear any invalid localStorage data first
+    const savedServices = localStorage.getItem('event_selected_services')
+    if (savedServices) {
+      try {
+        const parsedServices = JSON.parse(savedServices)
+        if (!Array.isArray(parsedServices) || parsedServices.some(id => !id || typeof id !== 'string')) {
+          localStorage.removeItem('event_selected_services')
+        }
+      } catch (error) {
+        localStorage.removeItem('event_selected_services')
+      }
+    }
+
     // Get previous parameters from URL
     const eventTypeParam = searchParams.get('eventType')
     const locationParam = searchParams.get('location')
@@ -244,7 +257,16 @@ function ServicesContent() {
       if (savedServices) {
         try {
           const parsedServices = JSON.parse(savedServices)
-          setSelectedServices(parsedServices)
+          // Only restore if it's a valid array with actual service IDs
+          if (Array.isArray(parsedServices) && parsedServices.length > 0) {
+            // Filter out any invalid/empty service IDs
+            const validServices = parsedServices.filter(serviceId => 
+              serviceId && typeof serviceId === 'string' && serviceId.trim().length > 0
+            )
+            if (validServices.length > 0) {
+              setSelectedServices(validServices)
+            }
+          }
         } catch (error) {
           console.error('Error parsing saved services:', error)
         }
