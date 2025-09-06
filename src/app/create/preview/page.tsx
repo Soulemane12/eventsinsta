@@ -495,6 +495,35 @@ function PreviewContent() {
           </div>
         )}
 
+        {/* Sporting Event Examples */}
+        {(eventData.venue === 'venue-sports-arena' || eventData.venue === 'venue-madison-square-garden') && (
+          <div className="bg-blue-50 p-4 rounded-xl">
+            <div className="text-sm font-medium text-blue-800 mb-3">🏀 Sporting Event Examples</div>
+            <div className="space-y-2 text-xs text-blue-700">
+              <div className="flex items-center gap-2">
+                <span className="text-lg">🏀</span>
+                <span><strong>NY Knicks Games:</strong> Watch live basketball games with exclusive court-side access</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-lg">🥊</span>
+                <span><strong>Boxing Matches:</strong> Professional boxing events and training sessions</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-lg">⛳</span>
+                <span><strong>Golf Tournaments:</strong> Golf lessons and tournament experiences</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-lg">🏆</span>
+                <span><strong>Sports Competitions:</strong> Basketball tournaments, boxing matches, and more</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-lg">🎉</span>
+                <span><strong>Sports Birthday Parties:</strong> Celebrate with sports-themed activities and experiences</span>
+              </div>
+            </div>
+          </div>
+        )}
+
                   <Button
             onClick={() => {
               const params = new URLSearchParams({
