@@ -35,6 +35,8 @@ ${SERVICES.map(service => `- ${service.id}: ${service.name} (${service.category}
 
 VERY SPECIFIC FILTERING RULES WITH DETAILED EXAMPLES:
 
+🚨 CRITICAL: If event type is "Vacation", ONLY include these services: yacht-party-jboogie, photographer-premium, photographer-standard, catering-premium, catering-standard, dj-ceo, dj-standard, entertainment-live-band, entertainment-magician, exotic-car-bmw-2025, exotic-car-rolls-royce-ghost, exotic-car-mercedes-gwagon, exotic-car-range-rover, car-service-premium, car-service-standard, isit-corp. NEVER include sports services for vacation events.
+
 1. BIRTHDAY PARTY + RESTAURANT:
    ✅ INCLUDE: dj-ceo, dj-standard, photographer-premium, photographer-standard, catering-premium, catering-standard, decorations-premium, decorations-standard, exotic-car-bmw-2025, exotic-car-rolls-royce-ghost, exotic-car-mercedes-gwagon, exotic-car-range-rover, car-service-premium, car-service-standard, isit-corp, makeup-premium, makeup-standard, entertainment-live-band, entertainment-magician
    ❌ EXCLUDE: kids-birthday-package, sports-knicks-birthday, sports-knicks-jersey-signing, boxing-lessons-eric-kelly, golf-lessons-access, yacht-party-jboogie, baby-shower-package, wedding-metropolitan-package, wedding-venues, wellness-midtown-biohack, wellness-platinum-spa, coaching-ifs-ty-cutner
@@ -85,9 +87,15 @@ VERY SPECIFIC FILTERING RULES WITH DETAILED EXAMPLES:
    ❌ EXCLUDE: kids-birthday-package, sports-knicks-birthday, sports-knicks-jersey-signing, boxing-lessons-eric-kelly, golf-lessons-access, yacht-party-jboogie, baby-shower-package, wedding-metropolitan-package, wedding-venues, makeup-premium, makeup-standard, barber-mobile, entertainment-live-band, entertainment-magician
    📝 EXAMPLE: Wellness retreat or spa day - needs wellness services, biohacking, spa treatments, coaching sessions, photographer for wellness photos, healthy catering
 
+9. VACATION + ANY VENUE:
+   ✅ INCLUDE: yacht-party-jboogie, photographer-premium, photographer-standard, catering-premium, catering-standard, dj-ceo, dj-standard, entertainment-live-band, entertainment-magician, exotic-car-bmw-2025, exotic-car-rolls-royce-ghost, exotic-car-mercedes-gwagon, exotic-car-range-rover, car-service-premium, car-service-standard, isit-corp
+   ❌ EXCLUDE: kids-birthday-package, sports-knicks-birthday, sports-knicks-jersey-signing, boxing-lessons-eric-kelly, golf-lessons-access, baby-shower-package, wedding-metropolitan-package, wedding-venues, wellness-midtown-biohack, wellness-platinum-spa, coaching-ifs-ty-cutner, makeup-premium, makeup-standard, barber-mobile, decorations-premium, decorations-standard
+   📝 EXAMPLE: Vacation getaway - needs yacht experiences, photographer for memories, catering for meals, DJ for entertainment, exotic cars for transportation, live band for fun
+   🚫 CRITICAL: For VACATION events, NEVER include sports-knicks-birthday, sports-knicks-jersey-signing, boxing-lessons-eric-kelly, golf-lessons-access - these are birthday/sports specific, not vacation appropriate
+
 CRITICAL INSTRUCTIONS: 
 1. Return ONLY the JSON array, no other text. Start with [ and end with ].
-2. Use the EXACT event type "${request.eventType}" in your reasoning
+2. Use the EXACT event type "${request.eventType}" in your reasoning - if event type is "Vacation", use "Vacation" not "Birthday Party"
 3. Follow the filtering rules EXACTLY - only include services from the INCLUDE lists
 4. NEVER include services from the EXCLUDE lists
 5. For SPORTS ARENA venues, PRIORITIZE sports services (sports-knicks-birthday, sports-knicks-jersey-signing, boxing-lessons-eric-kelly, golf-lessons-access) and put them FIRST in the array
@@ -96,12 +104,15 @@ CRITICAL INSTRUCTIONS:
 8. For restaurants, include exotic cars and makeup services
 9. For weddings, include all wedding-related services
 10. For baby showers, keep it gentle and family-friendly
+11. For vacation events, focus on entertainment and experiences, not birthday-specific services
+12. NEVER use "Birthday Party" in reasoning when event type is "Vacation" - use "Vacation" instead
 
 SPECIFIC EXAMPLES OF PERFECT MATCHES:
 - Birthday Party + Restaurant: "Perfect for Birthday Party entertainment" (DJ), "Perfect for Birthday Party transportation" (exotic cars), "Perfect for Birthday Party beauty services" (makeup)
 - Birthday Party + Sports Arena: "Perfect for Birthday Party sports experience" (NY Knicks), "Perfect for Birthday Party entertainment" (DJ), "Perfect for Birthday Party photography" (action shots)
 - Wedding + Any Venue: "Perfect for Wedding celebration" (wedding packages), "Perfect for Wedding transportation" (exotic cars), "Perfect for Wedding beauty services" (makeup)
 - Sporting Events + Sports Arena: "Perfect for Sporting Events experience" (NY Knicks), "Perfect for Sporting Events entertainment" (DJ), "Perfect for Sporting Events photography" (action shots)
+- Vacation + Any Venue: "Perfect for Vacation entertainment" (DJ), "Perfect for Vacation transportation" (exotic cars), "Perfect for Vacation experience" (yacht party)
 
 Example format:
 [
