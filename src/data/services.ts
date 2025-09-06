@@ -432,15 +432,6 @@ export const VENUE_SERVICES: Service[] = [
     icon: '🏟️'
   },
   {
-    id: 'venue-madison-square-garden',
-    name: 'Madison Square Garden',
-    category: 'Venue',
-    description: 'The World\'s Most Famous Arena - iconic venue for sporting events, concerts, and special celebrations in the heart of New York City.',
-    price: 0,
-    priceDescription: 'Contact for pricing',
-    icon: '🏟️'
-  },
-  {
     id: 'venue-health-wellness',
     name: 'Health & Wellness',
     category: 'Venue',
