@@ -439,14 +439,5 @@ export const VENUE_SERVICES: Service[] = [
     price: 0,
     priceDescription: 'Contact for pricing',
     icon: '🧘‍♀️'
-  },
-  {
-    id: 'venue-madison-square-garden',
-    name: 'Madison Square Garden',
-    category: 'Venue',
-    description: 'The world\'s most famous arena, perfect for large-scale events, corporate gatherings, and special celebrations.',
-    price: 0,
-    priceDescription: 'Contact for pricing',
-    icon: '🏟️'
   }
 ]

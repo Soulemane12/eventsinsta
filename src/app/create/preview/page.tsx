@@ -3,8 +3,11 @@
 import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import AIRestaurantCard from '../../../components/AIRestaurantCard'
+import AISportsArenaCard from '../../../components/AISportsArenaCard'
 import { RESTAURANTS, getRestaurantPriceByGuestCount } from '../../../data/restaurants'
+import { SPORTS_ARENAS, getSportsArenaPriceByGuestCount } from '../../../data/sportsArenas'
 import { getAIRecommendations } from '../../../services/aiRecommendation'
+import { getAISportsArenaRecommendations } from '../../../services/aiSportsArenaRecommendation'
 import { SERVICES } from '../../../data/services'
 import Logo from '../../../components/Logo'
 
@@ -73,6 +76,14 @@ interface AIRecommendation {
   whyPerfect: string
 }
 
+interface AISportsArenaRecommendation {
+  arenaId: string
+  confidence: number
+  reasoning: string
+  bestPackage: string
+  whyPerfect: string
+}
+
 function getBudgetDisplay(budget: string): string {
   switch (budget) {
     case 'budget-1': return '$500 - $1,000'
@@ -124,7 +135,9 @@ function PreviewContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [aiRecommendations, setAiRecommendations] = useState<AIRecommendation[]>([])
+  const [aiSportsArenaRecommendations, setAiSportsArenaRecommendations] = useState<AISportsArenaRecommendation[]>([])
   const [selectedRestaurant, setSelectedRestaurant] = useState<string>('')
+  const [selectedSportsArena, setSelectedSportsArena] = useState<string>('')
   const [loading, setLoading] = useState(true)
   const [eventData, setEventData] = useState<EventData | null>(null)
 
@@ -159,25 +172,37 @@ function PreviewContent() {
     if (!eventData) return
 
     async function loadRecommendations() {
-      // Only load recommendations for restaurant venues
-      if (eventData!.venue !== 'venue-restaurant') {
-        setLoading(false)
-        setAiRecommendations([])
-        return
-      }
-
       setLoading(true)
       try {
-        const recommendations = await getAIRecommendations({
-          eventType: eventData!.eventType,
-          guestCount: eventData!.guestCount,
-          budget: eventData!.budget,
-          location: eventData!.location
-        })
-        setAiRecommendations(recommendations || [])
+        // Load restaurant recommendations
+        if (eventData!.venue === 'venue-restaurant') {
+          const recommendations = await getAIRecommendations({
+            eventType: eventData!.eventType,
+            guestCount: eventData!.guestCount,
+            budget: eventData!.budget,
+            location: eventData!.location
+          })
+          setAiRecommendations(recommendations || [])
+        } else {
+          setAiRecommendations([])
+        }
+
+        // Load sports arena recommendations
+        if (eventData!.venue === 'venue-sports-arena') {
+          const sportsArenaRecommendations = await getAISportsArenaRecommendations({
+            eventType: eventData!.eventType,
+            guestCount: eventData!.guestCount,
+            budget: eventData!.budget,
+            location: eventData!.location
+          })
+          setAiSportsArenaRecommendations(sportsArenaRecommendations || [])
+        } else {
+          setAiSportsArenaRecommendations([])
+        }
       } catch (error) {
         console.error('Failed to load AI recommendations:', error)
         setAiRecommendations([])
+        setAiSportsArenaRecommendations([])
       } finally {
         setLoading(false)
       }
@@ -191,15 +216,34 @@ function PreviewContent() {
     return aiRecommendations.find(rec => rec.restaurantId === restaurantId)
   }
 
+  const getRecommendationForSportsArena = (arenaId: string) => {
+    if (!aiSportsArenaRecommendations || aiSportsArenaRecommendations.length === 0) return undefined
+    return aiSportsArenaRecommendations.find(rec => rec.arenaId === arenaId)
+  }
+
   const recommendedRestaurants = RESTAURANTS.filter(restaurant => {
     if (!aiRecommendations || aiRecommendations.length === 0) return false
     return aiRecommendations.some(rec => rec.restaurantId === restaurant.id)
   })
 
+  const recommendedSportsArenas = SPORTS_ARENAS.filter(arena => {
+    if (!aiSportsArenaRecommendations || aiSportsArenaRecommendations.length === 0) return false
+    return aiSportsArenaRecommendations.some(rec => rec.arenaId === arena.id)
+  })
+
   const getTotalCost = () => {
-    if (!eventData || !selectedRestaurant) return 0
-    const restaurantCost = getRestaurantPriceByGuestCount(selectedRestaurant, eventData.guestCount)
-    return restaurantCost + eventData.servicesTotal
+    if (!eventData) return 0
+    
+    let venueCost = 0
+    if (selectedRestaurant) {
+      venueCost = getRestaurantPriceByGuestCount(selectedRestaurant, eventData.guestCount)
+    } else if (selectedSportsArena) {
+      venueCost = getSportsArenaPriceByGuestCount(selectedSportsArena, eventData.guestCount)
+    } else if (eventData.venue && eventData.venue !== 'venue-restaurant' && eventData.venue !== 'venue-sports-arena') {
+      venueCost = 4000 // Default venue cost
+    }
+    
+    return venueCost + eventData.servicesTotal
   }
 
   const getBudgetRange = (budget: string) => {
@@ -213,7 +257,7 @@ function PreviewContent() {
   }
 
   const isWithinBudget = () => {
-    if (!eventData || !selectedRestaurant) return true
+    if (!eventData || (!selectedRestaurant && !selectedSportsArena && eventData.venue === 'venue-restaurant')) return true
     const totalCost = getTotalCost()
     const budgetRange = getBudgetRange(eventData.budget)
     return totalCost >= budgetRange.min && totalCost <= budgetRange.max
@@ -240,11 +284,14 @@ function PreviewContent() {
         <div className="text-center">
             <h2 className="text-xl font-semibold mb-2">
               {eventData.venue === 'venue-restaurant' ? '🍽️ Choose Your Restaurant' : 
+               eventData.venue === 'venue-sports-arena' ? '🏟️ Choose Your Sports Arena' :
                (eventData.venue && eventData.venue !== '') ? '🏛️ Venue & Services Summary' : '🍽️ Perfect Restaurant Matches'}
             </h2>
             <p className="text-sm text-gray-600">
               {eventData.venue === 'venue-restaurant' 
                 ? 'Select from our curated list of restaurant venues for your event'
+                : eventData.venue === 'venue-sports-arena'
+                  ? 'Select from our curated list of sports arena venues for your event'
                 : (eventData.venue && eventData.venue !== '') 
                   ? `Your event will be held at your selected venue with the services you've chosen`
                   : 'We\'ve found the best restaurants for your event'
@@ -278,29 +325,9 @@ function PreviewContent() {
                 {eventData.venue === 'venue-boat' && 'Private yacht and boat rentals for unique waterfront events'}
                 {eventData.venue === 'venue-private-home' && 'Luxury private homes available for events'}
                 {eventData.venue === 'venue-event-space' && 'Dedicated event spaces and halls'}
-                {eventData.venue === 'venue-health-wellness' && 'Wellness centers, spas, and health facilities perfect for wellness retreats'}
-                {eventData.venue === 'venue-madison-square-garden' && 'The world\'s most famous arena, perfect for large-scale events'}
               </div>
               <div className="text-xs text-purple-600 mt-2">
                 ✅ Venue is confirmed for your event
-              </div>
-            </div>
-          </Card>
-        )}
-
-        {/* Sports Venue Selection Info */}
-        {eventData.venue === 'venue-sports-arena' && (
-          <Card className="p-4">
-            <div className="text-sm font-medium text-purple-800 mb-2">🏟️ Sports Venue Selected</div>
-            <div className="bg-blue-50 p-3 rounded-lg">
-              <div className="text-sm font-semibold text-blue-800 mb-1">
-                Sports Venue
-              </div>
-              <div className="text-xs text-blue-700">
-                You've chosen to host your event at a sports venue. Below you'll find our recommended sports venues that are perfect for your event type, guest count, and budget.
-              </div>
-              <div className="text-xs text-blue-600 mt-2">
-                💡 Select a sports venue below to proceed with your booking
               </div>
             </div>
           </Card>
@@ -319,6 +346,24 @@ function PreviewContent() {
               </div>
               <div className="text-xs text-blue-600 mt-2">
                 💡 Select a restaurant below to proceed with your booking
+              </div>
+            </div>
+          </Card>
+        )}
+
+        {/* Sports Arena Venue Selection Info */}
+        {eventData.venue === 'venue-sports-arena' && (
+          <Card className="p-4">
+            <div className="text-sm font-medium text-purple-800 mb-2">🏟️ Sports Arena Venue Selected</div>
+            <div className="bg-green-50 p-3 rounded-lg">
+              <div className="text-sm font-semibold text-green-800 mb-1">
+                Sports Arena Venue
+              </div>
+              <div className="text-xs text-green-700">
+                You've chosen to host your event at a sports arena venue. Below you'll find our recommended sports arenas that are perfect for your event type, guest count, and budget.
+              </div>
+              <div className="text-xs text-green-600 mt-2">
+                💡 Select a sports arena below to proceed with your booking
               </div>
             </div>
           </Card>
@@ -351,11 +396,15 @@ function PreviewContent() {
               </Card>
         )}
 
-        {/* Loading State - Only for Restaurant Venues */}
-        {eventData.venue === 'venue-restaurant' && loading && (
+        {/* Loading State - Only for Restaurant and Sports Arena Venues */}
+        {(eventData.venue === 'venue-restaurant' || eventData.venue === 'venue-sports-arena') && loading && (
           <div className="text-center py-8">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto mb-4"></div>
-            <p className="text-sm text-gray-600">Finding perfect restaurants for your event...</p>
+            <p className="text-sm text-gray-600">
+              {eventData.venue === 'venue-restaurant' 
+                ? 'Finding perfect restaurants for your event...' 
+                : 'Finding perfect sports arenas for your event...'}
+            </p>
           </div>
         )}
 
@@ -379,80 +428,24 @@ function PreviewContent() {
                   </div>
         )}
 
-        {/* Sports Venue Recommendations - Only for Sports Arena Venues */}
-        {eventData.venue === 'venue-sports-arena' && (
-          <div>
-            <h3 className="text-lg font-semibold mb-3">🏟️ Recommended Sports Venues</h3>
+        {/* AI Recommendations - Only for Sports Arena Venues */}
+        {eventData.venue === 'venue-sports-arena' && !loading && recommendedSportsArenas.length > 0 && (
+        <div>
+            <h3 className="text-lg font-semibold mb-3">🏟️ Recommended Sports Arenas</h3>
             <div className="space-y-4">
-              <Card className="p-4">
-                <div className="flex items-start justify-between mb-3">
-                  <div className="flex items-center gap-3">
-                    <div className="text-2xl">🏟️</div>
-                    <div>
-                      <h3 className="font-semibold text-gray-900">Madison Square Garden</h3>
-                      <p className="text-sm text-gray-600">The world's most famous arena, perfect for large-scale events, corporate gatherings, and special celebrations.</p>
+              {recommendedSportsArenas.map((arena) => (
+                <AISportsArenaCard
+                  key={arena.id}
+                  arena={arena}
+                  aiRecommendation={getRecommendationForSportsArena(arena.id)}
+                  onSelect={setSelectedSportsArena}
+                  isSelected={selectedSportsArena === arena.id}
+                  showDetails={true}
+                  guestCount={eventData.guestCount}
+                />
+              ))}
                     </div>
                   </div>
-                  <div className="px-2 py-1 rounded-full text-xs font-medium text-green-600 bg-green-50">
-                    Perfect Match
-                  </div>
-                </div>
-                
-                <div className="text-xs text-gray-600 mb-3">
-                  📍 New York, NY
-                </div>
-                
-                <div className="flex items-center gap-2 mb-3">
-                  <span className="text-xs text-gray-500">⭐</span>
-                  <span className="text-xs font-medium text-gray-700">
-                    Perfect Match
-                  </span>
-                  <span className="text-xs text-gray-500">
-                    (95% match)
-                  </span>
-                </div>
-                
-                <div className="text-xs text-gray-600 mb-3">
-                  Guest count is within capacity, and it's a premium sports venue in New York, NY
-                </div>
-                
-                <div className="text-sm font-semibold text-purple-600 mb-2">
-                  Best Package: Sports Event Package
-                </div>
-                
-                <div className="text-sm text-gray-700 mb-2">
-                  Price for {eventData.guestCount} guests
-                </div>
-                
-                <div className="text-lg font-bold text-purple-600 mb-3">
-                  $15,000 - $50,000
-                </div>
-                
-                <div className="text-xs text-gray-600 mb-2">
-                  Capacity: 2-20,000 guests
-                </div>
-                
-                <div className="flex flex-wrap gap-1 mb-3">
-                  <span className="px-2 py-1 bg-gray-100 text-xs text-gray-600 rounded">NY Knicks Games</span>
-                  <span className="px-2 py-1 bg-gray-100 text-xs text-gray-600 rounded">Boxing Matches</span>
-                  <span className="px-2 py-1 bg-gray-100 text-xs text-gray-600 rounded">Basketball Tournaments</span>
-                  <span className="px-2 py-1 bg-gray-100 text-xs text-gray-600 rounded">Private Suites</span>
-                  <span className="px-2 py-1 bg-gray-100 text-xs text-gray-600 rounded">+2 more</span>
-                </div>
-                
-                <div className="text-xs text-blue-600 mb-3">
-                  Show Details
-                </div>
-                
-                <Button 
-                  className="!h-10 text-sm"
-                  onClick={() => setSelectedRestaurant('madison-square-garden')}
-                >
-                  Select This Venue
-                </Button>
-              </Card>
-            </div>
-          </div>
         )}
 
         {/* No Recommendations - Only for Restaurant Venues */}
@@ -539,21 +532,102 @@ function PreviewContent() {
           </div>
         )}
 
+        {/* No Recommendations - Only for Sports Arena Venues */}
+        {eventData.venue === 'venue-sports-arena' && !loading && recommendedSportsArenas.length === 0 && (
+          <div className="bg-yellow-50 p-6 rounded-2xl text-center">
+            <div className="text-yellow-800 font-medium mb-2">🤖 AI Analysis: No Perfect Matches Found</div>
+            <div className="text-yellow-700 text-sm mb-4">
+              <div className="mb-4">
+                <strong>Your Event Details:</strong><br />
+                • Event Type: {eventData.eventType}<br />
+                • Guest Count: {eventData.guestCount} guests<br />
+                • Budget: {getBudgetDisplay(eventData.budget)}<br />
+                • Location: {eventData.location}
+              </div>
+              
+              <div className="bg-white p-4 rounded-lg text-left">
+                <div className="font-semibold text-yellow-800 mb-2">🤖 AI Reasoning:</div>
+                {aiSportsArenaRecommendations.length === 0 ? (
+                  <div className="space-y-2 text-sm">
+                    <div className="text-gray-700">
+                      <strong>Why no matches were found:</strong>
+                    </div>
+                    <ul className="space-y-1 ml-4">
+                      {eventData.guestCount > 200 && (
+                        <li>• <span className="text-red-600">Guest count ({eventData.guestCount}) exceeds maximum sports arena capacity (200)</span></li>
+                      )}
+                      {eventData.guestCount < 20 && (
+                        <li>• <span className="text-red-600">Guest count ({eventData.guestCount}) is too low for sports arena events (minimum 20)</span></li>
+                      )}
+                      {eventData.budget === 'budget-1' && eventData.guestCount > 20 && (
+                        <li>• <span className="text-red-600">Budget too low for {eventData.guestCount} guests - need higher budget tier</span></li>
+                      )}
+                      {eventData.eventType.toLowerCase().includes('corporate') && eventData.budget === 'budget-1' && (
+                        <li>• <span className="text-red-600">Corporate events require higher budget tier for premium sports arena service</span></li>
+                      )}
+                      <li>• <span className="text-orange-600">Location preferences may not match available sports arena locations</span></li>
+                      <li>• <span className="text-orange-600">Specific event type requirements not met by current sports arena partners</span></li>
+                    </ul>
+                  </div>
+                ) : (
+                  <div className="text-sm text-gray-700">
+                    <div className="mb-2">
+                      <strong>AI found {aiSportsArenaRecommendations.length} potential matches, but they don't meet your specific criteria:</strong>
+                    </div>
+                    {aiSportsArenaRecommendations.map((rec, index) => (
+                      <div key={index} className="mb-2 p-2 bg-gray-50 rounded">
+                        <div className="font-medium">{rec.arenaId.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}</div>
+                        <div className="text-xs text-gray-600">Confidence: {Math.round(rec.confidence * 100)}%</div>
+                        <div className="text-xs text-gray-600">{rec.reasoning}</div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+              
+              <div className="mt-4 text-sm">
+                <strong>💡 Suggestions:</strong>
+                <ul className="mt-2 text-left max-w-md mx-auto space-y-1">
+                  <li>• Adjust guest count to fit sports arena capacities (20-200 guests)</li>
+                  <li>• Increase budget for premium sports arena venues</li>
+                  <li>• Try a different event type</li>
+                  <li>• Consider different location options</li>
+                </ul>
+              </div>
+            </div>
+            
+            <div className="space-y-2">
+              <button
+                onClick={() => router.push('/create/guests')}
+                className="w-full px-4 py-2 bg-yellow-600 text-white rounded-lg text-sm font-medium hover:bg-yellow-700"
+              >
+                Adjust Event Details
+              </button>
+              <button
+                onClick={() => router.push('/create/customize')}
+                className="w-full px-4 py-2 bg-gray-600 text-white rounded-lg text-sm font-medium hover:bg-gray-700"
+              >
+                Try Different Event Type
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Cost Summary */}
-        {(selectedRestaurant || (eventData.venue && eventData.venue !== 'venue-restaurant' && eventData.venue !== 'venue-sports-arena')) && (
+        {(selectedRestaurant || selectedSportsArena || (eventData.venue && eventData.venue !== 'venue-restaurant' && eventData.venue !== 'venue-sports-arena')) && (
           <Card className="p-4">
             <div className="text-sm font-medium text-purple-800 mb-2">💰 Cost Summary</div>
             <div className="space-y-2 text-xs">
-              {selectedRestaurant && eventData.venue === 'venue-restaurant' && (
+              {selectedRestaurant && (
                 <div className="flex justify-between">
                   <span>Restaurant Cost ({eventData.guestCount} guests):</span>
                   <span className="font-semibold">${getRestaurantPriceByGuestCount(selectedRestaurant, eventData.guestCount)}</span>
                 </div>
               )}
-              {selectedRestaurant && eventData.venue === 'venue-sports-arena' && (
+              {selectedSportsArena && (
                 <div className="flex justify-between">
-                  <span>Sports Venue Cost ({eventData.guestCount} guests):</span>
-                  <span className="font-semibold">$15,000 - $50,000</span>
+                  <span>Sports Arena Cost ({eventData.guestCount} guests):</span>
+                  <span className="font-semibold">${getSportsArenaPriceByGuestCount(selectedSportsArena, eventData.guestCount)}</span>
                 </div>
               )}
               {eventData.venue && eventData.venue !== 'venue-restaurant' && eventData.venue !== 'venue-sports-arena' && (
@@ -572,7 +646,7 @@ function PreviewContent() {
                 <div className="flex justify-between font-bold">
                   <span>Total Cost:</span>
                   <span className="text-purple-600">
-                    ${eventData.servicesTotal + (selectedRestaurant ? (eventData.venue === 'venue-sports-arena' ? 32500 : getRestaurantPriceByGuestCount(selectedRestaurant, eventData.guestCount)) : 0) + (eventData.venue && eventData.venue !== 'venue-restaurant' && eventData.venue !== 'venue-sports-arena' ? 4000 : 0)}
+                    ${getTotalCost()}
                   </span>
                 </div>
               </div>
@@ -581,17 +655,17 @@ function PreviewContent() {
         )}
 
         {/* Success Message */}
-        {(selectedRestaurant || (eventData.venue && eventData.venue !== 'venue-restaurant' && eventData.venue !== 'venue-sports-arena')) && (
+        {(selectedRestaurant || selectedSportsArena || (eventData.venue && eventData.venue !== 'venue-restaurant' && eventData.venue !== 'venue-sports-arena')) && (
         <div className="bg-green-50 p-4 rounded-xl">
             <div className="text-sm font-medium text-green-800 mb-2">
-              {selectedRestaurant ? (eventData.venue === 'venue-sports-arena' ? '✅ Sports Venue Selected!' : '✅ Restaurant Selected!') : '✅ Venue Confirmed!'}
+              {selectedRestaurant ? '✅ Restaurant Selected!' : selectedSportsArena ? '✅ Sports Arena Selected!' : '✅ Venue Confirmed!'}
             </div>
           <div className="text-xs text-green-700">
-              {selectedRestaurant && eventData.venue === 'venue-sports-arena'
-                ? `Great choice! This sports venue is perfect for your ${eventData.eventType.toLowerCase()} celebration. 🏀 Perfect for sporting events like NY Knicks games, boxing matches, or basketball tournaments!`
-                : selectedRestaurant && eventData.venue === 'venue-restaurant'
-                  ? `Great choice! This restaurant is perfect for your ${eventData.eventType.toLowerCase()} celebration.`
-                  : eventData.venue === 'venue-madison-square-garden'
+              {selectedRestaurant 
+                ? `Great choice! This restaurant is perfect for your ${eventData.eventType.toLowerCase()} celebration.`
+                : selectedSportsArena
+                  ? `Excellent choice! ${SPORTS_ARENAS.find(a => a.id === selectedSportsArena)?.name} is perfect for your ${eventData.eventType.toLowerCase()} event. 🏀 Perfect for sporting events like NY Knicks games, boxing matches, or basketball tournaments!`
+                  : eventData.venue === 'venue-sports-arena' || eventData.venue === 'venue-madison-square-garden'
                     ? `Perfect! Your ${eventData.venue.replace('venue-', '').replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())} venue is confirmed for your event. 🏀 Perfect for sporting events like NY Knicks games, boxing matches, or basketball tournaments!`
                     : `Perfect! Your ${eventData.venue.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())} venue is confirmed for your event.`
               }
@@ -611,11 +685,12 @@ function PreviewContent() {
                 venue: eventData.venue,
                 services: eventData.services.join(','),
                 servicesTotal: eventData.servicesTotal.toString(),
-                selectedRestaurant: selectedRestaurant
+                selectedRestaurant: selectedRestaurant,
+                selectedSportsArena: selectedSportsArena
               })
               router.push(`/create/review?${params.toString()}`)
             }}
-            disabled={!selectedRestaurant && eventData.venue !== 'venue-restaurant' && eventData.venue !== 'venue-sports-arena'}
+            disabled={!selectedRestaurant && !selectedSportsArena && (eventData.venue === 'venue-restaurant' || eventData.venue === 'venue-sports-arena')}
           >
             Next: Book & Celebrate!
           </Button>
