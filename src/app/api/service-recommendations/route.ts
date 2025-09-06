@@ -41,7 +41,7 @@ VERY SPECIFIC FILTERING RULES WITH EXAMPLES:
 
 2. BIRTHDAY PARTY + SPORTS ARENA:
    ✅ INCLUDE: sports-knicks-birthday, sports-knicks-jersey-signing, boxing-lessons-eric-kelly, golf-lessons-access, dj-ceo, dj-standard, photographer-premium, photographer-standard, catering-premium, catering-standard
-   ❌ EXCLUDE: kids-birthday-package, yacht-party-jboogie, baby-shower-package, wedding-metropolitan-package, wedding-venues, wellness-midtown-biohack, wellness-platinum-spa, coaching-ifs-ty-cutner, makeup-premium, makeup-standard, barber-mobile
+   ❌ EXCLUDE: kids-birthday-package, yacht-party-jboogie, baby-shower-package, wedding-metropolitan-package, wedding-venues, wellness-midtown-biohack, wellness-platinum-spa, coaching-ifs-ty-cutner, makeup-premium, makeup-standard, barber-mobile, exotic-car-bmw-2025, exotic-car-rolls-royce-ghost, exotic-car-mercedes-gwagon, exotic-car-range-rover, car-service-premium, car-service-standard, isit-corp, decorations-premium, decorations-standard, entertainment-live-band, entertainment-magician
 
 3. BIRTHDAY PARTY + PRIVATE HOME:
    ✅ INCLUDE: dj-ceo, dj-standard, photographer-premium, photographer-standard, catering-premium, catering-standard, decorations-premium, decorations-standard, exotic-car-bmw-2025, exotic-car-rolls-royce-ghost, exotic-car-mercedes-gwagon, exotic-car-range-rover, car-service-premium, car-service-standard, isit-corp, makeup-premium, makeup-standard, entertainment-live-band, entertainment-magician
@@ -72,6 +72,8 @@ CRITICAL:
 2. Use the EXACT event type "${request.eventType}" in your reasoning
 3. Follow the filtering rules EXACTLY - only include services from the INCLUDE lists
 4. NEVER include services from the EXCLUDE lists
+5. For SPORTS ARENA venues, PRIORITIZE sports services (sports-knicks-birthday, sports-knicks-jersey-signing, boxing-lessons-eric-kelly, golf-lessons-access) and put them FIRST in the array
+6. For Birthday Party + Sports Arena, focus on SPORTS ACTIVITIES, not party decorations or exotic cars
 
 Example format:
 [
