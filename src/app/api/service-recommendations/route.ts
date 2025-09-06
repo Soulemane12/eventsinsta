@@ -6,6 +6,7 @@ interface ServiceRecommendationRequest {
   guestCount: number
   budget: string
   location?: string
+  venue?: string
   preferences?: string
 }
 
@@ -18,7 +19,7 @@ interface ServiceRecommendation {
 
 // Fallback service recommendation logic when AI is not available
 function getFallbackServiceRecommendations(request: ServiceRecommendationRequest): ServiceRecommendation[] {
-  const { eventType, guestCount, budget } = request
+  const { eventType, guestCount, budget, venue } = request
   
   const recommendations: ServiceRecommendation[] = []
   
@@ -154,7 +155,54 @@ function getFallbackServiceRecommendations(request: ServiceRecommendationRequest
     return service && service.price <= maxBudget
   })
   
-  return budgetFilteredRecommendations.slice(0, 5) // Limit to top 5 recommendations
+  // Filter by venue compatibility
+  const venueFilteredRecommendations = budgetFilteredRecommendations.filter(rec => {
+    const service = SERVICES.find(s => s.id === rec.serviceId)
+    if (!service || !venue) return true // If no venue specified, include all
+    
+    // Venue-specific filtering logic
+    const venueLower = venue.toLowerCase()
+    
+    // Private Home venues
+    if (venueLower.includes('private-home')) {
+      // Most services work in private homes
+      return !['venue-hamptons-pool', 'venue-boat'].includes(service.id)
+    }
+    
+    // Boat venues
+    if (venueLower.includes('boat')) {
+      // Limited services on boats
+      return ['dj-ceo', 'dj-standard', 'photographer-premium', 'photographer-standard', 'catering-premium', 'catering-standard'].includes(service.id)
+    }
+    
+    // Restaurant venues
+    if (venueLower.includes('restaurant')) {
+      // Most services work in restaurants
+      return !['venue-hamptons-pool', 'venue-boat'].includes(service.id)
+    }
+    
+    // Event Space venues
+    if (venueLower.includes('event-space')) {
+      // Most services work in event spaces
+      return !['venue-hamptons-pool', 'venue-boat'].includes(service.id)
+    }
+    
+    // Sports Arena venues
+    if (venueLower.includes('sports-arena')) {
+      // Sports-related services and entertainment
+      return ['sports-knicks-birthday', 'dj-ceo', 'dj-standard', 'photographer-premium', 'photographer-standard', 'catering-premium', 'catering-standard'].includes(service.id)
+    }
+    
+    // Health & Wellness venues
+    if (venueLower.includes('health-wellness')) {
+      // Wellness-focused services
+      return ['emotional-mental-coaching', 'midtown-biohack', 'platinum-wellness-spa', 'photographer-premium', 'photographer-standard'].includes(service.id)
+    }
+    
+    return true // Default: include all services
+  })
+  
+  return venueFilteredRecommendations.slice(0, 5) // Limit to top 5 recommendations
 }
 
 async function getAIServiceRecommendations(request: ServiceRecommendationRequest): Promise<ServiceRecommendation[]> {
@@ -181,14 +229,16 @@ ${SERVICES.map(service => `
 
 Based on the user's request, recommend ONLY the services that are the best fit. Consider:
 - Event type compatibility
+- Venue type compatibility (if specified)
 - Guest count appropriateness
 - Budget range match
-- Service relevance to the event type
+- Service relevance to the event type and venue combination
 
-IMPORTANT: Only recommend services that make sense for the specific event type and budget. If no services are suitable, return an empty array.
+IMPORTANT: Only recommend services that make sense for the specific event type, venue, and budget combination. If no services are suitable, return an empty array.
 
 User Request:
 - Event Type: ${request.eventType}
+- Venue: ${request.venue || 'Not specified'}
 - Guest Count: ${request.guestCount}
 - Budget: ${request.budget}
 - Location: ${request.location || 'New York City'}
@@ -232,7 +282,7 @@ If no services match the user's requirements, return an empty array. Be honest a
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { eventType, guestCount, budget, location, preferences } = body
+    const { eventType, guestCount, budget, location, venue, preferences } = body
 
     if (!eventType || !guestCount || !budget) {
       return NextResponse.json(
@@ -241,7 +291,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    console.log('Processing service recommendation request:', { eventType, guestCount, budget, location, preferences })
+    console.log('Processing service recommendation request:', { eventType, guestCount, budget, location, venue, preferences })
     console.log('GROQ_API_KEY available:', !!process.env.GROQ_API_KEY)
 
     const recommendations = await getAIServiceRecommendations({
@@ -249,6 +299,7 @@ export async function POST(request: NextRequest) {
       guestCount,
       budget,
       location,
+      venue,
       preferences
     })
 

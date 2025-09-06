@@ -218,6 +218,8 @@ function ServicesContent() {
   const [isLoadingRecommendations, setIsLoadingRecommendations] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
   const [filterCategory, setFilterCategory] = useState('')
+  const [aiFilteredServices, setAiFilteredServices] = useState<string[]>([])
+  const [isLoadingAiFilter, setIsLoadingAiFilter] = useState(false)
 
   useEffect(() => {
     // Aggressive cleanup of corrupted localStorage data on component mount
@@ -427,6 +429,48 @@ function ServicesContent() {
     }
   }, [eventType, guestCount, budget, location])
 
+  // AI-powered service filtering based on event type and venue
+  useEffect(() => {
+    if (eventType && venue && !isLoadingAiFilter) {
+      setIsLoadingAiFilter(true)
+      
+      const getAiFilteredServices = async () => {
+        try {
+          const response = await fetch('/api/service-recommendations', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              eventType: eventType,
+              guestCount: parseInt(guestCount) || 2,
+              budget: budget,
+              location: location,
+              venue: venue,
+              preferences: `Filter services that make sense for ${eventType} events at ${venue} venues. Only show services that are relevant and appropriate for this combination.`
+            }),
+          })
+
+          if (response.ok) {
+            const data = await response.json()
+            const filteredServiceIds = data.recommendations?.map((rec: any) => rec.serviceId) || []
+            setAiFilteredServices(filteredServiceIds)
+          } else {
+            // Fallback to basic filtering if AI fails
+            setAiFilteredServices([])
+          }
+        } catch (error) {
+          console.error('Error getting AI-filtered services:', error)
+          setAiFilteredServices([])
+        } finally {
+          setIsLoadingAiFilter(false)
+        }
+      }
+
+      getAiFilteredServices()
+    }
+  }, [eventType, venue, guestCount, budget, location])
+
   function next() {
     const params = new URLSearchParams({
       eventType: eventType,
@@ -500,11 +544,39 @@ function ServicesContent() {
           </div>
         </div>
 
+        {/* AI Filter Loading */}
+        {isLoadingAiFilter && (
+          <div className="bg-blue-50 p-4 rounded-xl">
+            <div className="text-sm font-medium text-blue-800 mb-2">🤖 Filtering Services...</div>
+            <div className="text-xs text-blue-700">
+              Analyzing your {eventType} event at {venue} venue to show only relevant services.
+            </div>
+          </div>
+        )}
+
+        {/* AI Filter Active */}
+        {!isLoadingAiFilter && aiFilteredServices.length > 0 && (
+          <div className="bg-green-50 p-4 rounded-xl">
+            <div className="text-sm font-medium text-green-800 mb-2">✨ Smart Filtering Active</div>
+            <div className="text-xs text-green-700">
+              Showing only services that make sense for your {eventType} event at {venue} venue. 
+              {aiFilteredServices.length} relevant services found.
+            </div>
+          </div>
+        )}
+
         {/* Services by Category */}
         <div className="space-y-6">
           {SERVICE_CATEGORIES.map(category => {
-            // Filter services based on search term and category filter
+            // Start with all services in category
             let categoryServices = SERVICES.filter(service => service.category === category)
+            
+            // Apply AI filtering based on event type and venue
+            if (aiFilteredServices.length > 0) {
+              categoryServices = categoryServices.filter(service => 
+                aiFilteredServices.includes(service.id)
+              )
+            }
             
             // Apply search filter
             if (searchTerm) {
