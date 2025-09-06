@@ -20,7 +20,7 @@ export default function Logo({ size = 'md', className = '' }: LogoProps) {
         alt="EventsInsta"
         width={size === 'sm' ? 32 : size === 'md' ? 48 : 64}
         height={size === 'sm' ? 32 : size === 'md' ? 48 : 64}
-        className={`${sizeClasses[size]} -mt-2`}
+        className={`${sizeClasses[size]} -mt-3`}
         priority
       />
     </div>
