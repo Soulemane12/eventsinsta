@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import AIRestaurantCard from '../../components/AIRestaurantCard'
 import { RESTAURANTS } from '../../data/restaurants'
 import { getAIRecommendations } from '../../services/aiRecommendation'
+import Logo from '../../components/Logo'
 
 const BrandPurple = 'bg-purple-800'
 const BrandPurpleHover = 'hover:bg-purple-900'
@@ -116,10 +117,11 @@ export default function RestaurantTest() {
   return (
     <div className="max-w-md mx-auto min-h-screen bg-gray-50">
       <div className="sticky top-0 bg-white z-10">
-        <div className="flex items-center gap-2 p-4">
+        <div className="flex items-center gap-3 p-4">
           <button onClick={() => router.back()} className="w-9 h-9 grid place-items-center rounded-full hover:bg-gray-100" aria-label="Back">
             ←
           </button>
+          <Logo size="md" />
           <div className="text-2xl font-semibold">Restaurant Recommendations Test</div>
         </div>
       </div>
