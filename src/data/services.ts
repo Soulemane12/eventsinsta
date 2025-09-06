@@ -229,6 +229,15 @@ export const SERVICES: Service[] = [
     priceDescription: '$2,000 starting price',
     icon: '⚽'
   },
+  {
+    id: 'boxing-lessons-eric-kelly',
+    name: 'Boxing Lessons by Eric Kelly',
+    category: 'Sporting Events',
+    description: 'Professional boxing training sessions with Eric Kelly. Expert instruction for all skill levels, from beginners to advanced fighters.',
+    price: 100,
+    priceDescription: '$100 per hour',
+    icon: '🥊'
+  },
 
 
 
@@ -325,6 +334,15 @@ export const SERVICES: Service[] = [
     price: 1000,
     priceDescription: '$1,000 per session',
     icon: '🧘'
+  },
+  {
+    id: 'emotional-mental-coaching-ifs',
+    name: 'Emotional & Mental Coaching (IFS by Ty Cutner)',
+    category: 'Health & Wellness',
+    description: 'Professional Internal Family Systems (IFS) coaching sessions with Ty Cutner. Transformative emotional and mental wellness coaching for groups.',
+    price: 1500,
+    priceDescription: '$1,500 for group of 5 (2 hours)',
+    icon: '🧠'
   },
 
   // Yacht Party
