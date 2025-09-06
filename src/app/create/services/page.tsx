@@ -565,6 +565,17 @@ function ServicesContent() {
           </div>
         )}
 
+        {/* Fallback Filter Active */}
+        {!isLoadingAiFilter && aiFilteredServices.length === 0 && eventType && venue && (
+          <div className="bg-blue-50 p-4 rounded-xl">
+            <div className="text-sm font-medium text-blue-800 mb-2">🎯 Smart Filtering Active</div>
+            <div className="text-xs text-blue-700">
+              Showing only services that make sense for your {eventType} event at {venue} venue. 
+              Irrelevant services have been filtered out.
+            </div>
+          </div>
+        )}
+
         {/* Services by Category */}
         <div className="space-y-6">
           {SERVICE_CATEGORIES.map(category => {
@@ -609,6 +620,25 @@ function ServicesContent() {
                       serviceCategoryLower.includes('health') ||
                       serviceCategoryLower.includes('vacation') ||
                       serviceCategoryLower.includes('sporting')) {
+                    return false
+                  }
+                }
+                
+                if (eventTypeLower.includes('sporting')) {
+                  // For sporting events, focus on sports-related services and exclude non-sports services
+                  if (serviceNameLower.includes('baby shower') || 
+                      serviceNameLower.includes('wedding') ||
+                      serviceNameLower.includes('kids birthday') ||
+                      serviceNameLower.includes('wellness') ||
+                      serviceNameLower.includes('spa') ||
+                      serviceNameLower.includes('biohack') ||
+                      serviceNameLower.includes('coaching') ||
+                      serviceNameLower.includes('aruba') ||
+                      serviceNameLower.includes('vacation') ||
+                      serviceCategoryLower.includes('wedding') ||
+                      serviceCategoryLower.includes('kids') ||
+                      serviceCategoryLower.includes('health') ||
+                      serviceCategoryLower.includes('vacation')) {
                     return false
                   }
                 }

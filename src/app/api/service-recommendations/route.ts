@@ -253,6 +253,25 @@ function getFallbackServiceRecommendations(request: ServiceRecommendationRequest
       }
     }
     
+    if (eventTypeLower.includes('sporting')) {
+      // For sporting events, focus on sports-related services and exclude non-sports services
+      if (serviceNameLower.includes('baby shower') || 
+          serviceNameLower.includes('wedding') ||
+          serviceNameLower.includes('kids birthday') ||
+          serviceNameLower.includes('wellness') ||
+          serviceNameLower.includes('spa') ||
+          serviceNameLower.includes('biohack') ||
+          serviceNameLower.includes('coaching') ||
+          serviceNameLower.includes('aruba') ||
+          serviceNameLower.includes('vacation') ||
+          serviceCategoryLower.includes('wedding') ||
+          serviceCategoryLower.includes('kids') ||
+          serviceCategoryLower.includes('health') ||
+          serviceCategoryLower.includes('vacation')) {
+        return false
+      }
+    }
+    
     // Venue specific filtering
     if (venueLower.includes('boat')) {
       // For boat venues, exclude large items and venue services
@@ -333,6 +352,7 @@ IMPORTANT: Only show services that logically make sense for this specific event 
 - Birthday + Restaurant: Show entertainment, catering, photography, but NOT baby shower services
 - Wedding + Private Home: Show wedding services, entertainment, catering, but NOT kids birthday services
 - Corporate + Sports Arena: Show corporate services, team building, but NOT personal wellness services
+- Sporting Events + Any Venue: Show sports-related services (golf, basketball, boxing, etc.), entertainment, photography, but NOT baby shower, wedding, wellness services
 
 Be selective and only include services that are actually relevant to the specific event type and venue combination.
 
