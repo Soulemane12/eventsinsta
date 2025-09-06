@@ -397,45 +397,54 @@ export const VENUE_SERVICES: Service[] = [
   },
   {
     id: 'venue-boat',
-    name: 'JBoogie\'s Yacht',
+    name: 'Boat',
     category: 'Venue',
-    description: 'Luxurious private yacht rentals for unique waterfront events and celebrations.',
+    description: 'Private yacht and boat rentals for unique waterfront events and celebrations.',
     price: 0,
     priceDescription: 'Contact for pricing',
     icon: '🛥️'
   },
   {
     id: 'venue-restaurant',
-    name: 'The Plaza Hotel',
+    name: 'Restaurant',
     category: 'Venue',
-    description: 'Luxurious private dining rooms at The Plaza Hotel for intimate or large gatherings.',
+    description: 'Private dining rooms and restaurant venues for intimate or large gatherings.',
     price: 0,
     priceDescription: 'Contact for pricing',
     icon: '🍽️'
   },
   {
     id: 'venue-event-space',
-    name: 'The Metropolitan Pavilion',
+    name: 'Event Space',
     category: 'Venue',
-    description: 'Elegant event spaces at The Metropolitan Pavilion perfect for conferences, parties, and special occasions.',
+    description: 'Dedicated event spaces and halls perfect for conferences, parties, and special occasions.',
     price: 0,
     priceDescription: 'Contact for pricing',
     icon: '🏛️'
   },
   {
     id: 'venue-sports-arena',
+    name: 'Sports Arena',
+    category: 'Venue',
+    description: 'Professional sports arenas and stadiums for large-scale events, corporate gatherings, and special celebrations.',
+    price: 0,
+    priceDescription: 'Contact for pricing',
+    icon: '🏟️'
+  },
+  {
+    id: 'venue-madison-square-garden',
     name: 'Madison Square Garden',
     category: 'Venue',
-    description: 'The world\'s most famous arena - Madison Square Garden. Perfect for large-scale events, corporate gatherings, and special celebrations.',
+    description: 'The World\'s Most Famous Arena - iconic venue for sporting events, concerts, and special celebrations in the heart of New York City.',
     price: 0,
     priceDescription: 'Contact for pricing',
     icon: '🏟️'
   },
   {
     id: 'venue-health-wellness',
-    name: 'Equinox Fitness Club',
+    name: 'Health & Wellness',
     category: 'Venue',
-    description: 'Premium wellness facilities at Equinox Fitness Club perfect for wellness retreats, corporate wellness events, and relaxation-focused gatherings.',
+    description: 'Wellness centers, spas, and health facilities perfect for wellness retreats, corporate wellness events, and relaxation-focused gatherings.',
     price: 0,
     priceDescription: 'Contact for pricing',
     icon: '🧘‍♀️'

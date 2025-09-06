@@ -487,7 +487,9 @@ function PreviewContent() {
           <div className="text-xs text-green-700">
               {selectedRestaurant 
                 ? `Great choice! This restaurant is perfect for your ${eventData.eventType.toLowerCase()} celebration.`
-                : `Perfect! Your ${eventData.venue.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())} venue is confirmed for your event.`
+                : eventData.venue === 'venue-sports-arena' || eventData.venue === 'venue-madison-square-garden'
+                  ? `Perfect! Your ${eventData.venue.replace('venue-', '').replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())} venue is confirmed for your event. 🏀 Perfect for sporting events like NY Knicks games, boxing matches, or basketball tournaments!`
+                  : `Perfect! Your ${eventData.venue.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())} venue is confirmed for your event.`
               }
             </div>
           </div>

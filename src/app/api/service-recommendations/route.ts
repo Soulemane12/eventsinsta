@@ -43,11 +43,19 @@ VERY SPECIFIC FILTERING RULES WITH EXAMPLES:
    ✅ INCLUDE: sports-knicks-birthday, sports-knicks-jersey-signing, boxing-lessons-eric-kelly, golf-lessons-access, dj-ceo, dj-standard, photographer-premium, photographer-standard, catering-premium, catering-standard
    ❌ EXCLUDE: kids-birthday-package, yacht-party-jboogie, baby-shower-package, wedding-metropolitan-package, wedding-venues, wellness-midtown-biohack, wellness-platinum-spa, coaching-ifs-ty-cutner, makeup-premium, makeup-standard, barber-mobile, exotic-car-bmw-2025, exotic-car-rolls-royce-ghost, exotic-car-mercedes-gwagon, exotic-car-range-rover, car-service-premium, car-service-standard, isit-corp, decorations-premium, decorations-standard, entertainment-live-band, entertainment-magician
 
+2b. BIRTHDAY PARTY + MADISON SQUARE GARDEN:
+   ✅ INCLUDE: sports-knicks-birthday, sports-knicks-jersey-signing, boxing-lessons-eric-kelly, golf-lessons-access, dj-ceo, dj-standard, photographer-premium, photographer-standard, catering-premium, catering-standard
+   ❌ EXCLUDE: kids-birthday-package, yacht-party-jboogie, baby-shower-package, wedding-metropolitan-package, wedding-venues, wellness-midtown-biohack, wellness-platinum-spa, coaching-ifs-ty-cutner, makeup-premium, makeup-standard, barber-mobile, exotic-car-bmw-2025, exotic-car-rolls-royce-ghost, exotic-car-mercedes-gwagon, exotic-car-range-rover, car-service-premium, car-service-standard, isit-corp, decorations-premium, decorations-standard, entertainment-live-band, entertainment-magician
+
 3. BIRTHDAY PARTY + PRIVATE HOME:
    ✅ INCLUDE: dj-ceo, dj-standard, photographer-premium, photographer-standard, catering-premium, catering-standard, decorations-premium, decorations-standard, exotic-car-bmw-2025, exotic-car-rolls-royce-ghost, exotic-car-mercedes-gwagon, exotic-car-range-rover, car-service-premium, car-service-standard, isit-corp, makeup-premium, makeup-standard, entertainment-live-band, entertainment-magician
    ❌ EXCLUDE: kids-birthday-package, sports-knicks-birthday, sports-knicks-jersey-signing, boxing-lessons-eric-kelly, golf-lessons-access, yacht-party-jboogie, baby-shower-package, wedding-metropolitan-package, wedding-venues, wellness-midtown-biohack, wellness-platinum-spa, coaching-ifs-ty-cutner
 
 4. SPORTING EVENTS + ANY VENUE:
+   ✅ INCLUDE: sports-knicks-birthday, sports-knicks-jersey-signing, boxing-lessons-eric-kelly, golf-lessons-access, dj-ceo, dj-standard, photographer-premium, photographer-standard, catering-premium, catering-standard
+   ❌ EXCLUDE: kids-birthday-package, yacht-party-jboogie, baby-shower-package, wedding-metropolitan-package, wedding-venues, wellness-midtown-biohack, wellness-platinum-spa, coaching-ifs-ty-cutner, makeup-premium, makeup-standard, barber-mobile
+
+4b. SPORTING EVENTS + MADISON SQUARE GARDEN:
    ✅ INCLUDE: sports-knicks-birthday, sports-knicks-jersey-signing, boxing-lessons-eric-kelly, golf-lessons-access, dj-ceo, dj-standard, photographer-premium, photographer-standard, catering-premium, catering-standard
    ❌ EXCLUDE: kids-birthday-package, yacht-party-jboogie, baby-shower-package, wedding-metropolitan-package, wedding-venues, wellness-midtown-biohack, wellness-platinum-spa, coaching-ifs-ty-cutner, makeup-premium, makeup-standard, barber-mobile
 
