@@ -456,7 +456,8 @@ function ServicesContent() {
             const filteredServiceIds = data.recommendations?.map((rec: any) => rec.serviceId) || []
             setAiFilteredServices(filteredServiceIds)
           } else {
-            // Fallback to basic filtering if AI fails
+            // AI failed to return results
+            console.error('AI filtering failed - no recommendations returned')
             setAiFilteredServices([])
           }
         } catch (error) {
@@ -567,10 +568,10 @@ function ServicesContent() {
 
         {/* AI Filter Failed */}
         {!isLoadingAiFilter && aiFilteredServices.length === 0 && eventType && venue && (
-          <div className="bg-yellow-50 p-4 rounded-xl">
-            <div className="text-sm font-medium text-yellow-800 mb-2">⚠️ AI Filtering Not Working</div>
-            <div className="text-xs text-yellow-700">
-              AI filtering is not working properly. Showing all services. Please check the AI service or try again.
+          <div className="bg-red-50 p-4 rounded-xl">
+            <div className="text-sm font-medium text-red-800 mb-2">❌ AI Filtering Not Working</div>
+            <div className="text-xs text-red-700">
+              AI filtering is not working. Showing all services. Please check the AI service configuration or try again later.
             </div>
           </div>
         )}

@@ -17,321 +17,11 @@ interface ServiceRecommendation {
   whyPerfect: string
 }
 
-// Fallback service recommendation logic when AI is not available
-function getFallbackServiceRecommendations(request: ServiceRecommendationRequest): ServiceRecommendation[] {
-  const { eventType, guestCount, budget, venue } = request
-  
-  const recommendations: ServiceRecommendation[] = []
-  
-  // Parse budget range
-  const budgetRange = budget.split(' - ')
-  const minBudget = parseInt(budgetRange[0]?.replace(/[^0-9]/g, '') || '0')
-  const maxBudget = parseInt(budgetRange[1]?.replace(/[^0-9]/g, '') || '0')
-  
-  // Birthday events
-  if (eventType.toLowerCase().includes('birthday')) {
-    if (guestCount <= 12) {
-      // Kids birthday
-      recommendations.push({
-        serviceId: 'kids-birthday-package',
-        confidence: 0.95,
-        reasoning: 'Complete birthday package for kids ages 2-12',
-        whyPerfect: 'All-inclusive package with decorations, activities, and entertainment for up to 35 kids.'
-      })
-    } else {
-      // Adult birthday
-      recommendations.push({
-        serviceId: 'dj-ceo',
-        confidence: 0.90,
-        reasoning: 'Professional DJ for birthday celebration',
-        whyPerfect: 'Premium sound system and lighting for a memorable birthday party.'
-      })
-      recommendations.push({
-        serviceId: 'photographer-premium',
-        confidence: 0.85,
-        reasoning: 'Professional photography to capture birthday memories',
-        whyPerfect: '4 hours of photography and videography to document the special day.'
-      })
-    }
-  }
-  
-  // Anniversary events
-  if (eventType.toLowerCase().includes('anniversary')) {
-    recommendations.push({
-      serviceId: 'photographer-premium',
-      confidence: 0.95,
-      reasoning: 'Professional photography for romantic anniversary',
-      whyPerfect: 'Capture precious moments with 4 hours of photography and videography.'
-    })
-    if (maxBudget >= 2000) {
-      recommendations.push({
-        serviceId: 'exotic-car-rolls-royce-ghost',
-        confidence: 0.80,
-        reasoning: 'Luxury transportation for special anniversary',
-        whyPerfect: 'Ultra-luxury Rolls Royce for an unforgettable anniversary experience.'
-      })
-    }
-  }
-  
-  // Holiday party events
-  if (eventType.toLowerCase().includes('holiday')) {
-    recommendations.push({
-      serviceId: 'dj-ceo',
-      confidence: 0.90,
-      reasoning: 'Professional DJ for holiday celebration',
-      whyPerfect: 'Premium sound system and lighting for festive holiday atmosphere.'
-    })
-    recommendations.push({
-      serviceId: 'decorations-premium',
-      confidence: 0.85,
-      reasoning: 'Holiday decorations and setup',
-      whyPerfect: 'Full event decoration to create a festive holiday atmosphere.'
-    })
-  }
-  
-  // Wedding events
-  if (eventType.toLowerCase().includes('wedding')) {
-    recommendations.push({
-      serviceId: 'wedding-metropolitan',
-      confidence: 0.98,
-      reasoning: 'Wedding venue package for 250 guests',
-      whyPerfect: 'Complete wedding package including venue, food, and liquor for 5 hours.'
-    })
-    recommendations.push({
-      serviceId: 'photographer-premium',
-      confidence: 0.95,
-      reasoning: 'Professional wedding photography',
-      whyPerfect: 'Essential for capturing wedding memories with 4 hours of coverage.'
-    })
-    recommendations.push({
-      serviceId: 'makeup-premium',
-      confidence: 0.90,
-      reasoning: 'Professional makeup for wedding party',
-      whyPerfect: 'Premium makeup and hair styling for the special day.'
-    })
-  }
-  
-  // Corporate events
-  if (eventType.toLowerCase().includes('corporate')) {
-    recommendations.push({
-      serviceId: 'catering-premium',
-      confidence: 0.90,
-      reasoning: 'Professional catering for corporate event',
-      whyPerfect: 'Full-service catering with wait staff for professional presentation.'
-    })
-    if (maxBudget >= 5000) {
-      recommendations.push({
-        serviceId: 'venue-hamptons-pool',
-        confidence: 0.80,
-        reasoning: 'Premium venue for corporate retreat',
-        whyPerfect: 'Luxury Hamptons venue with pool for upscale corporate events.'
-      })
-    }
-  }
-  
-  // Sports events
-  if (eventType.toLowerCase().includes('sports') || eventType.toLowerCase().includes('knicks')) {
-    recommendations.push({
-      serviceId: 'sports-knicks-birthday',
-      confidence: 0.95,
-      reasoning: 'NY Knicks game experience',
-      whyPerfect: 'Lower-level tickets with drinks and birthday shoutout on Jumbotron.'
-    })
-  }
-  
-  // Vacation events
-  if (eventType.toLowerCase().includes('vacation') || eventType.toLowerCase().includes('travel')) {
-    recommendations.push({
-      serviceId: 'vacation-aruba-swiss-paradise',
-      confidence: 0.95,
-      reasoning: '5-night vacation package to Aruba',
-      whyPerfect: 'All-inclusive resort experience with flight from JFK.'
-    })
-  }
-  
-  // Filter by budget
-  const budgetFilteredRecommendations = recommendations.filter(rec => {
-    const service = SERVICES.find(s => s.id === rec.serviceId)
-    return service && service.price <= maxBudget
-  })
-  
-  // Filter by event type and venue compatibility - be intelligent about what makes sense
-  const smartFilteredRecommendations = budgetFilteredRecommendations.filter(rec => {
-    const service = SERVICES.find(s => s.id === rec.serviceId)
-    if (!service) return false
-    
-    // Always exclude venue services when a venue is already selected
-    if (service.category === 'Venue') {
-      return false
-    }
-    
-    const eventTypeLower = eventType.toLowerCase()
-    const venueLower = venue?.toLowerCase() || ''
-    const serviceNameLower = service.name.toLowerCase()
-    const serviceCategoryLower = service.category.toLowerCase()
-    
-    // Event type specific filtering
-    if (eventTypeLower.includes('birthday')) {
-      // For birthdays, exclude services that don't make sense for birthday parties
-      if (serviceNameLower.includes('baby shower') || 
-          serviceNameLower.includes('wedding') ||
-          serviceNameLower.includes('kids birthday') ||
-          serviceNameLower.includes('wellness') ||
-          serviceNameLower.includes('spa') ||
-          serviceNameLower.includes('biohack') ||
-          serviceNameLower.includes('coaching') ||
-          serviceNameLower.includes('boxing') ||
-          serviceNameLower.includes('aruba') ||
-          serviceNameLower.includes('vacation') ||
-          serviceNameLower.includes('knicks') ||
-          serviceNameLower.includes('golf') ||
-          serviceNameLower.includes('sporting') ||
-          serviceCategoryLower.includes('wedding') ||
-          serviceCategoryLower.includes('kids') ||
-          serviceCategoryLower.includes('health') ||
-          serviceCategoryLower.includes('vacation') ||
-          serviceCategoryLower.includes('sporting')) {
-        return false
-      }
-    }
-    
-    if (eventTypeLower.includes('wedding')) {
-      // For weddings, exclude services that don't make sense for weddings
-      if (serviceNameLower.includes('kids birthday') || 
-          serviceNameLower.includes('baby shower') ||
-          serviceNameLower.includes('kids') ||
-          serviceNameLower.includes('boxing') ||
-          serviceNameLower.includes('aruba') ||
-          serviceNameLower.includes('vacation') ||
-          serviceNameLower.includes('wellness') ||
-          serviceNameLower.includes('spa') ||
-          serviceNameLower.includes('biohack') ||
-          serviceNameLower.includes('coaching') ||
-          serviceCategoryLower.includes('kids') ||
-          serviceCategoryLower.includes('vacation') ||
-          serviceCategoryLower.includes('health')) {
-        return false
-      }
-    }
-    
-    if (eventTypeLower.includes('baby shower')) {
-      // For baby showers, exclude services that don't make sense for baby showers
-      if (serviceNameLower.includes('wedding') || 
-          serviceNameLower.includes('kids birthday') ||
-          serviceNameLower.includes('boxing') ||
-          serviceNameLower.includes('aruba') ||
-          serviceNameLower.includes('vacation') ||
-          serviceNameLower.includes('wellness') ||
-          serviceNameLower.includes('spa') ||
-          serviceNameLower.includes('biohack') ||
-          serviceNameLower.includes('coaching') ||
-          serviceCategoryLower.includes('wedding') ||
-          serviceCategoryLower.includes('kids') ||
-          serviceCategoryLower.includes('vacation') ||
-          serviceCategoryLower.includes('health')) {
-        return false
-      }
-    }
-    
-    if (eventTypeLower.includes('corporate')) {
-      // For corporate events, exclude personal services
-      if (serviceNameLower.includes('baby shower') || 
-          serviceNameLower.includes('kids birthday') ||
-          serviceNameLower.includes('wedding') ||
-          serviceNameLower.includes('kids') ||
-          serviceNameLower.includes('aruba') ||
-          serviceNameLower.includes('vacation') ||
-          serviceNameLower.includes('wellness') ||
-          serviceNameLower.includes('spa') ||
-          serviceNameLower.includes('biohack') ||
-          serviceNameLower.includes('coaching') ||
-          serviceCategoryLower.includes('kids') ||
-          serviceCategoryLower.includes('wedding') ||
-          serviceCategoryLower.includes('vacation') ||
-          serviceCategoryLower.includes('health')) {
-        return false
-      }
-    }
-    
-    if (eventTypeLower.includes('sporting')) {
-      // For sporting events, focus on sports-related services and exclude non-sports services
-      if (serviceNameLower.includes('baby shower') || 
-          serviceNameLower.includes('wedding') ||
-          serviceNameLower.includes('kids birthday') ||
-          serviceNameLower.includes('wellness') ||
-          serviceNameLower.includes('spa') ||
-          serviceNameLower.includes('biohack') ||
-          serviceNameLower.includes('coaching') ||
-          serviceNameLower.includes('aruba') ||
-          serviceNameLower.includes('vacation') ||
-          serviceCategoryLower.includes('wedding') ||
-          serviceCategoryLower.includes('kids') ||
-          serviceCategoryLower.includes('health') ||
-          serviceCategoryLower.includes('vacation')) {
-        return false
-      }
-    }
-    
-    // Venue specific filtering
-    if (venueLower.includes('boat')) {
-      // For boat venues, exclude large items and venue services
-      if (serviceNameLower.includes('exotic car') || 
-          serviceNameLower.includes('bmw') ||
-          serviceNameLower.includes('rolls royce') ||
-          serviceNameLower.includes('mercedes') ||
-          serviceNameLower.includes('range rover')) {
-        return false
-      }
-    }
-    
-    if (venueLower.includes('sports-arena')) {
-      // For sports arenas, focus on sports and entertainment services
-      if (serviceNameLower.includes('wellness') || 
-          serviceNameLower.includes('spa') ||
-          serviceNameLower.includes('biohack') ||
-          serviceNameLower.includes('coaching') ||
-          serviceNameLower.includes('yacht') ||
-          serviceNameLower.includes('boat') ||
-          serviceNameLower.includes('makeup') ||
-          serviceNameLower.includes('barber')) {
-        return false
-      }
-    }
-    
-    if (venueLower.includes('health-wellness')) {
-      // For health & wellness venues, focus on wellness services
-      if (serviceNameLower.includes('exotic car') || 
-          serviceNameLower.includes('bmw') ||
-          serviceNameLower.includes('rolls royce') ||
-          serviceNameLower.includes('mercedes') ||
-          serviceNameLower.includes('range rover') ||
-          serviceNameLower.includes('sports') ||
-          serviceNameLower.includes('knicks')) {
-        return false
-      }
-    }
-    
-    if (venueLower.includes('restaurant')) {
-      // For restaurant venues, exclude services that don't make sense in restaurants
-      if (serviceNameLower.includes('yacht') ||
-          serviceNameLower.includes('boat')) {
-        return false
-      }
-    }
-    
-    return true // Include all other services
-  })
-  
-  // Return empty array to force AI filtering
-  // If AI fails, we want to show all services rather than use fallback logic
-  return []
-}
-
 async function getAIServiceRecommendations(request: ServiceRecommendationRequest): Promise<ServiceRecommendation[]> {
   // Check if API key is available
   if (!process.env.GROQ_API_KEY) {
-    console.log('No GROQ_API_KEY found, using fallback service recommendations')
-    return getFallbackServiceRecommendations(request)
+    console.log('No GROQ_API_KEY found, AI filtering not available')
+    throw new Error('AI filtering not available - GROQ_API_KEY missing')
   }
 
   try {
@@ -416,16 +106,11 @@ EXAMPLES OF BAD MATCHES (NEVER INCLUDE):
       model: 'llama-3.3-70b-versatile',
       messages: [
         {
-          role: 'system',
-          content: 'You are an expert event planning AI that provides service recommendations. Always respond with valid JSON only. It is perfectly acceptable to return an empty array if no services match the requirements.'
-        },
-        {
           role: 'user',
           content: prompt
         }
       ],
-      response_format: { type: 'json_object' },
-      temperature: 0.3,
+      temperature: 0.1,
       max_tokens: 1000
     })
 
@@ -433,8 +118,7 @@ EXAMPLES OF BAD MATCHES (NEVER INCLUDE):
     return result.recommendations || []
   } catch (error) {
     console.error('AI service recommendation error:', error)
-    console.log('Falling back to rule-based service recommendations')
-    return getFallbackServiceRecommendations(request)
+    throw new Error('AI filtering failed: ' + (error instanceof Error ? error.message : String(error)))
   }
 }
 
@@ -451,7 +135,6 @@ export async function POST(request: NextRequest) {
     }
 
     console.log('Processing service recommendation request:', { eventType, guestCount, budget, location, venue, preferences })
-    console.log('GROQ_API_KEY available:', !!process.env.GROQ_API_KEY)
 
     const recommendations = await getAIServiceRecommendations({
       eventType,
@@ -468,7 +151,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Service recommendation API route error:', error)
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: 'AI filtering failed: ' + (error instanceof Error ? error.message : String(error)) },
       { status: 500 }
     )
   }
