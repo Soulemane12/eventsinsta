@@ -143,8 +143,8 @@ function DetailsContent() {
                   value={time}
                   onChange={(e) => {
                     const value = e.target.value
-                    // Basic validation for HH:MM format
-                    if (value === '' || /^\d{2}:\d{2}$/.test(value) || /^\d{1,2}:\d{2}$/.test(value)) {
+                    // Allow typing - only restrict to numbers and colon
+                    if (value === '' || /^[\d:]*$/.test(value)) {
                       setTime(value)
                     }
                   }}
