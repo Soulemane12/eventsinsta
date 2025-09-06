@@ -651,6 +651,20 @@ function ServicesContent() {
                   }
                 }
                 
+                if (venueLower.includes('sports-arena')) {
+                  // For sports arenas, focus on sports and entertainment services
+                  if (serviceNameLower.includes('wellness') || 
+                      serviceNameLower.includes('spa') ||
+                      serviceNameLower.includes('biohack') ||
+                      serviceNameLower.includes('coaching') ||
+                      serviceNameLower.includes('yacht') ||
+                      serviceNameLower.includes('boat') ||
+                      serviceNameLower.includes('makeup') ||
+                      serviceNameLower.includes('barber')) {
+                    return false
+                  }
+                }
+                
                 return true
               })
             }
