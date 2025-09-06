@@ -135,12 +135,61 @@ function DetailsContent() {
           </Field>
 
           <Field label="Event Date">
-            <Input 
-              type="date" 
-              value={date} 
-              onChange={e=>setDate(e.target.value)}
-              className="text-base"
-            />
+            <div className="flex items-center gap-2">
+              <div className="flex-1">
+                <Input 
+                  type="number"
+                  placeholder="MM"
+                  min="1"
+                  max="12"
+                  value={date.split('-')[1] || ''}
+                  onChange={e => {
+                    const month = e.target.value.padStart(2, '0')
+                    const currentDate = date.split('-')
+                    const newDate = `${currentDate[0] || ''}-${month}-${currentDate[2] || ''}`
+                    setDate(newDate)
+                  }}
+                  className="text-center text-base"
+                />
+                <div className="text-xs text-gray-500 text-center mt-1">Month</div>
+              </div>
+              <div className="text-2xl text-gray-400">/</div>
+              <div className="flex-1">
+                <Input 
+                  type="number"
+                  placeholder="DD"
+                  min="1"
+                  max="31"
+                  value={date.split('-')[2] || ''}
+                  onChange={e => {
+                    const day = e.target.value.padStart(2, '0')
+                    const currentDate = date.split('-')
+                    const newDate = `${currentDate[0] || ''}-${currentDate[1] || ''}-${day}`
+                    setDate(newDate)
+                  }}
+                  className="text-center text-base"
+                />
+                <div className="text-xs text-gray-500 text-center mt-1">Day</div>
+              </div>
+              <div className="text-2xl text-gray-400">/</div>
+              <div className="flex-1">
+                <Input 
+                  type="number"
+                  placeholder="YYYY"
+                  min="2024"
+                  max="2030"
+                  value={date.split('-')[0] || ''}
+                  onChange={e => {
+                    const year = e.target.value
+                    const currentDate = date.split('-')
+                    const newDate = `${year}-${currentDate[1] || ''}-${currentDate[2] || ''}`
+                    setDate(newDate)
+                  }}
+                  className="text-center text-base"
+                />
+                <div className="text-xs text-gray-500 text-center mt-1">Year</div>
+              </div>
+            </div>
           </Field>
 
           <Field label="Start Time">
