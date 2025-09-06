@@ -67,14 +67,6 @@ VERY SPECIFIC FILTERING RULES WITH EXAMPLES:
    ✅ INCLUDE: wellness-midtown-biohack, wellness-platinum-spa, coaching-ifs-ty-cutner, photographer-premium, photographer-standard, catering-premium, catering-standard
    ❌ EXCLUDE: kids-birthday-package, sports-knicks-birthday, sports-knicks-jersey-signing, boxing-lessons-eric-kelly, golf-lessons-access, yacht-party-jboogie, baby-shower-package, wedding-metropolitan-package, wedding-venues, makeup-premium, makeup-standard, barber-mobile, entertainment-live-band, entertainment-magician
 
-9. VACATION + BOAT/YACHT:
-   ✅ INCLUDE: yacht-party-jboogie, photographer-premium, photographer-standard, catering-premium, catering-standard, dj-ceo, dj-standard, entertainment-live-band, entertainment-magician
-   ❌ EXCLUDE: kids-birthday-package, sports services, baby-shower-package, wedding services, wellness services, makeup, barber, exotic cars, car services, decorations
-
-10. VACATION + ANY OTHER VENUE:
-   ✅ INCLUDE: photographer-premium, photographer-standard, catering-premium, catering-standard, dj-ceo, dj-standard, entertainment-live-band, entertainment-magician, exotic-car-bmw-2025, exotic-car-rolls-royce-ghost, exotic-car-mercedes-gwagon, exotic-car-range-rover, car-service-premium, car-service-standard, isit-corp
-   ❌ EXCLUDE: kids-birthday-package, sports services, yacht-party-jboogie, baby-shower-package, wedding services, wellness services, makeup, barber, decorations
-
 CRITICAL: 
 1. Return ONLY the JSON array, no other text. Start with [ and end with ].
 2. Use the EXACT event type "${request.eventType}" in your reasoning
@@ -82,8 +74,6 @@ CRITICAL:
 4. NEVER include services from the EXCLUDE lists
 5. For SPORTS ARENA venues, PRIORITIZE sports services (sports-knicks-birthday, sports-knicks-jersey-signing, boxing-lessons-eric-kelly, golf-lessons-access) and put them FIRST in the array
 6. For Birthday Party + Sports Arena, focus on SPORTS ACTIVITIES, not party decorations or exotic cars
-7. For VACATION + BOAT/YACHT, PRIORITIZE yacht-party-jboogie and put it FIRST in the array
-8. For Vacation events, focus on ENTERTAINMENT and EXPERIENCES, not formal event services
 
 Example format:
 [
