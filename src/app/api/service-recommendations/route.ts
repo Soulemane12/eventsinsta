@@ -290,12 +290,7 @@ function getFallbackServiceRecommendations(request: ServiceRecommendationRequest
     
     if (venueLower.includes('restaurant')) {
       // For restaurant venues, exclude services that don't make sense in restaurants
-      if (serviceNameLower.includes('exotic car') || 
-          serviceNameLower.includes('bmw') ||
-          serviceNameLower.includes('rolls royce') ||
-          serviceNameLower.includes('mercedes') ||
-          serviceNameLower.includes('range rover') ||
-          serviceNameLower.includes('yacht') ||
+      if (serviceNameLower.includes('yacht') ||
           serviceNameLower.includes('boat')) {
         return false
       }

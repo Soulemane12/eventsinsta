@@ -615,12 +615,7 @@ function ServicesContent() {
                 
                 // Venue specific filtering
                 if (venueLower.includes('restaurant')) {
-                  if (serviceNameLower.includes('exotic car') || 
-                      serviceNameLower.includes('bmw') ||
-                      serviceNameLower.includes('rolls royce') ||
-                      serviceNameLower.includes('mercedes') ||
-                      serviceNameLower.includes('range rover') ||
-                      serviceNameLower.includes('yacht') ||
+                  if (serviceNameLower.includes('yacht') ||
                       serviceNameLower.includes('boat')) {
                     return false
                   }
