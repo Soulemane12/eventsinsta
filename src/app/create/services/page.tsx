@@ -565,13 +565,12 @@ function ServicesContent() {
           </div>
         )}
 
-        {/* Fallback Filter Active */}
+        {/* AI Filter Failed */}
         {!isLoadingAiFilter && aiFilteredServices.length === 0 && eventType && venue && (
-          <div className="bg-blue-50 p-4 rounded-xl">
-            <div className="text-sm font-medium text-blue-800 mb-2">🎯 Smart Filtering Active</div>
-            <div className="text-xs text-blue-700">
-              Showing only services that make sense for your {eventType} event at {venue} venue. 
-              Irrelevant services have been filtered out.
+          <div className="bg-yellow-50 p-4 rounded-xl">
+            <div className="text-sm font-medium text-yellow-800 mb-2">⚠️ AI Filtering Not Working</div>
+            <div className="text-xs text-yellow-700">
+              AI filtering is not working properly. Showing all services. Please check the AI service or try again.
             </div>
           </div>
         )}
@@ -588,85 +587,9 @@ function ServicesContent() {
                 aiFilteredServices.includes(service.id)
               )
             } else if (eventType && venue && !isLoadingAiFilter) {
-              // Apply fallback filtering when AI filtering is not available
-              categoryServices = categoryServices.filter(service => {
-                const eventTypeLower = eventType.toLowerCase()
-                const venueLower = venue.toLowerCase()
-                const serviceNameLower = service.name.toLowerCase()
-                const serviceCategoryLower = service.category.toLowerCase()
-                
-                // Always exclude venue services when a venue is already selected
-                if (service.category === 'Venue') {
-                  return false
-                }
-                
-                // Event type specific filtering
-                if (eventTypeLower.includes('birthday')) {
-                  if (serviceNameLower.includes('baby shower') || 
-                      serviceNameLower.includes('wedding') ||
-                      serviceNameLower.includes('kids birthday') ||
-                      serviceNameLower.includes('wellness') ||
-                      serviceNameLower.includes('spa') ||
-                      serviceNameLower.includes('biohack') ||
-                      serviceNameLower.includes('coaching') ||
-                      serviceNameLower.includes('boxing') ||
-                      serviceNameLower.includes('aruba') ||
-                      serviceNameLower.includes('vacation') ||
-                      serviceNameLower.includes('knicks') ||
-                      serviceNameLower.includes('golf') ||
-                      serviceNameLower.includes('sporting') ||
-                      serviceCategoryLower.includes('wedding') ||
-                      serviceCategoryLower.includes('kids') ||
-                      serviceCategoryLower.includes('health') ||
-                      serviceCategoryLower.includes('vacation') ||
-                      serviceCategoryLower.includes('sporting')) {
-                    return false
-                  }
-                }
-                
-                if (eventTypeLower.includes('sporting')) {
-                  // For sporting events, focus on sports-related services and exclude non-sports services
-                  if (serviceNameLower.includes('baby shower') || 
-                      serviceNameLower.includes('wedding') ||
-                      serviceNameLower.includes('kids birthday') ||
-                      serviceNameLower.includes('wellness') ||
-                      serviceNameLower.includes('spa') ||
-                      serviceNameLower.includes('biohack') ||
-                      serviceNameLower.includes('coaching') ||
-                      serviceNameLower.includes('aruba') ||
-                      serviceNameLower.includes('vacation') ||
-                      serviceCategoryLower.includes('wedding') ||
-                      serviceCategoryLower.includes('kids') ||
-                      serviceCategoryLower.includes('health') ||
-                      serviceCategoryLower.includes('vacation')) {
-                    return false
-                  }
-                }
-                
-                // Venue specific filtering
-                if (venueLower.includes('restaurant')) {
-                  if (serviceNameLower.includes('yacht') ||
-                      serviceNameLower.includes('boat')) {
-                    return false
-                  }
-                }
-                
-                if (venueLower.includes('sports-arena')) {
-                  // For sports arenas, focus on sports and entertainment services
-                  if (serviceNameLower.includes('wellness') || 
-                      serviceNameLower.includes('spa') ||
-                      serviceNameLower.includes('biohack') ||
-                      serviceNameLower.includes('coaching') ||
-                      serviceNameLower.includes('yacht') ||
-                      serviceNameLower.includes('boat') ||
-                      serviceNameLower.includes('makeup') ||
-                      serviceNameLower.includes('barber')) {
-                    return false
-                  }
-                }
-                
-                return true
-              })
+              // If AI filtering failed, show all services (let user choose)
+              // This ensures the AI filtering is working properly
+              console.log('AI filtering failed, showing all services for debugging')
             }
             
             // Apply search filter

@@ -322,7 +322,9 @@ function getFallbackServiceRecommendations(request: ServiceRecommendationRequest
     return true // Include all other services
   })
   
-  return smartFilteredRecommendations
+  // Return empty array to force AI filtering
+  // If AI fails, we want to show all services rather than use fallback logic
+  return []
 }
 
 async function getAIServiceRecommendations(request: ServiceRecommendationRequest): Promise<ServiceRecommendation[]> {
@@ -347,18 +349,40 @@ ${SERVICES.map(service => `
   Price: $${service.price}
 `).join('\n')}
 
-Based on the user's request, identify services that make logical sense for this specific event type and venue combination. Consider:
-- Event type compatibility (e.g., don't show baby shower services for birthday parties)
-- Venue type compatibility (e.g., don't show exotic cars for boat venues)
-- Service relevance to the event type and venue combination
+You are an expert event planning AI. Analyze the event context and ONLY recommend services that make perfect logical sense for this specific event type and venue combination.
 
-IMPORTANT: Only show services that logically make sense for this specific event type and venue. For example:
-- Birthday + Restaurant: Show entertainment, catering, photography, but NOT baby shower services
-- Wedding + Private Home: Show wedding services, entertainment, catering, but NOT kids birthday services
-- Corporate + Sports Arena: Show corporate services, team building, but NOT personal wellness services
-- Sporting Events + Any Venue: Show sports-related services (golf, basketball, boxing, etc.), entertainment, photography, but NOT baby shower, wedding, wellness services
+EVENT CONTEXT ANALYSIS:
+- Event Type: ${request.eventType}
+- Venue: ${request.venue || 'Not specified'}
+- Guest Count: ${request.guestCount}
+- Budget: ${request.budget}
+- Location: ${request.location || 'New York City'}
 
-Be selective and only include services that are actually relevant to the specific event type and venue combination.
+FILTERING RULES - BE VERY SELECTIVE:
+
+1. EVENT TYPE FILTERING:
+   - Birthday Parties: Include entertainment, catering, photography, decorations, exotic cars. EXCLUDE: baby shower, wedding, kids birthday, wellness, spa, coaching, boxing, vacation, sporting events
+   - Wedding Events: Include wedding services, entertainment, photography, catering. EXCLUDE: kids birthday, baby shower, boxing, vacation, wellness, sporting events
+   - Sporting Events: Include sports activities (NY Knicks, golf, boxing), entertainment, photography. EXCLUDE: baby shower, wedding, kids birthday, wellness, spa, vacation
+   - Corporate Events: Include professional services, team building, entertainment. EXCLUDE: baby shower, kids birthday, wedding, vacation, wellness, sporting events
+   - Baby Shower: Include baby shower services, gentle entertainment, photography. EXCLUDE: wedding, kids birthday, boxing, vacation, wellness, sporting events
+
+2. VENUE FILTERING:
+   - Restaurant: Include most services. EXCLUDE: yacht, boat services
+   - Sports Arena: Include sports, entertainment, catering, photography. EXCLUDE: wellness, spa, yacht, boat, makeup, barber
+   - Private Home: Include most services. EXCLUDE: venue services (since venue already selected)
+   - Boat/Yacht: Include entertainment, photography, catering. EXCLUDE: exotic cars, venue services
+   - Health & Wellness: Include wellness services, photography. EXCLUDE: exotic cars, sports, yacht, boat
+
+3. STRICT EXCLUSIONS:
+   - Always exclude venue services when a venue is already selected
+   - Never show baby shower services for birthday parties
+   - Never show wedding services for non-wedding events
+   - Never show yacht services for non-water venues
+   - Never show exotic cars for boat venues
+   - Never show wellness services for sporting events
+
+BE VERY SELECTIVE: Only include services that are 100% appropriate for this specific event type AND venue combination.
 
 User Request:
 - Event Type: ${request.eventType}
@@ -368,13 +392,24 @@ User Request:
 - Location: ${request.location || 'New York City'}
 - Additional Preferences: ${request.preferences || 'None specified'}
 
-Respond with a JSON array of relevant services, each containing:
+RESPOND WITH A JSON ARRAY of services that are 100% appropriate for this event. Each service should include:
 - serviceId: the exact service ID from the list above
-- confidence: 0-1 score indicating relevance (0.7+ means highly relevant)
-- reasoning: brief explanation of why this service makes sense for this specific event type and venue
-- whyPerfect: what makes this service appropriate for this event
+- confidence: 0.9-1.0 score (only include services you're 90%+ confident about)
+- reasoning: specific explanation of why this service is perfect for this event type + venue combination
+- whyPerfect: what makes this service ideal for this specific event context
 
-Only include services that are actually relevant to the specific event type and venue combination. Be selective and logical in your choices.
+CRITICAL: Be extremely selective. If you have any doubt about a service's appropriateness, DO NOT include it. Better to show fewer, perfectly relevant services than to include anything questionable.
+
+EXAMPLES OF PERFECT MATCHES:
+- Birthday + Restaurant: DJ services, photography, catering, decorations, exotic cars
+- Sporting Events + Sports Arena: NY Knicks packages, golf lessons, boxing lessons, photography, catering
+- Wedding + Private Home: wedding services, formal entertainment, photography, catering
+
+EXAMPLES OF BAD MATCHES (NEVER INCLUDE):
+- Baby shower services for birthday parties
+- Yacht services for sports arenas
+- Wedding services for sporting events
+- Wellness services for birthday parties
 `
 
     const response = await groq.chat.completions.create({
