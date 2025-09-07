@@ -368,9 +368,9 @@ export const VENUE_SERVICES: Service[] = [
   },
   {
     id: 'venue-yacht',
-    name: 'JBoogie Brooklyn Yacht Tours',
+    name: 'Yacht',
     category: 'Venue',
-    description: 'Private yacht party experience. 3-hour rental includes captain, snacks, light refreshments, and 3 bottles of premium liquor.',
+    description: 'Private yacht rentals for unique waterfront events and celebrations.',
     price: 2500,
     priceDescription: '$2,500 for 3 hours',
     icon: '🛥️'
