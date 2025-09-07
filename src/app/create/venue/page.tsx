@@ -148,6 +148,11 @@ function VenueContent() {
               Planning: {eventType} in {location}
             </div>
           )}
+          {date && startTime && endTime && (
+            <div className="mt-1 text-sm text-gray-600">
+              📅 {date} • ⏰ {startTime} - {endTime}
+            </div>
+          )}
         </div>
 
         <div className="space-y-3">
