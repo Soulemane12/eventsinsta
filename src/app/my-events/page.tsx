@@ -88,6 +88,7 @@ function MyEventsContent() {
   const [events, setEvents] = useState<EventData[]>([])
   const [filter, setFilter] = useState<'all' | 'upcoming' | 'completed' | 'cancelled'>('all')
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null)
+  const [cancelReason, setCancelReason] = useState('')
 
   useEffect(() => {
     // In a real app, this would fetch from a database
@@ -137,20 +138,26 @@ function MyEventsContent() {
     }
   }
 
-  const deleteEvent = (eventId: string) => {
-    const updatedEvents = events.filter(event => event.id !== eventId)
-    setEvents(updatedEvents)
-    localStorage.setItem('userEvents', JSON.stringify(updatedEvents))
-    setShowDeleteConfirm(null)
-  }
+  const cancelOrDeleteEvent = (eventId: string) => {
+    const event = events.find(e => e.id === eventId)
+    if (!event) return
 
-  const cancelEvent = (eventId: string) => {
-    const updatedEvents = events.map(event => 
-      event.id === eventId ? { ...event, status: 'cancelled' as const } : event
-    )
-    setEvents(updatedEvents)
-    localStorage.setItem('userEvents', JSON.stringify(updatedEvents))
+    if (event.status === 'upcoming') {
+      // Cancel the event
+      const updatedEvents = events.map(event => 
+        event.id === eventId ? { ...event, status: 'cancelled' as const } : event
+      )
+      setEvents(updatedEvents)
+      localStorage.setItem('userEvents', JSON.stringify(updatedEvents))
+    } else {
+      // Delete the event
+      const updatedEvents = events.filter(event => event.id !== eventId)
+      setEvents(updatedEvents)
+      localStorage.setItem('userEvents', JSON.stringify(updatedEvents))
+    }
+    
     setShowDeleteConfirm(null)
+    setCancelReason('')
   }
 
   return (
@@ -277,30 +284,13 @@ function MyEventsContent() {
                     </button>
                   </div>
                   
-                  {event.status === 'upcoming' && (
+                  {(event.status === 'upcoming' || event.status === 'cancelled') && (
                     <div className="flex gap-2">
                       <button
                         onClick={() => setShowDeleteConfirm(event.id)}
                         className="flex-1 py-2 px-3 text-sm bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors"
                       >
-                        Cancel Event
-                      </button>
-                      <button
-                        onClick={() => setShowDeleteConfirm(event.id)}
-                        className="flex-1 py-2 px-3 text-sm bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition-colors"
-                      >
-                        Delete Event
-                      </button>
-                    </div>
-                  )}
-                  
-                  {event.status === 'cancelled' && (
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => setShowDeleteConfirm(event.id)}
-                        className="flex-1 py-2 px-3 text-sm bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition-colors"
-                      >
-                        Delete Event
+                        {event.status === 'upcoming' ? 'Cancel Event' : 'Delete Event'}
                       </button>
                     </div>
                   )}
@@ -329,33 +319,36 @@ function MyEventsContent() {
             <div className="bg-white rounded-2xl p-6 max-w-sm w-full">
               <div className="text-center">
                 <div className="text-4xl mb-4">⚠️</div>
-                <h3 className="text-lg font-semibold mb-2">Confirm Action</h3>
-                <p className="text-gray-600 text-sm mb-6">
-                  Are you sure you want to {events.find(e => e.id === showDeleteConfirm)?.status === 'upcoming' ? 'cancel' : 'delete'} this event? 
-                  {events.find(e => e.id === showDeleteConfirm)?.status === 'upcoming' ? ' This action cannot be undone.' : ' This will permanently remove the event.'}
+                <h3 className="text-lg font-semibold mb-2">
+                  {events.find(e => e.id === showDeleteConfirm)?.status === 'upcoming' ? 'Cancel Event' : 'Delete Event'}
+                </h3>
+                <p className="text-gray-600 text-sm mb-4">
+                  Please tell us why you're {events.find(e => e.id === showDeleteConfirm)?.status === 'upcoming' ? 'canceling' : 'deleting'} this event:
                 </p>
+                <textarea
+                  placeholder="Enter your reason here..."
+                  value={cancelReason}
+                  onChange={(e) => setCancelReason(e.target.value)}
+                  className="w-full p-3 border border-gray-300 rounded-lg text-sm mb-4 resize-none"
+                  rows={3}
+                />
                 <div className="flex gap-3">
                   <button
-                    onClick={() => setShowDeleteConfirm(null)}
+                    onClick={() => {
+                      setShowDeleteConfirm(null)
+                      setCancelReason('')
+                    }}
                     className="flex-1 py-2 px-4 text-sm bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
                   >
                     Cancel
                   </button>
-                  {events.find(e => e.id === showDeleteConfirm)?.status === 'upcoming' ? (
-                    <button
-                      onClick={() => cancelEvent(showDeleteConfirm)}
-                      className="flex-1 py-2 px-4 text-sm bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
-                    >
-                      Cancel Event
-                    </button>
-                  ) : (
-                    <button
-                      onClick={() => deleteEvent(showDeleteConfirm)}
-                      className="flex-1 py-2 px-4 text-sm bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
-                    >
-                      Delete Event
-                    </button>
-                  )}
+                  <button
+                    onClick={() => cancelOrDeleteEvent(showDeleteConfirm)}
+                    disabled={!cancelReason.trim()}
+                    className="flex-1 py-2 px-4 text-sm bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {events.find(e => e.id === showDeleteConfirm)?.status === 'upcoming' ? 'Cancel Event' : 'Delete Event'}
+                  </button>
                 </div>
               </div>
             </div>
