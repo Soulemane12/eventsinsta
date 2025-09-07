@@ -331,7 +331,7 @@ function DetailsContent() {
                       setDateError('')
                     }
                   }}
-                  className={`text-center text-base ${dateError ? 'border-red-500' : ''} ${!dateError && date.split('-')[1] && date.split('-')[1].length === 2 ? 'border-green-500' : ''}`}
+                  className={`text-center text-base ${dateError ? 'border-red-500' : ''} ${!dateError && date && date.split('-')[0] && date.split('-')[1] && date.split('-')[2] && date.split('-')[0].length === 4 && date.split('-')[1].length === 2 && date.split('-')[2].length === 2 ? 'border-green-500' : ''}`}
                 />
                 <div className="text-xs text-gray-500 text-center mt-1">Month</div>
               </div>
@@ -370,62 +370,46 @@ function DetailsContent() {
                       setDateError('')
                     }
                   }}
-                  className={`text-center text-base ${dateError ? 'border-red-500' : ''} ${!dateError && date.split('-')[2] && date.split('-')[2].length === 2 ? 'border-green-500' : ''}`}
+                  className={`text-center text-base ${dateError ? 'border-red-500' : ''} ${!dateError && date && date.split('-')[0] && date.split('-')[1] && date.split('-')[2] && date.split('-')[0].length === 4 && date.split('-')[1].length === 2 && date.split('-')[2].length === 2 ? 'border-green-500' : ''}`}
                 />
                 <div className="text-xs text-gray-500 text-center mt-1">Day</div>
               </div>
               <div className="text-2xl text-gray-400">/</div>
               <div className="flex-1">
-                <Input 
-                  type="number"
+                <Input
+                  type="text"
                   placeholder="YYYY"
-                  min="2024"
-                  max="2030"
                   maxLength={4}
                   value={date.split('-')[0] || ''}
                   onChange={e => {
                     let year = e.target.value
-                    
-                    // Allow empty values for deletion
-                    if (year === '') {
-                      const currentDate = date.split('-')
-                      const newDate = `${''}-${currentDate[1] || ''}-${currentDate[2] || ''}`
-                      setDate(newDate)
-                      setDateError('')
-                      return
-                    }
                     
                     // Limit to 4 digits
                     if (year.length > 4) {
                       year = year.slice(0, 4)
                     }
                     
-                    // Only validate if it's a complete number
-                    if (year && !isNaN(parseInt(year))) {
-                      const yearNum = parseInt(year)
-                      if (yearNum < 2024 || yearNum > 2030) {
-                        return // Don't update if invalid
-                      }
-                      
-                      // Prevent years starting with 0 (like 0010, 0025, etc.)
-                      if (year.length === 4 && year.startsWith('0')) {
-                        return // Don't update if starts with 0
-                      }
-                    }
-                    
+                    // Allow all input - no restrictions during typing
                     const currentDate = date.split('-')
                     const newDate = `${year}-${currentDate[1] || ''}-${currentDate[2] || ''}`
                     setDate(newDate)
                     
+                    // Clear errors while typing
+                    setDateError('')
+                  }}
+                  onBlur={e => {
+                    // Validate when user finishes typing
+                    const currentDate = date.split('-')
+                    
                     // Only validate if we have a complete date
-                    if (year && currentDate[1] && currentDate[2]) {
-                      const error = validateDate(year, currentDate[1], currentDate[2])
+                    if (currentDate[0] && currentDate[1] && currentDate[2]) {
+                      const error = validateDate(currentDate[0], currentDate[1], currentDate[2])
                       setDateError(error)
                     } else {
                       setDateError('')
                     }
                   }}
-                  className={`text-center text-base ${dateError ? 'border-red-500' : ''}`}
+                  className={`text-center text-base ${dateError ? 'border-red-500' : ''} ${!dateError && date && date.split('-')[0] && date.split('-')[1] && date.split('-')[2] && date.split('-')[0].length === 4 && date.split('-')[1].length === 2 && date.split('-')[2].length === 2 ? 'border-green-500' : ''}`}
                 />
                 <div className="text-xs text-gray-500 text-center mt-1">Year</div>
               </div>
