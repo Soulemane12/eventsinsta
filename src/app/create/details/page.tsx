@@ -67,6 +67,9 @@ function DetailsContent() {
   const [date, setDate] = useState('')
   const [hostName, setHostName] = useState('')
   const [timeRange, setTimeRange] = useState('')
+  const [useCustomTime, setUseCustomTime] = useState(false)
+  const [customStartTime, setCustomStartTime] = useState('')
+  const [customEndTime, setCustomEndTime] = useState('')
   const [eventType, setEventType] = useState('')
   const [dateError, setDateError] = useState('')
 
@@ -161,6 +164,60 @@ function DetailsContent() {
     return ''
   }
 
+  // Time validation functions
+  const parseTime = (timeStr: string): { hours: number; minutes: number } | null => {
+    const match = timeStr.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i)
+    if (!match) return null
+    
+    let hours = parseInt(match[1])
+    const minutes = parseInt(match[2])
+    const period = match[3].toUpperCase()
+    
+    if (period === 'PM' && hours !== 12) {
+      hours += 12
+    } else if (period === 'AM' && hours === 12) {
+      hours = 0
+    }
+    
+    return { hours, minutes }
+  }
+
+  const validateTime = (timeStr: string): string => {
+    if (!timeStr) return ''
+    
+    const parsed = parseTime(timeStr)
+    if (!parsed) {
+      return 'Please enter time in format: HH:MM AM/PM (e.g., 2:30 PM)'
+    }
+    
+    const { hours, minutes } = parsed
+    if (hours < 0 || hours > 23 || minutes < 0 || minutes > 59) {
+      return 'Invalid time format'
+    }
+    
+    return ''
+  }
+
+  const validateTimeRange = (startTime: string, endTime: string): string => {
+    if (!startTime || !endTime) return ''
+    
+    const startParsed = parseTime(startTime)
+    const endParsed = parseTime(endTime)
+    
+    if (!startParsed || !endParsed) {
+      return 'Please enter valid start and end times'
+    }
+    
+    const startMinutes = startParsed.hours * 60 + startParsed.minutes
+    const endMinutes = endParsed.hours * 60 + endParsed.minutes
+    
+    if (endMinutes <= startMinutes) {
+      return 'End time must be after start time'
+    }
+    
+    return ''
+  }
+
   useEffect(() => {
     // Get event type from URL parameters
     const eventTypeParam = searchParams.get('eventType')
@@ -169,19 +226,34 @@ function DetailsContent() {
     }
   }, [searchParams])
 
-  const valid = location.trim().length > 0 && date && hostName.trim().length > 0 && timeRange && !dateError
+  const timeValid = useCustomTime 
+    ? (customStartTime && customEndTime && !validateTimeRange(customStartTime, customEndTime))
+    : timeRange
+
+  const valid = location.trim().length > 0 && date && hostName.trim().length > 0 && timeValid && !dateError
 
   function next(){
     if (valid) {
-      const selectedTimeRange = timeRangeOptions.find(option => option.id === timeRange)
+      let startTime = ''
+      let endTime = ''
+      
+      if (useCustomTime) {
+        startTime = customStartTime
+        endTime = customEndTime
+      } else {
+        const selectedTimeRange = timeRangeOptions.find(option => option.id === timeRange)
+        startTime = selectedTimeRange?.startTime || ''
+        endTime = selectedTimeRange?.endTime || ''
+      }
+      
       const params = new URLSearchParams({
         eventType: eventType,
         location: location,
         date: date,
         hostName: hostName,
-        timeRange: timeRange,
-        startTime: selectedTimeRange?.startTime || '',
-        endTime: selectedTimeRange?.endTime || ''
+        timeRange: useCustomTime ? 'custom' : timeRange,
+        startTime: startTime,
+        endTime: endTime
       })
       router.push(`/create/guests?${params.toString()}`)
     }
@@ -336,32 +408,102 @@ function DetailsContent() {
             )}
           </Field>
 
-          <Field label="Event Time Range">
-            <div className="space-y-3">
-              {timeRangeOptions.map((option) => (
+          <Field label="Event Time">
+            <div className="space-y-4">
+              {/* Toggle between predefined and custom time */}
+              <div className="flex bg-gray-100 rounded-xl p-1">
                 <button
-                  key={option.id}
                   type="button"
-                  className={`w-full p-4 text-left cursor-pointer transition-all rounded-xl border ${
-                    timeRange === option.id 
-                      ? 'border-purple-600 bg-purple-50' 
-                      : 'border-gray-200 hover:border-purple-300 bg-white'
+                  className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-all ${
+                    !useCustomTime 
+                      ? 'bg-white text-purple-600 shadow-sm' 
+                      : 'text-gray-600 hover:text-gray-800'
                   }`}
-                  onClick={() => setTimeRange(option.id)}
+                  onClick={() => {
+                    setUseCustomTime(false)
+                    setCustomStartTime('')
+                    setCustomEndTime('')
+                  }}
                 >
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <div className="font-semibold text-base text-gray-900">{option.label}</div>
-                      <div className="text-sm text-gray-600 mt-1">{option.description}</div>
-                    </div>
-                    {timeRange === option.id && (
-                      <div className="w-5 h-5 bg-purple-600 rounded-full flex items-center justify-center">
-                        <div className="w-2 h-2 bg-white rounded-full"></div>
-                      </div>
-                    )}
-                  </div>
+                  Quick Select
                 </button>
-              ))}
+                <button
+                  type="button"
+                  className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-all ${
+                    useCustomTime 
+                      ? 'bg-white text-purple-600 shadow-sm' 
+                      : 'text-gray-600 hover:text-gray-800'
+                  }`}
+                  onClick={() => {
+                    setUseCustomTime(true)
+                    setTimeRange('')
+                  }}
+                >
+                  Custom Time
+                </button>
+              </div>
+
+              {!useCustomTime ? (
+                // Predefined time ranges
+                <div className="space-y-3">
+                  {timeRangeOptions.map((option) => (
+                    <button
+                      key={option.id}
+                      type="button"
+                      className={`w-full p-4 text-left cursor-pointer transition-all rounded-xl border ${
+                        timeRange === option.id 
+                          ? 'border-purple-600 bg-purple-50' 
+                          : 'border-gray-200 hover:border-purple-300 bg-white'
+                      }`}
+                      onClick={() => setTimeRange(option.id)}
+                    >
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <div className="font-semibold text-base text-gray-900">{option.label}</div>
+                          <div className="text-sm text-gray-600 mt-1">{option.description}</div>
+                        </div>
+                        {timeRange === option.id && (
+                          <div className="w-5 h-5 bg-purple-600 rounded-full flex items-center justify-center">
+                            <div className="w-2 h-2 bg-white rounded-full"></div>
+                          </div>
+                        )}
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              ) : (
+                // Custom time inputs
+                <div className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <Field label="Start Time">
+                      <Input 
+                        placeholder="2:30 PM"
+                        value={customStartTime}
+                        onChange={e => setCustomStartTime(e.target.value)}
+                        className="text-center"
+                      />
+                    </Field>
+                    <Field label="End Time">
+                      <Input 
+                        placeholder="6:00 PM"
+                        value={customEndTime}
+                        onChange={e => setCustomEndTime(e.target.value)}
+                        className="text-center"
+                      />
+          </Field>
+                  </div>
+                  
+                  {validateTimeRange(customStartTime, customEndTime) && (
+                    <div className="text-sm text-red-600 bg-red-50 p-2 rounded-lg">
+                      ⚠️ {validateTimeRange(customStartTime, customEndTime)}
+                    </div>
+                  )}
+                  
+                  <div className="text-xs text-gray-500 bg-gray-50 p-3 rounded-lg">
+                    💡 Enter times in format: HH:MM AM/PM (e.g., 2:30 PM, 11:00 AM)
+                  </div>
+                </div>
+              )}
             </div>
           </Field>
 
