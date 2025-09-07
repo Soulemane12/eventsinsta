@@ -348,7 +348,7 @@ export const SERVICES: Service[] = [
   // Yacht Party
   {
     id: 'yacht-party-jboogie',
-    name: 'JBoogieBrooklynBoatingTours',
+    name: 'JBoogieBrooklynYachtTours',
     category: 'Yacht',
     description: 'Private yacht party experience. 3-hour rental includes captain, snacks, light refreshments, and 3 bottles of premium liquor.',
     price: 2500,
@@ -396,10 +396,10 @@ export const VENUE_SERVICES: Service[] = [
     icon: '🏠'
   },
   {
-    id: 'venue-boat',
-    name: 'Boat',
+    id: 'venue-yacht',
+    name: 'Yacht',
     category: 'Venue',
-    description: 'Private yacht and boat rentals for unique waterfront events and celebrations.',
+    description: 'Private yacht rentals for unique waterfront events and celebrations.',
     price: 0,
     priceDescription: 'Contact for pricing',
     icon: '🛥️'

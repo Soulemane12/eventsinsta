@@ -322,7 +322,7 @@ function PreviewContent() {
                 {eventData.venue.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}
               </div>
               <div className="text-xs text-purple-700">
-                {eventData.venue === 'venue-boat' && 'Private yacht and boat rentals for unique waterfront events'}
+                {eventData.venue === 'venue-yacht' && 'Private yacht rentals for unique waterfront events'}
                 {eventData.venue === 'venue-private-home' && 'Luxury private homes available for events'}
                 {eventData.venue === 'venue-event-space' && 'Dedicated event spaces and halls'}
               </div>
