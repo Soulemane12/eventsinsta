@@ -66,18 +66,46 @@ function DetailsContent() {
   const [location, setLocation] = useState('')
   const [date, setDate] = useState('')
   const [hostName, setHostName] = useState('')
-  const [startTime, setStartTime] = useState('')
-  const [endTime, setEndTime] = useState('')
+  const [timeRange, setTimeRange] = useState('')
   const [eventType, setEventType] = useState('')
   const [dateError, setDateError] = useState('')
 
-  const timeOptions = [
-    '6:00 AM', '6:30 AM', '7:00 AM', '7:30 AM', '8:00 AM', '8:30 AM', '9:00 AM', '9:30 AM',
-    '10:00 AM', '10:30 AM', '11:00 AM', '11:30 AM', '12:00 PM', '12:30 PM', '1:00 PM', '1:30 PM',
-    '2:00 PM', '2:30 PM', '3:00 PM', '3:30 PM', '4:00 PM', '4:30 PM', '5:00 PM', '5:30 PM',
-    '6:00 PM', '6:30 PM', '7:00 PM', '7:30 PM', '8:00 PM', '8:30 PM', '9:00 PM', '9:30 PM',
-    '10:00 PM', '10:30 PM', '11:00 PM', '11:30 PM', '12:00 AM', '12:30 AM', '1:00 AM', '1:30 AM',
-    '2:00 AM', '2:30 AM', '3:00 AM', '3:30 AM', '4:00 AM', '4:30 AM', '5:00 AM', '5:30 AM'
+  const timeRangeOptions = [
+    { 
+      id: 'afternoon', 
+      label: '12:00 PM - 4:00 PM', 
+      description: 'Afternoon Event (4 hours)',
+      startTime: '12:00 PM',
+      endTime: '4:00 PM'
+    },
+    { 
+      id: 'evening', 
+      label: '6:00 PM - 10:00 PM', 
+      description: 'Evening Event (4 hours)',
+      startTime: '6:00 PM',
+      endTime: '10:00 PM'
+    },
+    { 
+      id: 'late-evening', 
+      label: '8:00 PM - 12:00 AM', 
+      description: 'Late Evening Event (4 hours)',
+      startTime: '8:00 PM',
+      endTime: '12:00 AM'
+    },
+    { 
+      id: 'all-day', 
+      label: '10:00 AM - 6:00 PM', 
+      description: 'All Day Event (8 hours)',
+      startTime: '10:00 AM',
+      endTime: '6:00 PM'
+    },
+    { 
+      id: 'night', 
+      label: '10:00 PM - 2:00 AM', 
+      description: 'Night Event (4 hours)',
+      startTime: '10:00 PM',
+      endTime: '2:00 AM'
+    }
   ]
 
   // Date validation functions
@@ -141,17 +169,19 @@ function DetailsContent() {
     }
   }, [searchParams])
 
-  const valid = location.trim().length > 0 && date && hostName.trim().length > 0 && startTime && endTime && !dateError
+  const valid = location.trim().length > 0 && date && hostName.trim().length > 0 && timeRange && !dateError
 
   function next(){
     if (valid) {
+      const selectedTimeRange = timeRangeOptions.find(option => option.id === timeRange)
       const params = new URLSearchParams({
         eventType: eventType,
         location: location,
         date: date,
         hostName: hostName,
-        startTime: startTime,
-        endTime: endTime
+        timeRange: timeRange,
+        startTime: selectedTimeRange?.startTime || '',
+        endTime: selectedTimeRange?.endTime || ''
       })
       router.push(`/create/guests?${params.toString()}`)
     }
@@ -263,30 +293,33 @@ function DetailsContent() {
             )}
           </Field>
 
-          <Field label="Start Time">
-            <select 
-              value={startTime} 
-              onChange={e => setStartTime(e.target.value)}
-              className="w-full h-12 rounded-xl border border-gray-300 px-4 outline-none focus:ring-2 focus:ring-purple-300 text-base"
-            >
-              <option value="">Select start time</option>
-              {timeOptions.map(time => (
-                <option key={time} value={time}>{time}</option>
+          <Field label="Event Time Range">
+            <div className="space-y-3">
+              {timeRangeOptions.map((option) => (
+                <button
+                  key={option.id}
+                  type="button"
+                  className={`w-full p-4 text-left cursor-pointer transition-all rounded-xl border ${
+                    timeRange === option.id 
+                      ? 'border-purple-600 bg-purple-50' 
+                      : 'border-gray-200 hover:border-purple-300 bg-white'
+                  }`}
+                  onClick={() => setTimeRange(option.id)}
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="font-semibold text-base text-gray-900">{option.label}</div>
+                      <div className="text-sm text-gray-600 mt-1">{option.description}</div>
+                    </div>
+                    {timeRange === option.id && (
+                      <div className="w-5 h-5 bg-purple-600 rounded-full flex items-center justify-center">
+                        <div className="w-2 h-2 bg-white rounded-full"></div>
+                      </div>
+                    )}
+                  </div>
+                </button>
               ))}
-            </select>
-          </Field>
-
-          <Field label="End Time">
-            <select 
-              value={endTime} 
-              onChange={e => setEndTime(e.target.value)}
-              className="w-full h-12 rounded-xl border border-gray-300 px-4 outline-none focus:ring-2 focus:ring-purple-300 text-base"
-            >
-              <option value="">Select end time</option>
-              {timeOptions.map(time => (
-                <option key={time} value={time}>{time}</option>
-              ))}
-            </select>
+            </div>
           </Field>
 
         </div>
@@ -294,7 +327,7 @@ function DetailsContent() {
         <div className="bg-purple-50 p-4 rounded-xl">
           <div className="text-sm font-medium text-purple-800 mb-2">💡 Tip</div>
           <div className="text-xs text-purple-700">
-            Start typing a city or state name and we'll suggest options. We'll use this information to find the best venues and services available in your area for your chosen date and time.
+            Start typing a city or state name and we'll suggest options. Choose a time range that works best for your event type. We'll use this information to find the best venues and services available in your area for your chosen date and time.
           </div>
         </div>
 
