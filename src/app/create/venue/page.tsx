@@ -113,6 +113,9 @@ function VenueContent() {
     if (endTimeParam) setEndTime(endTimeParam)
     if (guestCountParam) setGuestCount(guestCountParam)
     if (budgetParam) setBudget(budgetParam)
+    
+    // Debug: Log the time parameters
+    console.log('Venue page - Time parameters:', { startTimeParam, endTimeParam })
   }, [searchParams])
 
   const venueServices = VENUE_SERVICES
@@ -148,9 +151,14 @@ function VenueContent() {
               Planning: {eventType} in {location}
             </div>
           )}
-          {date && startTime && endTime && (
+          {date && (
             <div className="mt-1 text-sm text-gray-600">
-              📅 {date} • ⏰ {startTime} - {endTime}
+              📅 {date}
+              {startTime && endTime ? (
+                <> • ⏰ {startTime} - {endTime}</>
+              ) : (
+                <> • ⏰ Time not set</>
+              )}
             </div>
           )}
         </div>
