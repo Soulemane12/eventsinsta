@@ -312,9 +312,8 @@ function DetailsContent() {
                     }
 
                     // Allow all input - no restrictions during typing
-                    const paddedMonth = month.padStart(2, '0')
                     const currentDate = date.split('-')
-                    const newDate = `${currentDate[0] || ''}-${paddedMonth}-${currentDate[2] || ''}`
+                    const newDate = `${currentDate[0] || ''}-${month}-${currentDate[2] || ''}`
                     setDate(newDate)
 
                     // Clear errors while typing
@@ -357,9 +356,8 @@ function DetailsContent() {
                     }
 
                     // Allow all input - no restrictions during typing
-                    const paddedDay = day.padStart(2, '0')
                     const currentDate = date.split('-')
-                    const newDate = `${currentDate[0] || ''}-${currentDate[1] || ''}-${paddedDay}`
+                    const newDate = `${currentDate[0] || ''}-${currentDate[1] || ''}-${day}`
                     setDate(newDate)
 
                     // Clear errors while typing
