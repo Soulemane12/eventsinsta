@@ -221,7 +221,7 @@ function ReviewContent() {
     
     // For restaurant venues, use restaurant pricing
     if (eventData.venue === 'venue-restaurant' && eventData.selectedRestaurant) {
-      return getRestaurantPriceByGuestCount(eventData.selectedRestaurant, eventData.guestCount)
+    return getRestaurantPriceByGuestCount(eventData.selectedRestaurant, eventData.guestCount)
     }
     
     // For other venues, use venue pricing
