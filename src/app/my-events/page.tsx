@@ -139,22 +139,10 @@ function MyEventsContent() {
   }
 
   const cancelOrDeleteEvent = (eventId: string) => {
-    const event = events.find(e => e.id === eventId)
-    if (!event) return
-
-    if (event.status === 'upcoming') {
-      // Cancel the event
-      const updatedEvents = events.map(event => 
-        event.id === eventId ? { ...event, status: 'cancelled' as const } : event
-      )
-      setEvents(updatedEvents)
-      localStorage.setItem('userEvents', JSON.stringify(updatedEvents))
-    } else {
-      // Delete the event
-      const updatedEvents = events.filter(event => event.id !== eventId)
-      setEvents(updatedEvents)
-      localStorage.setItem('userEvents', JSON.stringify(updatedEvents))
-    }
+    // Always delete the event (whether it's upcoming, completed, or cancelled)
+    const updatedEvents = events.filter(event => event.id !== eventId)
+    setEvents(updatedEvents)
+    localStorage.setItem('userEvents', JSON.stringify(updatedEvents))
     
     setShowDeleteConfirm(null)
     setCancelReason('')
@@ -290,7 +278,7 @@ function MyEventsContent() {
                         onClick={() => setShowDeleteConfirm(event.id)}
                         className="flex-1 py-2 px-3 text-sm bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors"
                       >
-                        {event.status === 'upcoming' ? 'Cancel Event' : 'Delete Event'}
+                        Cancel/Delete
                       </button>
                     </div>
                   )}
@@ -320,10 +308,10 @@ function MyEventsContent() {
               <div className="text-center">
                 <div className="text-4xl mb-4">⚠️</div>
                 <h3 className="text-lg font-semibold mb-2">
-                  {events.find(e => e.id === showDeleteConfirm)?.status === 'upcoming' ? 'Cancel Event' : 'Delete Event'}
+                  Cancel/Delete Event
                 </h3>
                 <p className="text-gray-600 text-sm mb-4">
-                  Please tell us why you're {events.find(e => e.id === showDeleteConfirm)?.status === 'upcoming' ? 'canceling' : 'deleting'} this event:
+                  Please tell us why you're canceling/deleting this event:
                 </p>
                 <textarea
                   placeholder="Enter your reason here..."
@@ -347,7 +335,7 @@ function MyEventsContent() {
                     disabled={!cancelReason.trim()}
                     className="flex-1 py-2 px-4 text-sm bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    {events.find(e => e.id === showDeleteConfirm)?.status === 'upcoming' ? 'Cancel Event' : 'Delete Event'}
+                    Cancel/Delete Event
                   </button>
                 </div>
               </div>
