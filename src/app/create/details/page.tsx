@@ -315,30 +315,36 @@ function DetailsContent() {
                       return
                     }
 
-                    // Limit to 2 digits
+                    // Limit to 2 digits and only allow numeric input
                     if (month.length > 2) {
                       month = month.slice(0, 2)
                     }
 
-                    // Only prevent clearly invalid 2-digit numbers
-                    if (month.length === 2 && !isNaN(parseInt(month))) {
-                      const monthNum = parseInt(month)
-                      if (monthNum < 1 || monthNum > 12) {
-                        return // Don't update if invalid 2-digit number
-                      }
+                    // Only allow numeric characters
+                    if (!/^\d*$/.test(month)) {
+                      return
                     }
 
+                    // Allow all input initially, validate only when complete
                     const paddedMonth = month.padStart(2, '0')
                     const currentDate = date.split('-')
                     const newDate = `${currentDate[0] || ''}-${paddedMonth}-${currentDate[2] || ''}`
                     setDate(newDate)
 
-                    // Only validate if we have a complete date
-                    if (currentDate[0] && paddedMonth && currentDate[2]) {
-                      const error = validateDate(currentDate[0], paddedMonth, currentDate[2])
-                      setDateError(error)
-                    } else {
+                    // Clear any existing errors when user is actively typing
+                    if (month.length < 2) {
                       setDateError('')
+                    } else {
+                      // Only validate complete 2-digit numbers
+                      const monthNum = parseInt(month)
+                      if (monthNum < 1 || monthNum > 12) {
+                        setDateError('Month must be between 01 and 12')
+                      } else if (currentDate[0] && paddedMonth && currentDate[2]) {
+                        const error = validateDate(currentDate[0], paddedMonth, currentDate[2])
+                        setDateError(error)
+                      } else {
+                        setDateError('')
+                      }
                     }
                   }}
                   className={`text-center text-base ${dateError ? 'border-red-500' : ''}`}
@@ -364,30 +370,36 @@ function DetailsContent() {
                       return
                     }
 
-                    // Limit to 2 digits
+                    // Limit to 2 digits and only allow numeric input
                     if (day.length > 2) {
                       day = day.slice(0, 2)
                     }
 
-                    // Only prevent clearly invalid 2-digit numbers
-                    if (day.length === 2 && !isNaN(parseInt(day))) {
-                      const dayNum = parseInt(day)
-                      if (dayNum < 1 || dayNum > 31) {
-                        return // Don't update if invalid 2-digit number
-                      }
+                    // Only allow numeric characters
+                    if (!/^\d*$/.test(day)) {
+                      return
                     }
 
+                    // Allow all input initially, validate only when complete
                     const paddedDay = day.padStart(2, '0')
                     const currentDate = date.split('-')
                     const newDate = `${currentDate[0] || ''}-${currentDate[1] || ''}-${paddedDay}`
                     setDate(newDate)
 
-                    // Only validate if we have a complete date
-                    if (currentDate[0] && currentDate[1] && paddedDay) {
-                      const error = validateDate(currentDate[0], currentDate[1], paddedDay)
-                      setDateError(error)
-                    } else {
+                    // Clear any existing errors when user is actively typing
+                    if (day.length < 2) {
                       setDateError('')
+                    } else {
+                      // Only validate complete 2-digit numbers
+                      const dayNum = parseInt(day)
+                      if (dayNum < 1 || dayNum > 31) {
+                        setDateError('Day must be between 01 and 31')
+                      } else if (currentDate[0] && currentDate[1] && paddedDay) {
+                        const error = validateDate(currentDate[0], currentDate[1], paddedDay)
+                        setDateError(error)
+                      } else {
+                        setDateError('')
+                      }
                     }
                   }}
                   className={`text-center text-base ${dateError ? 'border-red-500' : ''}`}
