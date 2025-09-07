@@ -3,7 +3,7 @@
 import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { getRestaurantPriceByGuestCount, RESTAURANTS } from '../../../data/restaurants'
-import { SERVICES } from '../../../data/services'
+import { SERVICES, VENUE_SERVICES } from '../../../data/services'
 import Logo from '../../../components/Logo'
 
 const BrandPurple = 'bg-purple-800'
@@ -68,6 +68,32 @@ function formatTime(timeString: string): string {
   } catch {
     return timeString
   }
+}
+
+function getVenueDisplayName(venueId: string): string {
+  if (!venueId) return 'No venue selected'
+  const venue = VENUE_SERVICES.find(v => v.id === venueId)
+  return venue ? venue.name : venueId.replace('venue-', '').replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())
+}
+
+function getVenueDescription(venueId: string): string {
+  if (!venueId) return 'Please select a venue for your event'
+  const venue = VENUE_SERVICES.find(v => v.id === venueId)
+  return venue ? venue.description : 'Selected venue for your event'
+}
+
+function getVenueCost(venueId: string, guestCount: number): number {
+  if (!venueId) return 0
+  const venue = VENUE_SERVICES.find(v => v.id === venueId)
+  if (!venue) return 0
+  
+  // For restaurant venues, use the restaurant pricing
+  if (venueId === 'venue-restaurant') {
+    return 0 // Will be handled separately with selectedRestaurant
+  }
+  
+  // For other venues, return the base price
+  return venue.price || 0
 }
 
 function SuccessContent() {
@@ -144,14 +170,21 @@ function SuccessContent() {
     }
   }
 
-  const getRestaurantCost = () => {
-    if (!eventData || !eventData.selectedRestaurant) return 0
-    return getRestaurantPriceByGuestCount(eventData.selectedRestaurant, eventData.guestCount)
+  const getCurrentVenueCost = () => {
+    if (!eventData) return 0
+    
+    // For restaurant venues, use restaurant pricing
+    if (eventData.venue === 'venue-restaurant' && eventData.selectedRestaurant) {
+      return getRestaurantPriceByGuestCount(eventData.selectedRestaurant, eventData.guestCount)
+    }
+    
+    // For other venues, use venue pricing
+    return getVenueCost(eventData.venue, eventData.guestCount)
   }
 
   const getTotalCost = () => {
     if (!eventData) return 0
-    return getRestaurantCost() + eventData.servicesTotal
+    return getCurrentVenueCost() + eventData.servicesTotal
   }
 
   if (!eventData) {
@@ -192,14 +225,27 @@ function SuccessContent() {
             <div className="font-medium text-purple-600">💰 ${getTotalCost().toLocaleString()} total</div>
           </div>
           
-          {getRestaurantDetails() && (
+          {/* Venue Information */}
+          {eventData.venue && (
             <div className="mt-4 pt-4 border-t border-gray-100">
-              <div className="text-sm font-medium text-gray-800 mb-2">Restaurant Information</div>
+              <div className="text-sm font-medium text-gray-800 mb-2">
+                {eventData.venue === 'venue-restaurant' ? 'Restaurant Information' : 'Venue Information'}
+              </div>
               <div className="space-y-1 text-sm text-gray-600">
-                <div>🍽️ {getRestaurantDetails()?.name}</div>
-                <div>📍 {getRestaurantDetails()?.address}</div>
-                <div>📞 {getRestaurantDetails()?.phone}</div>
-                <div>👤 Host: {getRestaurantDetails()?.hostName}</div>
+                {eventData.venue === 'venue-restaurant' && getRestaurantDetails() ? (
+                  <>
+                    <div>🍽️ {getRestaurantDetails()?.name}</div>
+                    <div>📍 {getRestaurantDetails()?.address}</div>
+                    <div>📞 {getRestaurantDetails()?.phone}</div>
+                    <div>👤 Host: {getRestaurantDetails()?.hostName}</div>
+                  </>
+                ) : (
+                  <>
+                    <div>🏛️ {getVenueDisplayName(eventData.venue)}</div>
+                    <div>📝 {getVenueDescription(eventData.venue)}</div>
+                    <div>💰 ${getCurrentVenueCost().toLocaleString()}</div>
+                  </>
+                )}
               </div>
             </div>
           )}
