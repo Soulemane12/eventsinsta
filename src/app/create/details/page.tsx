@@ -68,11 +68,9 @@ function DetailsContent() {
   const [hostName, setHostName] = useState('')
   const [timeRange, setTimeRange] = useState('')
   const [useCustomTime, setUseCustomTime] = useState(false)
-  const [customStartHour, setCustomStartHour] = useState('')
-  const [customStartMinute, setCustomStartMinute] = useState('')
+  const [customStartTime, setCustomStartTime] = useState('')
   const [customStartPeriod, setCustomStartPeriod] = useState('PM')
-  const [customEndHour, setCustomEndHour] = useState('')
-  const [customEndMinute, setCustomEndMinute] = useState('')
+  const [customEndTime, setCustomEndTime] = useState('')
   const [customEndPeriod, setCustomEndPeriod] = useState('PM')
   const [eventType, setEventType] = useState('')
   const [dateError, setDateError] = useState('')
@@ -169,11 +167,13 @@ function DetailsContent() {
   }
 
   // Time validation functions
-  const parseCustomTime = (hour: string, minute: string, period: string): { hours: number; minutes: number } | null => {
-    if (!hour || !minute || !period) return null
+  const parseCustomTime = (timeStr: string, period: string): { hours: number; minutes: number } | null => {
+    if (!timeStr || !period) return null
     
-    let hours = parseInt(hour)
-    const minutes = parseInt(minute)
+    // Parse time like "2:30" or "2"
+    const timeParts = timeStr.split(':')
+    let hours = parseInt(timeParts[0])
+    let minutes = timeParts[1] ? parseInt(timeParts[1]) : 0
     
     if (isNaN(hours) || isNaN(minutes)) return null
     if (hours < 1 || hours > 12 || minutes < 0 || minutes > 59) return null
@@ -187,25 +187,24 @@ function DetailsContent() {
     return { hours, minutes }
   }
 
-  const validateCustomTime = (hour: string, minute: string, period: string): string => {
-    if (!hour || !minute || !period) return ''
+  const validateCustomTime = (timeStr: string, period: string): string => {
+    if (!timeStr || !period) return ''
     
-    const parsed = parseCustomTime(hour, minute, period)
+    const parsed = parseCustomTime(timeStr, period)
     if (!parsed) {
-      return 'Please enter valid time values'
+      return 'Please enter valid time (e.g., 2:30 or 2)'
     }
     
     return ''
   }
 
   const validateCustomTimeRange = (): string => {
-    if (!customStartHour || !customStartMinute || !customStartPeriod ||
-        !customEndHour || !customEndMinute || !customEndPeriod) {
+    if (!customStartTime || !customStartPeriod || !customEndTime || !customEndPeriod) {
       return ''
     }
     
-    const startParsed = parseCustomTime(customStartHour, customStartMinute, customStartPeriod)
-    const endParsed = parseCustomTime(customEndHour, customEndMinute, customEndPeriod)
+    const startParsed = parseCustomTime(customStartTime, customStartPeriod)
+    const endParsed = parseCustomTime(customEndTime, customEndPeriod)
     
     if (!startParsed || !endParsed) {
       return 'Please enter valid start and end times'
@@ -230,8 +229,7 @@ function DetailsContent() {
   }, [searchParams])
 
   const timeValid = useCustomTime 
-    ? (customStartHour && customStartMinute && customStartPeriod && 
-       customEndHour && customEndMinute && customEndPeriod && 
+    ? (customStartTime && customStartPeriod && customEndTime && customEndPeriod && 
        !validateCustomTimeRange())
     : timeRange
 
@@ -243,8 +241,10 @@ function DetailsContent() {
       let endTime = ''
       
       if (useCustomTime) {
-        startTime = `${customStartHour}:${customStartMinute.padStart(2, '0')} ${customStartPeriod}`
-        endTime = `${customEndHour}:${customEndMinute.padStart(2, '0')} ${customEndPeriod}`
+        const startMinutes = customStartTime.includes(':') ? customStartTime.split(':')[1] : '00'
+        const endMinutes = customEndTime.includes(':') ? customEndTime.split(':')[1] : '00'
+        startTime = `${customStartTime.split(':')[0]}:${startMinutes.padStart(2, '0')} ${customStartPeriod}`
+        endTime = `${customEndTime.split(':')[0]}:${endMinutes.padStart(2, '0')} ${customEndPeriod}`
       } else {
         const selectedTimeRange = timeRangeOptions.find(option => option.id === timeRange)
         startTime = selectedTimeRange?.startTime || ''
@@ -426,11 +426,9 @@ function DetailsContent() {
                   }`}
                   onClick={() => {
                     setUseCustomTime(false)
-                    setCustomStartHour('')
-                    setCustomStartMinute('')
+                    setCustomStartTime('')
                     setCustomStartPeriod('PM')
-                    setCustomEndHour('')
-                    setCustomEndMinute('')
+                    setCustomEndTime('')
                     setCustomEndPeriod('PM')
                   }}
                 >
@@ -483,26 +481,13 @@ function DetailsContent() {
               ) : (
                 // Custom time inputs
                 <div className="space-y-4">
-                  <div className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
                     <Field label="Start Time">
                       <div className="flex items-center gap-2">
                         <Input 
-                          type="number"
-                          placeholder="2"
-                          min="1"
-                          max="12"
-                          value={customStartHour}
-                          onChange={e => setCustomStartHour(e.target.value)}
-                          className="text-center flex-1"
-                        />
-                        <span className="text-gray-400">:</span>
-                        <Input 
-                          type="number"
-                          placeholder="30"
-                          min="0"
-                          max="59"
-                          value={customStartMinute}
-                          onChange={e => setCustomStartMinute(e.target.value)}
+                          placeholder="2:30"
+                          value={customStartTime}
+                          onChange={e => setCustomStartTime(e.target.value)}
                           className="text-center flex-1"
                         />
                         <select 
@@ -519,22 +504,9 @@ function DetailsContent() {
                     <Field label="End Time">
                       <div className="flex items-center gap-2">
                         <Input 
-                          type="number"
-                          placeholder="6"
-                          min="1"
-                          max="12"
-                          value={customEndHour}
-                          onChange={e => setCustomEndHour(e.target.value)}
-                          className="text-center flex-1"
-                        />
-                        <span className="text-gray-400">:</span>
-                        <Input 
-                          type="number"
-                          placeholder="00"
-                          min="0"
-                          max="59"
-                          value={customEndMinute}
-                          onChange={e => setCustomEndMinute(e.target.value)}
+                          placeholder="6:00"
+                          value={customEndTime}
+                          onChange={e => setCustomEndTime(e.target.value)}
                           className="text-center flex-1"
                         />
                         <select 
@@ -556,7 +528,7 @@ function DetailsContent() {
                   )}
                   
                   <div className="text-xs text-gray-500 bg-gray-50 p-3 rounded-lg">
-                    💡 Enter hour (1-12), minutes (0-59), and select AM/PM
+                    💡 Enter time like "2:30" or just "2" and select AM/PM
                   </div>
                 </div>
               )}
