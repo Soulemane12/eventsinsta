@@ -174,8 +174,19 @@ function DetailsContent() {
     const startMinutes = startParsed.hours * 60 + startParsed.minutes
     const endMinutes = endParsed.hours * 60 + endParsed.minutes
     
-    if (endMinutes <= startMinutes) {
+    // Handle overnight events (e.g., 8 PM to 12 AM next day)
+    const isOvernight = startParsed.hours >= 12 && endParsed.hours < 12
+    
+    if (!isOvernight && endMinutes <= startMinutes) {
       return 'End time must be after start time'
+    }
+    
+    // For overnight events, check if the duration is reasonable (not more than 24 hours)
+    if (isOvernight) {
+      const duration = (24 * 60) - startMinutes + endMinutes
+      if (duration > 24 * 60) {
+        return 'Event duration cannot exceed 24 hours'
+      }
     }
     
     return ''
