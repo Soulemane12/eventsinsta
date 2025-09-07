@@ -307,7 +307,7 @@ function DetailsContent() {
                   value={date.split('-')[1] || ''}
                   onChange={e => {
                     let month = e.target.value
-                    
+
                     // Allow empty values for deletion
                     if (month === '') {
                       const currentDate = date.split('-')
@@ -316,25 +316,26 @@ function DetailsContent() {
                       setDateError('')
                       return
                     }
-                    
+
                     // Limit to 2 digits
                     if (month.length > 2) {
                       month = month.slice(0, 2)
                     }
-                    
-                    // Only validate if it's a complete number
+
+                    // Allow partial input (don't validate single digits immediately)
                     if (month && !isNaN(parseInt(month))) {
                       const monthNum = parseInt(month)
-                      if (monthNum < 1 || monthNum > 12) {
+                      // Only prevent update if it's clearly invalid (like 0 or >12)
+                      if (monthNum === 0 || (month.length === 2 && (monthNum < 1 || monthNum > 12))) {
                         return // Don't update if invalid
                       }
                     }
-                    
+
                     const paddedMonth = month.padStart(2, '0')
                     const currentDate = date.split('-')
                     const newDate = `${currentDate[0] || ''}-${paddedMonth}-${currentDate[2] || ''}`
                     setDate(newDate)
-                    
+
                     // Only validate if we have a complete date
                     if (currentDate[0] && paddedMonth && currentDate[2]) {
                       const error = validateDate(currentDate[0], paddedMonth, currentDate[2])
@@ -358,7 +359,7 @@ function DetailsContent() {
                   value={date.split('-')[2] || ''}
                   onChange={e => {
                     let day = e.target.value
-                    
+
                     // Allow empty values for deletion
                     if (day === '') {
                       const currentDate = date.split('-')
@@ -367,25 +368,26 @@ function DetailsContent() {
                       setDateError('')
                       return
                     }
-                    
+
                     // Limit to 2 digits
                     if (day.length > 2) {
                       day = day.slice(0, 2)
                     }
-                    
-                    // Only validate if it's a complete number
+
+                    // Allow partial input (don't validate single digits immediately)
                     if (day && !isNaN(parseInt(day))) {
                       const dayNum = parseInt(day)
-                      if (dayNum < 1 || dayNum > 31) {
+                      // Only prevent update if it's clearly invalid (like 0 or >31 for 2-digit)
+                      if (dayNum === 0 || (day.length === 2 && (dayNum < 1 || dayNum > 31))) {
                         return // Don't update if invalid
                       }
                     }
-                    
+
                     const paddedDay = day.padStart(2, '0')
                     const currentDate = date.split('-')
                     const newDate = `${currentDate[0] || ''}-${currentDate[1] || ''}-${paddedDay}`
                     setDate(newDate)
-                    
+
                     // Only validate if we have a complete date
                     if (currentDate[0] && currentDate[1] && paddedDay) {
                       const error = validateDate(currentDate[0], currentDate[1], paddedDay)
