@@ -106,15 +106,13 @@ function getBudgetRange(budget: string): { min: number; max: number } {
 }
 
 function getVenueDisplayName(venueId: string): string {
-  console.log('getVenueDisplayName called with:', venueId)
+  if (!venueId) return 'No venue selected'
   const venue = VENUE_SERVICES.find(v => v.id === venueId)
-  console.log('Found venue:', venue)
-  const result = venue ? venue.name : venueId.replace('venue-', '').replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())
-  console.log('Returning venue name:', result)
-  return result
+  return venue ? venue.name : venueId.replace('venue-', '').replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())
 }
 
 function getVenueDescription(venueId: string): string {
+  if (!venueId) return 'Please select a venue for your event'
   const venue = VENUE_SERVICES.find(v => v.id === venueId)
   return venue ? venue.description : 'Selected venue for your event'
 }
@@ -170,9 +168,6 @@ function PreviewContent() {
     const services = searchParams.get('services')?.split(',').filter(Boolean) || []
     const servicesTotal = parseInt(searchParams.get('servicesTotal') || '0')
 
-    // Debug: Log venue information
-    console.log('Preview page - Venue parameter:', venue)
-    console.log('Preview page - All search params:', Object.fromEntries(searchParams.entries()))
 
     // Combine start and end time if they exist, otherwise use the time parameter
     const combinedTime = (startTime && endTime) ? `${startTime} - ${endTime}` : time
