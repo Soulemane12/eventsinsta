@@ -412,7 +412,7 @@ export const VENUE_SERVICES: Service[] = [
     icon: '🧘‍♀️'
   },
   {
-    id: 'venue-wedding-metropolitan',
+    id: 'venue-wedding',
     name: 'Metropolitan Wedding Venue',
     category: 'Venue',
     description: 'Premium wedding venue at Metropolitan, Glen Cove NY. Accommodates up to 250 guests with full-service packages.',
