@@ -159,6 +159,23 @@ function DetailsContent() {
     return ''
   }
 
+  const formatTimeInput = (value: string): string => {
+    // Remove any non-numeric characters except colon
+    let cleaned = value.replace(/[^\d:]/g, '')
+    
+    // If user types a single digit (1-9), automatically add :00
+    if (cleaned.length === 1 && /^[1-9]$/.test(cleaned)) {
+      return cleaned + ':00'
+    }
+    
+    // If user types two digits without colon, add colon
+    if (cleaned.length === 2 && !cleaned.includes(':')) {
+      return cleaned + ':00'
+    }
+    
+    return cleaned
+  }
+
   const validateCustomTimeRange = (): string => {
     if (!customStartTime || !customStartPeriod || !customEndTime || !customEndPeriod) {
       return ''
@@ -396,7 +413,7 @@ function DetailsContent() {
                     <Input 
                       placeholder="2:30"
                       value={customStartTime}
-                      onChange={e => setCustomStartTime(e.target.value)}
+                      onChange={e => setCustomStartTime(formatTimeInput(e.target.value))}
                       className="text-center flex-1"
                     />
                     <select 
@@ -415,7 +432,7 @@ function DetailsContent() {
                     <Input 
                       placeholder="6:00"
                       value={customEndTime}
-                      onChange={e => setCustomEndTime(e.target.value)}
+                      onChange={e => setCustomEndTime(formatTimeInput(e.target.value))}
                       className="text-center flex-1"
                     />
                     <select 
