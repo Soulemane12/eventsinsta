@@ -60,14 +60,21 @@ function VenueCard({
       className={`w-full p-4 transition-all rounded-2xl bg-white shadow cursor-pointer ${
         isSelected 
           ? 'border-2 border-purple-600 bg-purple-50' 
-          : 'border border-gray-200 hover:border-purple-300'
+          : venue.id === 'venue-yacht' 
+            ? 'border-2 border-blue-300 bg-blue-50 hover:border-blue-400' 
+            : 'border border-gray-200 hover:border-purple-300'
       }`}
       onClick={onSelect}
     >
       <div className="flex items-start gap-3">
         <div className="text-3xl">{venue.icon}</div>
         <div className="flex-1">
-          <div className="font-semibold text-sm mb-1">{venue.name}</div>
+          <div className="flex items-center gap-2 mb-1">
+            <div className="font-semibold text-sm">{venue.name}</div>
+            {venue.id === 'venue-yacht' && (
+              <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">Popular</span>
+            )}
+          </div>
           <div className="text-xs text-gray-600 mb-2">{venue.description}</div>
           {isSelected && (
             <div className="w-4 h-4 bg-purple-600 rounded-full flex items-center justify-center ml-auto">
@@ -85,6 +92,7 @@ function VenueContent() {
   const searchParams = useSearchParams()
   
   const [selectedVenue, setSelectedVenue] = useState<string>('')
+  const [searchTerm, setSearchTerm] = useState('')
   const [eventType, setEventType] = useState('')
   const [location, setLocation] = useState('')
   const [date, setDate] = useState('')
@@ -119,6 +127,16 @@ function VenueContent() {
   }, [searchParams])
 
   const venueServices = VENUE_SERVICES
+  
+  // Filter venues based on search term
+  const filteredVenues = venueServices.filter(venue => 
+    venue.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    venue.description.toLowerCase().includes(searchTerm.toLowerCase())
+  )
+  
+  // Check if yacht venue is available
+  const yachtVenue = venueServices.find(v => v.id === 'venue-yacht')
+  const yachtAvailable = yachtVenue !== undefined
 
   const valid = selectedVenue
 
@@ -163,15 +181,61 @@ function VenueContent() {
           )}
         </div>
 
+        {/* Search Input */}
+        <div className="mb-4">
+          <input
+            type="text"
+            placeholder="Search venues (e.g., yacht, restaurant, wedding)..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full h-12 rounded-xl border border-gray-300 px-4 outline-none focus:ring-2 focus:ring-purple-300"
+          />
+        </div>
+
+        {/* AI Error Handling - Show if yacht is not available */}
+        {!yachtAvailable && (
+          <div className="bg-red-50 p-4 rounded-xl mb-4">
+            <div className="text-sm font-medium text-red-800 mb-2">🤖 AI Analysis: Yacht Venue Issue</div>
+            <div className="text-xs text-red-700">
+              The yacht venue is not currently available in our system. This could be due to:
+              <ul className="mt-2 ml-4 list-disc">
+                <li>Seasonal availability restrictions</li>
+                <li>Maintenance or booking conflicts</li>
+                <li>System configuration issue</li>
+              </ul>
+              Please try selecting a different venue or contact support for assistance.
+            </div>
+          </div>
+        )}
+
+        {/* Yacht Venue Highlight */}
+        {yachtAvailable && searchTerm.toLowerCase().includes('yacht') && (
+          <div className="bg-blue-50 p-4 rounded-xl mb-4">
+            <div className="text-sm font-medium text-blue-800 mb-2">🛥️ Yacht Venue Available!</div>
+            <div className="text-xs text-blue-700">
+              Great news! The yacht venue is available for your event. Look for the yacht option below with the 🛥️ icon.
+            </div>
+          </div>
+        )}
+
         <div className="space-y-3">
-          {venueServices.map(venue => (
-            <VenueCard
-              key={venue.id}
-              venue={venue}
-              isSelected={selectedVenue === venue.id}
-              onSelect={() => setSelectedVenue(venue.id)}
-            />
-          ))}
+          {filteredVenues.length > 0 ? (
+            filteredVenues.map(venue => (
+              <VenueCard
+                key={venue.id}
+                venue={venue}
+                isSelected={selectedVenue === venue.id}
+                onSelect={() => setSelectedVenue(venue.id)}
+              />
+            ))
+          ) : (
+            <div className="bg-yellow-50 p-4 rounded-xl text-center">
+              <div className="text-sm font-medium text-yellow-800 mb-2">🔍 No Venues Found</div>
+              <div className="text-xs text-yellow-700">
+                No venues match your search term "{searchTerm}". Try searching for "yacht", "restaurant", "wedding", or "sports".
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="bg-blue-50 p-4 rounded-xl">
