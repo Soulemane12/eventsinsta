@@ -308,9 +308,13 @@ function DetailsContent() {
                   onChange={e => {
                     let month = e.target.value
                     
-                    // Prevent invalid month values
-                    if (month && (parseInt(month) < 1 || parseInt(month) > 12)) {
-                      return // Don't update if invalid
+                    // Allow empty values for deletion
+                    if (month === '') {
+                      const currentDate = date.split('-')
+                      const newDate = `${currentDate[0] || ''}-${''}-${currentDate[2] || ''}`
+                      setDate(newDate)
+                      setDateError('')
+                      return
                     }
                     
                     // Limit to 2 digits
@@ -318,14 +322,26 @@ function DetailsContent() {
                       month = month.slice(0, 2)
                     }
                     
+                    // Only validate if it's a complete number
+                    if (month && !isNaN(parseInt(month))) {
+                      const monthNum = parseInt(month)
+                      if (monthNum < 1 || monthNum > 12) {
+                        return // Don't update if invalid
+                      }
+                    }
+                    
                     const paddedMonth = month.padStart(2, '0')
                     const currentDate = date.split('-')
                     const newDate = `${currentDate[0] || ''}-${paddedMonth}-${currentDate[2] || ''}`
                     setDate(newDate)
                     
-                    // Validate the new date
-                    const error = validateDate(currentDate[0] || '', paddedMonth, currentDate[2] || '')
-                    setDateError(error)
+                    // Only validate if we have a complete date
+                    if (currentDate[0] && paddedMonth && currentDate[2]) {
+                      const error = validateDate(currentDate[0], paddedMonth, currentDate[2])
+                      setDateError(error)
+                    } else {
+                      setDateError('')
+                    }
                   }}
                   className={`text-center text-base ${dateError ? 'border-red-500' : ''}`}
                 />
@@ -343,9 +359,13 @@ function DetailsContent() {
                   onChange={e => {
                     let day = e.target.value
                     
-                    // Prevent invalid day values
-                    if (day && (parseInt(day) < 1 || parseInt(day) > 31)) {
-                      return // Don't update if invalid
+                    // Allow empty values for deletion
+                    if (day === '') {
+                      const currentDate = date.split('-')
+                      const newDate = `${currentDate[0] || ''}-${currentDate[1] || ''}-${''}`
+                      setDate(newDate)
+                      setDateError('')
+                      return
                     }
                     
                     // Limit to 2 digits
@@ -353,14 +373,26 @@ function DetailsContent() {
                       day = day.slice(0, 2)
                     }
                     
+                    // Only validate if it's a complete number
+                    if (day && !isNaN(parseInt(day))) {
+                      const dayNum = parseInt(day)
+                      if (dayNum < 1 || dayNum > 31) {
+                        return // Don't update if invalid
+                      }
+                    }
+                    
                     const paddedDay = day.padStart(2, '0')
                     const currentDate = date.split('-')
                     const newDate = `${currentDate[0] || ''}-${currentDate[1] || ''}-${paddedDay}`
                     setDate(newDate)
                     
-                    // Validate the new date
-                    const error = validateDate(currentDate[0] || '', currentDate[1] || '', paddedDay)
-                    setDateError(error)
+                    // Only validate if we have a complete date
+                    if (currentDate[0] && currentDate[1] && paddedDay) {
+                      const error = validateDate(currentDate[0], currentDate[1], paddedDay)
+                      setDateError(error)
+                    } else {
+                      setDateError('')
+                    }
                   }}
                   className={`text-center text-base ${dateError ? 'border-red-500' : ''}`}
                 />
@@ -378,28 +410,44 @@ function DetailsContent() {
                   onChange={e => {
                     let year = e.target.value
                     
+                    // Allow empty values for deletion
+                    if (year === '') {
+                      const currentDate = date.split('-')
+                      const newDate = `${''}-${currentDate[1] || ''}-${currentDate[2] || ''}`
+                      setDate(newDate)
+                      setDateError('')
+                      return
+                    }
+                    
                     // Limit to 4 digits
                     if (year.length > 4) {
                       year = year.slice(0, 4)
                     }
                     
-                    // Prevent invalid year values
-                    if (year && (parseInt(year) < 2024 || parseInt(year) > 2030)) {
-                      return // Don't update if invalid
-                    }
-                    
-                    // Prevent years starting with 0 (like 0010, 0025, etc.)
-                    if (year && year.length === 4 && year.startsWith('0')) {
-                      return // Don't update if starts with 0
+                    // Only validate if it's a complete number
+                    if (year && !isNaN(parseInt(year))) {
+                      const yearNum = parseInt(year)
+                      if (yearNum < 2024 || yearNum > 2030) {
+                        return // Don't update if invalid
+                      }
+                      
+                      // Prevent years starting with 0 (like 0010, 0025, etc.)
+                      if (year.length === 4 && year.startsWith('0')) {
+                        return // Don't update if starts with 0
+                      }
                     }
                     
                     const currentDate = date.split('-')
                     const newDate = `${year}-${currentDate[1] || ''}-${currentDate[2] || ''}`
                     setDate(newDate)
                     
-                    // Validate the new date
-                    const error = validateDate(year, currentDate[1] || '', currentDate[2] || '')
-                    setDateError(error)
+                    // Only validate if we have a complete date
+                    if (year && currentDate[1] && currentDate[2]) {
+                      const error = validateDate(year, currentDate[1], currentDate[2])
+                      setDateError(error)
+                    } else {
+                      setDateError('')
+                    }
                   }}
                   className={`text-center text-base ${dateError ? 'border-red-500' : ''}`}
                 />
