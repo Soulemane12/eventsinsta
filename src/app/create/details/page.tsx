@@ -159,7 +159,26 @@ function DetailsContent() {
     return ''
   }
 
-  const formatTimeInput = (value: string): string => {
+  const formatTimeInput = (value: string, isEndTime: boolean = false): string => {
+    // Check for AM/PM in the input
+    const hasAM = /am/i.test(value)
+    const hasPM = /pm/i.test(value)
+    
+    // Set the period if detected
+    if (hasAM && !hasPM) {
+      if (isEndTime) {
+        setCustomEndPeriod('AM')
+      } else {
+        setCustomStartPeriod('AM')
+      }
+    } else if (hasPM && !hasAM) {
+      if (isEndTime) {
+        setCustomEndPeriod('PM')
+      } else {
+        setCustomStartPeriod('PM')
+      }
+    }
+    
     // Remove any non-numeric characters except colon
     let cleaned = value.replace(/[^\d:]/g, '')
     
@@ -228,6 +247,7 @@ function DetailsContent() {
       const endMinutes = customEndTime.includes(':') ? customEndTime.split(':')[1] : '00'
       const startTime = `${customStartTime.split(':')[0]}:${startMinutes.padStart(2, '0')} ${customStartPeriod}`
       const endTime = `${customEndTime.split(':')[0]}:${endMinutes.padStart(2, '0')} ${customEndPeriod}`
+      
       
       const params = new URLSearchParams({
         eventType: eventType,
@@ -413,7 +433,7 @@ function DetailsContent() {
                     <Input 
                       placeholder="2:30"
                       value={customStartTime}
-                      onChange={e => setCustomStartTime(formatTimeInput(e.target.value))}
+                      onChange={e => setCustomStartTime(formatTimeInput(e.target.value, false))}
                       className="text-center flex-1"
                     />
                     <select 
@@ -432,7 +452,7 @@ function DetailsContent() {
                     <Input 
                       placeholder="6:00"
                       value={customEndTime}
-                      onChange={e => setCustomEndTime(formatTimeInput(e.target.value))}
+                      onChange={e => setCustomEndTime(formatTimeInput(e.target.value, true))}
                       className="text-center flex-1"
                     />
                     <select 
