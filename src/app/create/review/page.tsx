@@ -3,7 +3,7 @@
 import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { getRestaurantPriceByGuestCount } from '../../../data/restaurants'
-import { SERVICES } from '../../../data/services'
+import { SERVICES, VENUE_SERVICES } from '../../../data/services'
 import Logo from '../../../components/Logo'
 
 const BrandPurple = 'bg-purple-800'
@@ -80,6 +80,7 @@ interface EventData {
   services: string[]
   servicesTotal: number
   selectedRestaurant: string
+  venue: string
 }
 
 function formatDate(dateString: string): string {
@@ -109,6 +110,26 @@ function formatTime(timeString: string): string {
   }
 }
 
+function getVenueDisplayName(venueId: string): string {
+  if (!venueId) return 'No venue selected'
+  const venue = VENUE_SERVICES.find(v => v.id === venueId)
+  return venue ? venue.name : venueId.replace('venue-', '').replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())
+}
+
+function getVenueCost(venueId: string, guestCount: number): number {
+  if (!venueId) return 0
+  const venue = VENUE_SERVICES.find(v => v.id === venueId)
+  if (!venue) return 0
+  
+  // For restaurant venues, use the restaurant pricing
+  if (venueId === 'venue-restaurant') {
+    return 0 // Will be handled separately with selectedRestaurant
+  }
+  
+  // For other venues, return the base price
+  return venue.price || 0
+}
+
 function ReviewContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -131,6 +152,7 @@ function ReviewContent() {
     const services = searchParams.get('services')?.split(',').filter(Boolean) || []
     const servicesTotal = parseInt(searchParams.get('servicesTotal') || '0')
     const selectedRestaurant = searchParams.get('selectedRestaurant') || ''
+    const venue = searchParams.get('venue') || ''
 
     const data: EventData = {
       eventType,
@@ -141,7 +163,8 @@ function ReviewContent() {
       budget,
       services,
       servicesTotal,
-      selectedRestaurant
+      selectedRestaurant,
+      venue
     }
 
     setEventData(data)
@@ -151,14 +174,21 @@ function ReviewContent() {
     setBookingData(prev => ({ ...prev, [field]: value }))
   }
 
-  const getRestaurantCost = () => {
-    if (!eventData || !eventData.selectedRestaurant) return 0
-    return getRestaurantPriceByGuestCount(eventData.selectedRestaurant, eventData.guestCount)
+  const getCurrentVenueCost = () => {
+    if (!eventData) return 0
+    
+    // For restaurant venues, use restaurant pricing
+    if (eventData.venue === 'venue-restaurant' && eventData.selectedRestaurant) {
+      return getRestaurantPriceByGuestCount(eventData.selectedRestaurant, eventData.guestCount)
+    }
+    
+    // For other venues, use venue pricing
+    return getVenueCost(eventData.venue, eventData.guestCount)
   }
 
   const getTotalCost = () => {
     if (!eventData) return 0
-    return getRestaurantCost() + eventData.servicesTotal
+    return getCurrentVenueCost() + eventData.servicesTotal
   }
 
   // Age verification logic
@@ -309,10 +339,14 @@ function ReviewContent() {
           <div className="space-y-3">
             <div className="flex justify-between items-center">
               <div>
-                <div className="font-medium text-sm">Restaurant Cost</div>
+                <div className="font-medium text-sm">
+                  {eventData.venue === 'venue-restaurant' ? 'Restaurant Cost' : 
+                   eventData.venue === 'venue-sports-arena' ? 'Sports Arena Cost' :
+                   getVenueDisplayName(eventData.venue) + ' Cost'}
+                </div>
                 <div className="text-xs text-gray-600">For {eventData.guestCount} guests</div>
               </div>
-              <div className="text-sm font-medium">${getRestaurantCost()}</div>
+              <div className="text-sm font-medium">${getCurrentVenueCost()}</div>
             </div>
             
             {eventData.services.map(serviceId => {
