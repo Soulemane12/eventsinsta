@@ -298,11 +298,9 @@ function DetailsContent() {
           <Field label="Event Date">
             <div className="flex items-center gap-2">
               <div className="flex-1">
-                <Input 
-                  type="number"
+                <Input
+                  type="text"
                   placeholder="MM"
-                  min="1"
-                  max="12"
                   maxLength={2}
                   value={date.split('-')[1] || ''}
                   onChange={e => {
@@ -322,12 +320,11 @@ function DetailsContent() {
                       month = month.slice(0, 2)
                     }
 
-                    // Allow partial input (don't validate single digits immediately)
-                    if (month && !isNaN(parseInt(month))) {
+                    // Only prevent clearly invalid 2-digit numbers
+                    if (month.length === 2 && !isNaN(parseInt(month))) {
                       const monthNum = parseInt(month)
-                      // Only prevent update if it's clearly invalid (like 0 or >12)
-                      if (monthNum === 0 || (month.length === 2 && (monthNum < 1 || monthNum > 12))) {
-                        return // Don't update if invalid
+                      if (monthNum < 1 || monthNum > 12) {
+                        return // Don't update if invalid 2-digit number
                       }
                     }
 
@@ -350,11 +347,9 @@ function DetailsContent() {
               </div>
               <div className="text-2xl text-gray-400">/</div>
               <div className="flex-1">
-                <Input 
-                  type="number"
+                <Input
+                  type="text"
                   placeholder="DD"
-                  min="1"
-                  max="31"
                   maxLength={2}
                   value={date.split('-')[2] || ''}
                   onChange={e => {
@@ -374,12 +369,11 @@ function DetailsContent() {
                       day = day.slice(0, 2)
                     }
 
-                    // Allow partial input (don't validate single digits immediately)
-                    if (day && !isNaN(parseInt(day))) {
+                    // Only prevent clearly invalid 2-digit numbers
+                    if (day.length === 2 && !isNaN(parseInt(day))) {
                       const dayNum = parseInt(day)
-                      // Only prevent update if it's clearly invalid (like 0 or >31 for 2-digit)
-                      if (dayNum === 0 || (day.length === 2 && (dayNum < 1 || dayNum > 31))) {
-                        return // Don't update if invalid
+                      if (dayNum < 1 || dayNum > 31) {
+                        return // Don't update if invalid 2-digit number
                       }
                     }
 
