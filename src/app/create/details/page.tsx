@@ -66,8 +66,6 @@ function DetailsContent() {
   const [location, setLocation] = useState('')
   const [date, setDate] = useState('')
   const [hostName, setHostName] = useState('')
-  const [timeRange, setTimeRange] = useState('')
-  const [useCustomTime, setUseCustomTime] = useState(false)
   const [customStartTime, setCustomStartTime] = useState('')
   const [customStartPeriod, setCustomStartPeriod] = useState('PM')
   const [customEndTime, setCustomEndTime] = useState('')
@@ -75,43 +73,6 @@ function DetailsContent() {
   const [eventType, setEventType] = useState('')
   const [dateError, setDateError] = useState('')
 
-  const timeRangeOptions = [
-    { 
-      id: 'afternoon', 
-      label: '12:00 PM - 4:00 PM', 
-      description: 'Afternoon Event (4 hours)',
-      startTime: '12:00 PM',
-      endTime: '4:00 PM'
-    },
-    { 
-      id: 'evening', 
-      label: '6:00 PM - 10:00 PM', 
-      description: 'Evening Event (4 hours)',
-      startTime: '6:00 PM',
-      endTime: '10:00 PM'
-    },
-    { 
-      id: 'late-evening', 
-      label: '8:00 PM - 12:00 AM', 
-      description: 'Late Evening Event (4 hours)',
-      startTime: '8:00 PM',
-      endTime: '12:00 AM'
-    },
-    { 
-      id: 'all-day', 
-      label: '10:00 AM - 6:00 PM', 
-      description: 'All Day Event (8 hours)',
-      startTime: '10:00 AM',
-      endTime: '6:00 PM'
-    },
-    { 
-      id: 'night', 
-      label: '10:00 PM - 2:00 AM', 
-      description: 'Night Event (4 hours)',
-      startTime: '10:00 PM',
-      endTime: '2:00 AM'
-    }
-  ]
 
   // Date validation functions
   const isLeapYear = (year: number): boolean => {
@@ -228,35 +189,24 @@ function DetailsContent() {
     }
   }, [searchParams])
 
-  const timeValid = useCustomTime 
-    ? (customStartTime && customStartPeriod && customEndTime && customEndPeriod && 
-       !validateCustomTimeRange())
-    : timeRange
+  const timeValid = customStartTime && customStartPeriod && customEndTime && customEndPeriod && 
+                   !validateCustomTimeRange()
 
   const valid = location.trim().length > 0 && date && hostName.trim().length > 0 && timeValid && !dateError
 
   function next(){
     if (valid) {
-      let startTime = ''
-      let endTime = ''
-      
-      if (useCustomTime) {
-        const startMinutes = customStartTime.includes(':') ? customStartTime.split(':')[1] : '00'
-        const endMinutes = customEndTime.includes(':') ? customEndTime.split(':')[1] : '00'
-        startTime = `${customStartTime.split(':')[0]}:${startMinutes.padStart(2, '0')} ${customStartPeriod}`
-        endTime = `${customEndTime.split(':')[0]}:${endMinutes.padStart(2, '0')} ${customEndPeriod}`
-      } else {
-        const selectedTimeRange = timeRangeOptions.find(option => option.id === timeRange)
-        startTime = selectedTimeRange?.startTime || ''
-        endTime = selectedTimeRange?.endTime || ''
-      }
+      const startMinutes = customStartTime.includes(':') ? customStartTime.split(':')[1] : '00'
+      const endMinutes = customEndTime.includes(':') ? customEndTime.split(':')[1] : '00'
+      const startTime = `${customStartTime.split(':')[0]}:${startMinutes.padStart(2, '0')} ${customStartPeriod}`
+      const endTime = `${customEndTime.split(':')[0]}:${endMinutes.padStart(2, '0')} ${customEndPeriod}`
       
       const params = new URLSearchParams({
         eventType: eventType,
         location: location,
         date: date,
         hostName: hostName,
-        timeRange: useCustomTime ? 'custom' : timeRange,
+        timeRange: 'custom',
         startTime: startTime,
         endTime: endTime
       })
@@ -429,123 +379,55 @@ function DetailsContent() {
 
           <Field label="Event Time">
             <div className="space-y-4">
-              {/* Toggle between predefined and custom time */}
-              <div className="flex bg-gray-100 rounded-xl p-1">
-                <button
-                  type="button"
-                  className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-all ${
-                    !useCustomTime 
-                      ? 'bg-white text-purple-600 shadow-sm' 
-                      : 'text-gray-600 hover:text-gray-800'
-                  }`}
-                  onClick={() => {
-                    setUseCustomTime(false)
-                    setCustomStartTime('')
-                    setCustomStartPeriod('PM')
-                    setCustomEndTime('')
-                    setCustomEndPeriod('PM')
-                  }}
-                >
-                  Quick Select
-                </button>
-                <button
-                  type="button"
-                  className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-all ${
-                    useCustomTime 
-                      ? 'bg-white text-purple-600 shadow-sm' 
-                      : 'text-gray-600 hover:text-gray-800'
-                  }`}
-                  onClick={() => {
-                    setUseCustomTime(true)
-                    setTimeRange('')
-                  }}
-                >
-                  Custom Time
-                </button>
-              </div>
-
-              {!useCustomTime ? (
-                // Predefined time ranges
-                <div className="space-y-3">
-                  {timeRangeOptions.map((option) => (
-                    <button
-                      key={option.id}
-                      type="button"
-                      className={`w-full p-4 text-left cursor-pointer transition-all rounded-xl border ${
-                        timeRange === option.id 
-                          ? 'border-purple-600 bg-purple-50' 
-                          : 'border-gray-200 hover:border-purple-300 bg-white'
-                      }`}
-                      onClick={() => setTimeRange(option.id)}
+              <div className="grid grid-cols-2 gap-4">
+                <Field label="Start Time">
+                  <div className="flex items-center gap-2">
+                    <Input 
+                      placeholder="2:30"
+                      value={customStartTime}
+                      onChange={e => setCustomStartTime(e.target.value)}
+                      className="text-center flex-1"
+                    />
+                    <select 
+                      value={customStartPeriod}
+                      onChange={e => setCustomStartPeriod(e.target.value)}
+                      className="h-12 rounded-xl border border-gray-300 px-3 outline-none focus:ring-2 focus:ring-purple-300 text-base"
                     >
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <div className="font-semibold text-base text-gray-900">{option.label}</div>
-                          <div className="text-sm text-gray-600 mt-1">{option.description}</div>
-                        </div>
-                        {timeRange === option.id && (
-                          <div className="w-5 h-5 bg-purple-600 rounded-full flex items-center justify-center">
-                            <div className="w-2 h-2 bg-white rounded-full"></div>
-                          </div>
-                        )}
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              ) : (
-                // Custom time inputs
-                <div className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <Field label="Start Time">
-                      <div className="flex items-center gap-2">
-                        <Input 
-                          placeholder="2:30"
-                          value={customStartTime}
-                          onChange={e => setCustomStartTime(e.target.value)}
-                          className="text-center flex-1"
-                        />
-                        <select 
-                          value={customStartPeriod}
-                          onChange={e => setCustomStartPeriod(e.target.value)}
-                          className="h-12 rounded-xl border border-gray-300 px-3 outline-none focus:ring-2 focus:ring-purple-300 text-base"
-                        >
-                          <option value="AM">AM</option>
-                          <option value="PM">PM</option>
-                        </select>
-                      </div>
-                    </Field>
-                    
-                    <Field label="End Time">
-                      <div className="flex items-center gap-2">
-                        <Input 
-                          placeholder="6:00"
-                          value={customEndTime}
-                          onChange={e => setCustomEndTime(e.target.value)}
-                          className="text-center flex-1"
-                        />
-                        <select 
-                          value={customEndPeriod}
-                          onChange={e => setCustomEndPeriod(e.target.value)}
-                          className="h-12 rounded-xl border border-gray-300 px-3 outline-none focus:ring-2 focus:ring-purple-300 text-base"
-                        >
-                          <option value="AM">AM</option>
-                          <option value="PM">PM</option>
-                        </select>
-                      </div>
-                    </Field>
+                      <option value="AM">AM</option>
+                      <option value="PM">PM</option>
+                    </select>
                   </div>
-                  
-                  {validateCustomTimeRange() && (
-                    <div className="text-sm text-red-600 bg-red-50 p-2 rounded-lg">
-                      ⚠️ {validateCustomTimeRange()}
-                    </div>
-                  )}
-                  
-                  <div className="text-xs text-gray-500 bg-gray-50 p-3 rounded-lg">
-                    💡 Enter time like "2:30" or just "2" and select AM/PM
+                </Field>
+                
+                <Field label="End Time">
+                  <div className="flex items-center gap-2">
+                    <Input 
+                      placeholder="6:00"
+                      value={customEndTime}
+                      onChange={e => setCustomEndTime(e.target.value)}
+                      className="text-center flex-1"
+                    />
+                    <select 
+                      value={customEndPeriod}
+                      onChange={e => setCustomEndPeriod(e.target.value)}
+                      className="h-12 rounded-xl border border-gray-300 px-3 outline-none focus:ring-2 focus:ring-purple-300 text-base"
+                    >
+                      <option value="AM">AM</option>
+                      <option value="PM">PM</option>
+                    </select>
                   </div>
+                </Field>
+              </div>
+              
+              {validateCustomTimeRange() && (
+                <div className="text-sm text-red-600 bg-red-50 p-2 rounded-lg">
+                  ⚠️ {validateCustomTimeRange()}
                 </div>
               )}
+              
+              <div className="text-xs text-gray-500 bg-gray-50 p-3 rounded-lg">
+                💡 Enter time like "2:30" or just "2" and select AM/PM
+              </div>
             </div>
           </Field>
 
