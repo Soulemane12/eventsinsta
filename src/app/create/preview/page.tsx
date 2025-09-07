@@ -147,17 +147,22 @@ function PreviewContent() {
     const location = searchParams.get('location') || 'New York, NY'
     const date = searchParams.get('date') || ''
     const time = searchParams.get('time') || ''
+    const startTime = searchParams.get('startTime') || ''
+    const endTime = searchParams.get('endTime') || ''
     const guestCount = parseInt(searchParams.get('guestCount') || '2')
     const budget = searchParams.get('budget') || 'budget-2'
     const venue = searchParams.get('venue') || ''
     const services = searchParams.get('services')?.split(',').filter(Boolean) || []
     const servicesTotal = parseInt(searchParams.get('servicesTotal') || '0')
 
+    // Combine start and end time if they exist, otherwise use the time parameter
+    const combinedTime = (startTime && endTime) ? `${startTime} - ${endTime}` : time
+
     const data: EventData = {
       eventType,
       location,
       date,
-      time,
+      time: combinedTime,
       guestCount,
       budget,
       venue,
