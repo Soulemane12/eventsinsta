@@ -35,60 +35,60 @@ ${SERVICES.map(service => `- ${service.id}: ${service.name} (${service.category}
 
 VERY SPECIFIC FILTERING RULES WITH DETAILED EXAMPLES:
 
-🚨 CRITICAL: If event type is "Vacation", ONLY include these services: yacht-party-jboogie, photographer-premium, photographer-standard, catering-premium, catering-standard, dj-ceo, dj-standard, entertainment-live-band, entertainment-magician, exotic-car-bmw-2025, exotic-car-rolls-royce-ghost, exotic-car-mercedes-gwagon, exotic-car-range-rover, car-service-premium, car-service-standard, isit-corp. NEVER include sports services for vacation events.
+🚨 CRITICAL: If event type is "Vacation", ONLY include these services: photographer-premium, photographer-standard, catering-premium, catering-standard, dj-ceo, dj-standard, entertainment-live-band, entertainment-magician, exotic-car-bmw-2025, exotic-car-rolls-royce-ghost, exotic-car-mercedes-gwagon, exotic-car-range-rover, car-service-premium, car-service-standard, isit-corp. NEVER include sports services for vacation events.
 
 1. BIRTHDAY PARTY + RESTAURANT:
    ✅ INCLUDE: dj-ceo, dj-standard, photographer-premium, photographer-standard, catering-premium, catering-standard, decorations-premium, decorations-standard, exotic-car-bmw-2025, exotic-car-rolls-royce-ghost, exotic-car-mercedes-gwagon, exotic-car-range-rover, car-service-premium, car-service-standard, isit-corp, makeup-premium, makeup-standard, entertainment-live-band, entertainment-magician
-   ❌ EXCLUDE: kids-birthday-package, sports-knicks-birthday, sports-knicks-jersey-signing, boxing-lessons-eric-kelly, golf-lessons-access, yacht-party-jboogie, baby-shower-package,  wellness-midtown-biohack, wellness-platinum-spa, coaching-ifs-ty-cutner
+   ❌ EXCLUDE: kids-birthday-package, sports-knicks-birthday, sports-knicks-jersey-signing, boxing-lessons-eric-kelly, golf-lessons-access,  baby-shower-package,  wellness-midtown-biohack, wellness-platinum-spa, coaching-ifs-ty-cutner
    📝 EXAMPLE: Adult birthday party at a restaurant - needs DJ for music, photographer for memories, catering for food, decorations for ambiance, exotic cars for arrival, makeup for glamour, live band for entertainment
 
 2. BIRTHDAY PARTY + SPORTS ARENA:
    ✅ INCLUDE: sports-knicks-birthday, sports-knicks-jersey-signing, boxing-lessons-eric-kelly, golf-lessons-access, dj-ceo, dj-standard, photographer-premium, photographer-standard, catering-premium, catering-standard
-   ❌ EXCLUDE: kids-birthday-package, yacht-party-jboogie, baby-shower-package,  wellness-midtown-biohack, wellness-platinum-spa, coaching-ifs-ty-cutner, makeup-premium, makeup-standard, barber-mobile, exotic-car-bmw-2025, exotic-car-rolls-royce-ghost, exotic-car-mercedes-gwagon, exotic-car-range-rover, car-service-premium, car-service-standard, isit-corp, decorations-premium, decorations-standard, entertainment-live-band, entertainment-magician
+   ❌ EXCLUDE: kids-birthday-package,  baby-shower-package,  wellness-midtown-biohack, wellness-platinum-spa, coaching-ifs-ty-cutner, makeup-premium, makeup-standard, barber-mobile, exotic-car-bmw-2025, exotic-car-rolls-royce-ghost, exotic-car-mercedes-gwagon, exotic-car-range-rover, car-service-premium, car-service-standard, isit-corp, decorations-premium, decorations-standard, entertainment-live-band, entertainment-magician
    📝 EXAMPLE: Sports-themed birthday at arena - needs NY Knicks experience, boxing lessons, golf lessons, DJ for music, photographer for action shots, catering for food
 
 2b. BIRTHDAY PARTY + MADISON SQUARE GARDEN:
    ✅ INCLUDE: sports-knicks-birthday, sports-knicks-jersey-signing, boxing-lessons-eric-kelly, golf-lessons-access, dj-ceo, dj-standard, photographer-premium, photographer-standard, catering-premium, catering-standard
-   ❌ EXCLUDE: kids-birthday-package, yacht-party-jboogie, baby-shower-package,  wellness-midtown-biohack, wellness-platinum-spa, coaching-ifs-ty-cutner, makeup-premium, makeup-standard, barber-mobile, exotic-car-bmw-2025, exotic-car-rolls-royce-ghost, exotic-car-mercedes-gwagon, exotic-car-range-rover, car-service-premium, car-service-standard, isit-corp, decorations-premium, decorations-standard, entertainment-live-band, entertainment-magician
+   ❌ EXCLUDE: kids-birthday-package,  baby-shower-package,  wellness-midtown-biohack, wellness-platinum-spa, coaching-ifs-ty-cutner, makeup-premium, makeup-standard, barber-mobile, exotic-car-bmw-2025, exotic-car-rolls-royce-ghost, exotic-car-mercedes-gwagon, exotic-car-range-rover, car-service-premium, car-service-standard, isit-corp, decorations-premium, decorations-standard, entertainment-live-band, entertainment-magician
    📝 EXAMPLE: Epic birthday at MSG - needs NY Knicks packages, boxing lessons, golf lessons, DJ for music, photographer for iconic shots, catering for food
 
 3. BIRTHDAY PARTY + PRIVATE HOME:
    ✅ INCLUDE: dj-ceo, dj-standard, photographer-premium, photographer-standard, catering-premium, catering-standard, decorations-premium, decorations-standard, exotic-car-bmw-2025, exotic-car-rolls-royce-ghost, exotic-car-mercedes-gwagon, exotic-car-range-rover, car-service-premium, car-service-standard, isit-corp, makeup-premium, makeup-standard, entertainment-live-band, entertainment-magician
-   ❌ EXCLUDE: kids-birthday-package, sports-knicks-birthday, sports-knicks-jersey-signing, boxing-lessons-eric-kelly, golf-lessons-access, yacht-party-jboogie, baby-shower-package,  wellness-midtown-biohack, wellness-platinum-spa, coaching-ifs-ty-cutner
+   ❌ EXCLUDE: kids-birthday-package, sports-knicks-birthday, sports-knicks-jersey-signing, boxing-lessons-eric-kelly, golf-lessons-access,  baby-shower-package,  wellness-midtown-biohack, wellness-platinum-spa, coaching-ifs-ty-cutner
    📝 EXAMPLE: Home birthday party - needs DJ for music, photographer for memories, catering for food, decorations for home setup, exotic cars for arrival, makeup for glamour, live band for entertainment
 
 4. SPORTING EVENTS + ANY VENUE:
    ✅ INCLUDE: sports-knicks-birthday, sports-knicks-jersey-signing, boxing-lessons-eric-kelly, golf-lessons-access, dj-ceo, dj-standard, photographer-premium, photographer-standard, catering-premium, catering-standard
-   ❌ EXCLUDE: kids-birthday-package, yacht-party-jboogie, baby-shower-package,  wellness-midtown-biohack, wellness-platinum-spa, coaching-ifs-ty-cutner, makeup-premium, makeup-standard, barber-mobile
+   ❌ EXCLUDE: kids-birthday-package,  baby-shower-package,  wellness-midtown-biohack, wellness-platinum-spa, coaching-ifs-ty-cutner, makeup-premium, makeup-standard, barber-mobile
    📝 EXAMPLE: Sports tournament or competition - needs NY Knicks experiences, boxing lessons, golf lessons, DJ for music, photographer for action shots, catering for athletes
 
 4b. SPORTING EVENTS + MADISON SQUARE GARDEN:
    ✅ INCLUDE: sports-knicks-birthday, sports-knicks-jersey-signing, boxing-lessons-eric-kelly, golf-lessons-access, dj-ceo, dj-standard, photographer-premium, photographer-standard, catering-premium, catering-standard
-   ❌ EXCLUDE: kids-birthday-package, yacht-party-jboogie, baby-shower-package,  wellness-midtown-biohack, wellness-platinum-spa, coaching-ifs-ty-cutner, makeup-premium, makeup-standard, barber-mobile
+   ❌ EXCLUDE: kids-birthday-package,  baby-shower-package,  wellness-midtown-biohack, wellness-platinum-spa, coaching-ifs-ty-cutner, makeup-premium, makeup-standard, barber-mobile
    📝 EXAMPLE: Professional sports event at MSG - needs NY Knicks packages, boxing lessons, golf lessons, DJ for music, photographer for professional shots, catering for participants
 
 5. WEDDING + ANY VENUE:
    ✅ INCLUDE:  dj-ceo, dj-standard, photographer-premium, photographer-standard, catering-premium, catering-standard, makeup-premium, makeup-standard, decorations-premium, decorations-standard, exotic-car-bmw-2025, exotic-car-rolls-royce-ghost, exotic-car-mercedes-gwagon, exotic-car-range-rover, car-service-premium, car-service-standard, isit-corp
-   ❌ EXCLUDE: kids-birthday-package, sports-knicks-birthday, sports-knicks-jersey-signing, boxing-lessons-eric-kelly, golf-lessons-access, yacht-party-jboogie, baby-shower-package, wellness-midtown-biohack, wellness-platinum-spa, coaching-ifs-ty-cutner
+   ❌ EXCLUDE: kids-birthday-package, sports-knicks-birthday, sports-knicks-jersey-signing, boxing-lessons-eric-kelly, golf-lessons-access,  baby-shower-package, wellness-midtown-biohack, wellness-platinum-spa, coaching-ifs-ty-cutner
    📝 EXAMPLE: Wedding celebration - needs DJ for reception, photographer for ceremony, catering for guests, makeup for bride, decorations for venue, exotic cars for bridal party
 
 6. BABY SHOWER + ANY VENUE:
    ✅ INCLUDE: baby-shower-package, photographer-premium, photographer-standard, catering-premium, catering-standard, decorations-premium, decorations-standard, entertainment-magician
-   ❌ EXCLUDE: kids-birthday-package, sports-knicks-birthday, sports-knicks-jersey-signing, boxing-lessons-eric-kelly, golf-lessons-access, yacht-party-jboogie,  wellness-midtown-biohack, wellness-platinum-spa, coaching-ifs-ty-cutner, makeup-premium, makeup-standard, barber-mobile
+   ❌ EXCLUDE: kids-birthday-package, sports-knicks-birthday, sports-knicks-jersey-signing, boxing-lessons-eric-kelly, golf-lessons-access,   wellness-midtown-biohack, wellness-platinum-spa, coaching-ifs-ty-cutner, makeup-premium, makeup-standard, barber-mobile
    📝 EXAMPLE: Baby shower celebration - needs baby shower package, photographer for memories, catering for guests, decorations for baby theme, magician for gentle entertainment
 
 7. CORPORATE EVENTS + ANY VENUE:
    ✅ INCLUDE: dj-ceo, dj-standard, photographer-premium, photographer-standard, catering-premium, catering-standard, decorations-premium, decorations-standard, car-service-premium, car-service-standard, isit-corp, entertainment-live-band, entertainment-magician
-   ❌ EXCLUDE: kids-birthday-package, sports-knicks-birthday, sports-knicks-jersey-signing, boxing-lessons-eric-kelly, golf-lessons-access, yacht-party-jboogie, baby-shower-package,  wellness-midtown-biohack, wellness-platinum-spa, coaching-ifs-ty-cutner, makeup-premium, makeup-standard, barber-mobile
+   ❌ EXCLUDE: kids-birthday-package, sports-knicks-birthday, sports-knicks-jersey-signing, boxing-lessons-eric-kelly, golf-lessons-access,  baby-shower-package,  wellness-midtown-biohack, wellness-platinum-spa, coaching-ifs-ty-cutner, makeup-premium, makeup-standard, barber-mobile
    📝 EXAMPLE: Corporate conference or team building - needs DJ for networking, photographer for corporate photos, catering for attendees, decorations for branding, car service for executives, live band for entertainment
 
 8. HEALTH & WELLNESS + ANY VENUE:
    ✅ INCLUDE: wellness-midtown-biohack, wellness-platinum-spa, coaching-ifs-ty-cutner, photographer-premium, photographer-standard, catering-premium, catering-standard
-   ❌ EXCLUDE: kids-birthday-package, sports-knicks-birthday, sports-knicks-jersey-signing, boxing-lessons-eric-kelly, golf-lessons-access, yacht-party-jboogie, baby-shower-package,  makeup-premium, makeup-standard, barber-mobile, entertainment-live-band, entertainment-magician
+   ❌ EXCLUDE: kids-birthday-package, sports-knicks-birthday, sports-knicks-jersey-signing, boxing-lessons-eric-kelly, golf-lessons-access,  baby-shower-package,  makeup-premium, makeup-standard, barber-mobile, entertainment-live-band, entertainment-magician
    📝 EXAMPLE: Wellness retreat or spa day - needs wellness services, biohacking, spa treatments, coaching sessions, photographer for wellness photos, healthy catering
 
 9. VACATION + ANY VENUE:
-   ✅ INCLUDE: yacht-party-jboogie, photographer-premium, photographer-standard, catering-premium, catering-standard, dj-ceo, dj-standard, entertainment-live-band, entertainment-magician, exotic-car-bmw-2025, exotic-car-rolls-royce-ghost, exotic-car-mercedes-gwagon, exotic-car-range-rover, car-service-premium, car-service-standard, isit-corp
+   ✅ INCLUDE:  photographer-premium, photographer-standard, catering-premium, catering-standard, dj-ceo, dj-standard, entertainment-live-band, entertainment-magician, exotic-car-bmw-2025, exotic-car-rolls-royce-ghost, exotic-car-mercedes-gwagon, exotic-car-range-rover, car-service-premium, car-service-standard, isit-corp
    ❌ EXCLUDE: kids-birthday-package, sports-knicks-birthday, sports-knicks-jersey-signing, boxing-lessons-eric-kelly, golf-lessons-access, baby-shower-package,  wellness-midtown-biohack, wellness-platinum-spa, coaching-ifs-ty-cutner, makeup-premium, makeup-standard, barber-mobile, decorations-premium, decorations-standard
    📝 EXAMPLE: Vacation getaway - needs yacht experiences, photographer for memories, catering for meals, DJ for entertainment, exotic cars for transportation, live band for fun
    🚫 CRITICAL: For VACATION events, NEVER include sports-knicks-birthday, sports-knicks-jersey-signing, boxing-lessons-eric-kelly, golf-lessons-access - these are birthday/sports specific, not vacation appropriate

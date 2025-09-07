@@ -326,16 +326,6 @@ export const SERVICES: Service[] = [
     icon: '🧠'
   },
 
-  // Yacht Party
-  {
-    id: 'yacht-party-jboogie',
-    name: 'JBoogieBrooklynYachtTours',
-    category: 'Yacht',
-    description: 'Private yacht party experience. 3-hour rental includes captain, snacks, light refreshments, and 3 bottles of premium liquor.',
-    price: 2500,
-    priceDescription: '$2,500 for 3 hours',
-    icon: '🛥️'
-  }
 ]
 
 export const SERVICE_CATEGORIES = [
@@ -438,5 +428,14 @@ export const VENUE_SERVICES: Service[] = [
     price: 15000,
     priceDescription: '$15,000 starting price',
     icon: '💒'
+  },
+  {
+    id: 'venue-jboogie-yacht',
+    name: 'JBoogie Brooklyn Yacht Tours',
+    category: 'Venue',
+    description: 'Private yacht party experience. 3-hour rental includes captain, snacks, light refreshments, and 3 bottles of premium liquor.',
+    price: 2500,
+    priceDescription: '$2,500 for 3 hours',
+    icon: '🛥️'
   }
 ]
