@@ -306,41 +306,31 @@ function DetailsContent() {
                   onChange={e => {
                     let month = e.target.value
 
-                    // Allow empty values for deletion
-                    if (month === '') {
-                      const currentDate = date.split('-')
-                      const newDate = `${currentDate[0] || ''}-${''}-${currentDate[2] || ''}`
-                      setDate(newDate)
-                      setDateError('')
-                      return
-                    }
-
-                    // Limit to 2 digits and only allow numeric input
+                    // Limit to 2 digits
                     if (month.length > 2) {
                       month = month.slice(0, 2)
                     }
 
-                    // Only allow numeric characters
-                    if (!/^\d*$/.test(month)) {
-                      return
-                    }
-
-                    // Allow all input initially, validate only when complete
+                    // Allow all input - no restrictions during typing
                     const paddedMonth = month.padStart(2, '0')
                     const currentDate = date.split('-')
                     const newDate = `${currentDate[0] || ''}-${paddedMonth}-${currentDate[2] || ''}`
                     setDate(newDate)
 
-                    // Clear any existing errors when user is actively typing
-                    if (month.length < 2) {
-                      setDateError('')
-                    } else {
-                      // Only validate complete 2-digit numbers
+                    // Clear errors while typing
+                    setDateError('')
+                  }}
+                  onBlur={e => {
+                    // Validate when user finishes typing
+                    const month = e.target.value
+                    const currentDate = date.split('-')
+
+                    if (month && month.length === 2) {
                       const monthNum = parseInt(month)
                       if (monthNum < 1 || monthNum > 12) {
                         setDateError('Month must be between 01 and 12')
-                      } else if (currentDate[0] && paddedMonth && currentDate[2]) {
-                        const error = validateDate(currentDate[0], paddedMonth, currentDate[2])
+                      } else if (currentDate[0] && currentDate[1] && currentDate[2]) {
+                        const error = validateDate(currentDate[0], currentDate[1], currentDate[2])
                         setDateError(error)
                       } else {
                         setDateError('')
@@ -361,41 +351,31 @@ function DetailsContent() {
                   onChange={e => {
                     let day = e.target.value
 
-                    // Allow empty values for deletion
-                    if (day === '') {
-                      const currentDate = date.split('-')
-                      const newDate = `${currentDate[0] || ''}-${currentDate[1] || ''}-${''}`
-                      setDate(newDate)
-                      setDateError('')
-                      return
-                    }
-
-                    // Limit to 2 digits and only allow numeric input
+                    // Limit to 2 digits
                     if (day.length > 2) {
                       day = day.slice(0, 2)
                     }
 
-                    // Only allow numeric characters
-                    if (!/^\d*$/.test(day)) {
-                      return
-                    }
-
-                    // Allow all input initially, validate only when complete
+                    // Allow all input - no restrictions during typing
                     const paddedDay = day.padStart(2, '0')
                     const currentDate = date.split('-')
                     const newDate = `${currentDate[0] || ''}-${currentDate[1] || ''}-${paddedDay}`
                     setDate(newDate)
 
-                    // Clear any existing errors when user is actively typing
-                    if (day.length < 2) {
-                      setDateError('')
-                    } else {
-                      // Only validate complete 2-digit numbers
+                    // Clear errors while typing
+                    setDateError('')
+                  }}
+                  onBlur={e => {
+                    // Validate when user finishes typing
+                    const day = e.target.value
+                    const currentDate = date.split('-')
+
+                    if (day && day.length === 2) {
                       const dayNum = parseInt(day)
                       if (dayNum < 1 || dayNum > 31) {
                         setDateError('Day must be between 01 and 31')
-                      } else if (currentDate[0] && currentDate[1] && paddedDay) {
-                        const error = validateDate(currentDate[0], currentDate[1], paddedDay)
+                      } else if (currentDate[0] && currentDate[1] && currentDate[2]) {
+                        const error = validateDate(currentDate[0], currentDate[1], currentDate[2])
                         setDateError(error)
                       } else {
                         setDateError('')
