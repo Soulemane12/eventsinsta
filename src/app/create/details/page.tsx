@@ -69,6 +69,7 @@ function DetailsContent() {
   const [startTime, setStartTime] = useState('')
   const [endTime, setEndTime] = useState('')
   const [eventType, setEventType] = useState('')
+  const [dateError, setDateError] = useState('')
 
   const timeOptions = [
     '6:00 AM', '6:30 AM', '7:00 AM', '7:30 AM', '8:00 AM', '8:30 AM', '9:00 AM', '9:30 AM',
@@ -79,6 +80,59 @@ function DetailsContent() {
     '2:00 AM', '2:30 AM', '3:00 AM', '3:30 AM', '4:00 AM', '4:30 AM', '5:00 AM', '5:30 AM'
   ]
 
+  // Date validation functions
+  const isLeapYear = (year: number): boolean => {
+    return (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0)
+  }
+
+  const getDaysInMonth = (month: number, year: number): number => {
+    const daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+    if (month === 2 && isLeapYear(year)) {
+      return 29
+    }
+    return daysInMonth[month - 1] || 31
+  }
+
+  const validateDate = (year: string, month: string, day: string): string => {
+    if (!year || !month || !day) {
+      return ''
+    }
+
+    const yearNum = parseInt(year)
+    const monthNum = parseInt(month)
+    const dayNum = parseInt(day)
+
+    // Check if year is in reasonable range
+    if (yearNum < 2024 || yearNum > 2030) {
+      return 'Year must be between 2024 and 2030'
+    }
+
+    // Check if month is valid
+    if (monthNum < 1 || monthNum > 12) {
+      return 'Month must be between 1 and 12'
+    }
+
+    // Check if day is valid for the month
+    const maxDays = getDaysInMonth(monthNum, yearNum)
+    if (dayNum < 1 || dayNum > maxDays) {
+      if (monthNum === 2 && dayNum === 29) {
+        return 'February 29th only exists in leap years'
+      }
+      return `Day must be between 1 and ${maxDays} for this month`
+    }
+
+    // Check if date is in the past
+    const selectedDate = new Date(yearNum, monthNum - 1, dayNum)
+    const today = new Date()
+    today.setHours(0, 0, 0, 0) // Reset time to start of day for comparison
+    
+    if (selectedDate < today) {
+      return 'Event date cannot be in the past'
+    }
+
+    return ''
+  }
+
   useEffect(() => {
     // Get event type from URL parameters
     const eventTypeParam = searchParams.get('eventType')
@@ -87,7 +141,7 @@ function DetailsContent() {
     }
   }, [searchParams])
 
-  const valid = location.trim().length > 0 && date && hostName.trim().length > 0 && startTime && endTime
+  const valid = location.trim().length > 0 && date && hostName.trim().length > 0 && startTime && endTime && !dateError
 
   function next(){
     if (valid) {
@@ -148,8 +202,12 @@ function DetailsContent() {
                     const currentDate = date.split('-')
                     const newDate = `${currentDate[0] || ''}-${month}-${currentDate[2] || ''}`
                     setDate(newDate)
+                    
+                    // Validate the new date
+                    const error = validateDate(currentDate[0] || '', month, currentDate[2] || '')
+                    setDateError(error)
                   }}
-                  className="text-center text-base"
+                  className={`text-center text-base ${dateError ? 'border-red-500' : ''}`}
                 />
                 <div className="text-xs text-gray-500 text-center mt-1">Month</div>
               </div>
@@ -166,8 +224,12 @@ function DetailsContent() {
                     const currentDate = date.split('-')
                     const newDate = `${currentDate[0] || ''}-${currentDate[1] || ''}-${day}`
                     setDate(newDate)
+                    
+                    // Validate the new date
+                    const error = validateDate(currentDate[0] || '', currentDate[1] || '', day)
+                    setDateError(error)
                   }}
-                  className="text-center text-base"
+                  className={`text-center text-base ${dateError ? 'border-red-500' : ''}`}
                 />
                 <div className="text-xs text-gray-500 text-center mt-1">Day</div>
               </div>
@@ -184,12 +246,21 @@ function DetailsContent() {
                     const currentDate = date.split('-')
                     const newDate = `${year}-${currentDate[1] || ''}-${currentDate[2] || ''}`
                     setDate(newDate)
+                    
+                    // Validate the new date
+                    const error = validateDate(year, currentDate[1] || '', currentDate[2] || '')
+                    setDateError(error)
                   }}
-                  className="text-center text-base"
+                  className={`text-center text-base ${dateError ? 'border-red-500' : ''}`}
                 />
                 <div className="text-xs text-gray-500 text-center mt-1">Year</div>
               </div>
             </div>
+            {dateError && (
+              <div className="mt-2 text-sm text-red-600 bg-red-50 p-2 rounded-lg">
+                ⚠️ {dateError}
+              </div>
+            )}
           </Field>
 
           <Field label="Start Time">
