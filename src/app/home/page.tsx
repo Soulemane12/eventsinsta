@@ -48,7 +48,15 @@ export default function Home() {
         </div>
         <Card className="mt-4 p-5 bg-purple-100">
           <div className="text-gray-700">Ready to plan your next unforgettable event? Let's find the perfect venues and services for you!</div>
-          <div className="mt-4"><Button onClick={()=>router.push('/create/customize')} className="!h-12">Plan an Event</Button></div>
+          <div className="mt-4 space-y-3">
+            <Button onClick={()=>router.push('/create/customize')} className="!h-12">Plan an Event</Button>
+            <button
+              onClick={() => router.push('/my-events')}
+              className="w-full h-12 rounded-2xl border border-purple-300 text-purple-700 font-semibold hover:bg-purple-50 transition-colors"
+            >
+              View My Events
+            </button>
+          </div>
         </Card>
 
         <section className="mt-8">

@@ -106,6 +106,19 @@ function SuccessContent() {
     }
 
     setEventData(data)
+
+    // Save event to localStorage for My Events page
+    const eventToSave = {
+      ...data,
+      id: `event-${Date.now()}`,
+      createdAt: new Date().toISOString(),
+      status: 'upcoming' as const
+    }
+
+    const existingEvents = localStorage.getItem('userEvents')
+    const events = existingEvents ? JSON.parse(existingEvents) : []
+    events.push(eventToSave)
+    localStorage.setItem('userEvents', JSON.stringify(events))
   }, [searchParams])
 
   const getRestaurantDetails = () => {
@@ -222,7 +235,7 @@ function SuccessContent() {
         </div>
 
         <div className="space-y-3">
-          <Button onClick={()=>router.push('/home')}>
+          <Button onClick={()=>router.push('/my-events')}>
             View My Events
           </Button>
           <GhostButton onClick={() => router.push(`/create/guest-list?eventId=${encodeURIComponent(JSON.stringify(eventData))}`)}>

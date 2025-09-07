@@ -72,6 +72,26 @@ export default function Profile() {
         </Card>
 
         <section className="mt-8">
+          <h2 className="text-xl font-semibold mb-4">My Events</h2>
+          <div className="space-y-3">
+            <Card className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="font-medium">View My Events</div>
+                  <div className="text-sm text-gray-600">See all your planned events</div>
+                </div>
+                <button
+                  onClick={() => router.push('/my-events')}
+                  className="text-purple-600 hover:text-purple-800"
+                >
+                  →
+                </button>
+              </div>
+            </Card>
+          </div>
+        </section>
+
+        <section className="mt-8">
           <h2 className="text-xl font-semibold mb-4">Account Settings</h2>
           <div className="space-y-3">
             <Card className="p-4">
