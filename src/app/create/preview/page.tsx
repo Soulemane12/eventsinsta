@@ -169,6 +169,7 @@ function PreviewContent() {
     const servicesTotal = parseInt(searchParams.get('servicesTotal') || '0')
 
 
+
     // Combine start and end time if they exist, otherwise use the time parameter
     const combinedTime = (startTime && endTime) ? `${startTime} - ${endTime}` : time
 
@@ -185,6 +186,14 @@ function PreviewContent() {
     }
 
     setEventData(data)
+    
+    // Clear restaurant and sports arena selections when venue changes
+    if (venue !== 'venue-restaurant') {
+      setSelectedRestaurant('')
+    }
+    if (venue !== 'venue-sports-arena') {
+      setSelectedSportsArena('')
+    }
   }, [searchParams])
 
   useEffect(() => {
