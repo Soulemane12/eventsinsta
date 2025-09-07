@@ -185,6 +185,9 @@ function DetailsContent() {
   const validateTime = (timeStr: string): string => {
     if (!timeStr) return ''
     
+    // Allow partial input while typing (e.g., "2:", "2:3", "2:30")
+    if (timeStr.length < 5) return ''
+    
     const parsed = parseTime(timeStr)
     if (!parsed) {
       return 'Please enter time in format: HH:MM AM/PM (e.g., 2:30 PM)'
@@ -199,6 +202,8 @@ function DetailsContent() {
   }
 
   const validateTimeRange = (startTime: string, endTime: string): string => {
+    // Only validate if both fields have content
+    if (!startTime && !endTime) return ''
     if (!startTime || !endTime) return ''
     
     const startParsed = parseTime(startTime)
@@ -479,7 +484,9 @@ function DetailsContent() {
                       <Input 
                         placeholder="2:30 PM"
                         value={customStartTime}
-                        onChange={e => setCustomStartTime(e.target.value)}
+                        onChange={e => {
+                          setCustomStartTime(e.target.value)
+                        }}
                         className="text-center"
                       />
                     </Field>
@@ -487,13 +494,15 @@ function DetailsContent() {
                       <Input 
                         placeholder="6:00 PM"
                         value={customEndTime}
-                        onChange={e => setCustomEndTime(e.target.value)}
+                        onChange={e => {
+                          setCustomEndTime(e.target.value)
+                        }}
                         className="text-center"
                       />
           </Field>
                   </div>
                   
-                  {validateTimeRange(customStartTime, customEndTime) && (
+                  {customStartTime && customEndTime && validateTimeRange(customStartTime, customEndTime) && (
                     <div className="text-sm text-red-600 bg-red-50 p-2 rounded-lg">
                       ⚠️ {validateTimeRange(customStartTime, customEndTime)}
                     </div>
