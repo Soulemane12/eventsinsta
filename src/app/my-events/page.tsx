@@ -87,6 +87,7 @@ function MyEventsContent() {
   const router = useRouter()
   const [events, setEvents] = useState<EventData[]>([])
   const [filter, setFilter] = useState<'all' | 'upcoming' | 'completed' | 'cancelled'>('all')
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null)
 
   useEffect(() => {
     // In a real app, this would fetch from a database
@@ -134,6 +135,22 @@ function MyEventsContent() {
       case 'baby shower': return '👶'
       default: return '🎊'
     }
+  }
+
+  const deleteEvent = (eventId: string) => {
+    const updatedEvents = events.filter(event => event.id !== eventId)
+    setEvents(updatedEvents)
+    localStorage.setItem('userEvents', JSON.stringify(updatedEvents))
+    setShowDeleteConfirm(null)
+  }
+
+  const cancelEvent = (eventId: string) => {
+    const updatedEvents = events.map(event => 
+      event.id === eventId ? { ...event, status: 'cancelled' as const } : event
+    )
+    setEvents(updatedEvents)
+    localStorage.setItem('userEvents', JSON.stringify(updatedEvents))
+    setShowDeleteConfirm(null)
   }
 
   return (
@@ -241,22 +258,52 @@ function MyEventsContent() {
                   </div>
                 </div>
 
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => router.push(`/create/guest-list?eventId=${encodeURIComponent(JSON.stringify(event))}`)}
-                    className="flex-1 py-2 px-3 text-sm bg-purple-100 text-purple-700 rounded-lg hover:bg-purple-200 transition-colors"
-                  >
-                    Manage Guests
-                  </button>
-                  <button
-                    onClick={() => {
-                      // In a real app, this would show event details
-                      alert('Event details feature coming soon!')
-                    }}
-                    className="flex-1 py-2 px-3 text-sm bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
-                  >
-                    View Details
-                  </button>
+                <div className="space-y-2">
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => router.push(`/create/guest-list?eventId=${encodeURIComponent(JSON.stringify(event))}`)}
+                      className="flex-1 py-2 px-3 text-sm bg-purple-100 text-purple-700 rounded-lg hover:bg-purple-200 transition-colors"
+                    >
+                      Manage Guests
+                    </button>
+                    <button
+                      onClick={() => {
+                        // In a real app, this would show event details
+                        alert('Event details feature coming soon!')
+                      }}
+                      className="flex-1 py-2 px-3 text-sm bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                    >
+                      View Details
+                    </button>
+                  </div>
+                  
+                  {event.status === 'upcoming' && (
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => setShowDeleteConfirm(event.id)}
+                        className="flex-1 py-2 px-3 text-sm bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors"
+                      >
+                        Cancel Event
+                      </button>
+                      <button
+                        onClick={() => setShowDeleteConfirm(event.id)}
+                        className="flex-1 py-2 px-3 text-sm bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition-colors"
+                      >
+                        Delete Event
+                      </button>
+                    </div>
+                  )}
+                  
+                  {event.status === 'cancelled' && (
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => setShowDeleteConfirm(event.id)}
+                        className="flex-1 py-2 px-3 text-sm bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition-colors"
+                      >
+                        Delete Event
+                      </button>
+                    </div>
+                  )}
                 </div>
               </Card>
             ))}
@@ -275,6 +322,45 @@ function MyEventsContent() {
             </GhostButton>
           </div>
         </Card>
+
+        {/* Delete/Cancel Confirmation Dialog */}
+        {showDeleteConfirm && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-2xl p-6 max-w-sm w-full">
+              <div className="text-center">
+                <div className="text-4xl mb-4">⚠️</div>
+                <h3 className="text-lg font-semibold mb-2">Confirm Action</h3>
+                <p className="text-gray-600 text-sm mb-6">
+                  Are you sure you want to {events.find(e => e.id === showDeleteConfirm)?.status === 'upcoming' ? 'cancel' : 'delete'} this event? 
+                  {events.find(e => e.id === showDeleteConfirm)?.status === 'upcoming' ? ' This action cannot be undone.' : ' This will permanently remove the event.'}
+                </p>
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => setShowDeleteConfirm(null)}
+                    className="flex-1 py-2 px-4 text-sm bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  {events.find(e => e.id === showDeleteConfirm)?.status === 'upcoming' ? (
+                    <button
+                      onClick={() => cancelEvent(showDeleteConfirm)}
+                      className="flex-1 py-2 px-4 text-sm bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                    >
+                      Cancel Event
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => deleteEvent(showDeleteConfirm)}
+                      className="flex-1 py-2 px-4 text-sm bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                    >
+                      Delete Event
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )
