@@ -325,6 +325,8 @@ function PreviewContent() {
                 {eventData.venue === 'venue-yacht' && 'Private yacht rentals for unique waterfront events'}
                 {eventData.venue === 'venue-private-home' && 'Luxury private homes available for events'}
                 {eventData.venue === 'venue-event-space' && 'Dedicated event spaces and halls'}
+                {eventData.venue === 'venue-wedding-metropolitan' && 'Premium wedding venue at Metropolitan, Glen Cove NY'}
+                {eventData.venue === 'venue-wedding-premium' && 'Luxury wedding venues with full-service packages'}
               </div>
               <div className="text-xs text-purple-600 mt-2">
                 ✅ Venue is confirmed for your event

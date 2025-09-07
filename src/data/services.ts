@@ -180,25 +180,6 @@ export const SERVICES: Service[] = [
     icon: '🎂'
   },
 
-  // Wedding Package
-  {
-    id: 'wedding-metropolitan',
-    name: 'Metropolitan Wedding Package',
-    category: 'Wedding',
-    description: 'Wedding venue at Metropolitan, Glen Cove NY. 250 guests. Includes food and liquor for 5 hours.',
-    price: 50000,
-    priceDescription: '$50,000 for 250 guests',
-    icon: '💒'
-  },
-  {
-    id: 'wedding-venues',
-    name: 'Wedding Venues',
-    category: 'Wedding',
-    description: 'Premium wedding venues with full-service packages. Various locations and capacities available.',
-    price: 15000,
-    priceDescription: '$15,000 starting price',
-    icon: '💒'
-  },
 
 
   // Sports Birthday Package
@@ -439,5 +420,23 @@ export const VENUE_SERVICES: Service[] = [
     price: 0,
     priceDescription: 'Contact for pricing',
     icon: '🧘‍♀️'
+  },
+  {
+    id: 'venue-wedding-metropolitan',
+    name: 'Metropolitan Wedding Venue',
+    category: 'Venue',
+    description: 'Premium wedding venue at Metropolitan, Glen Cove NY. Accommodates up to 250 guests with full-service packages.',
+    price: 50000,
+    priceDescription: '$50,000 for 250 guests',
+    icon: '💒'
+  },
+  {
+    id: 'venue-wedding-premium',
+    name: 'Premium Wedding Venues',
+    category: 'Venue',
+    description: 'Luxury wedding venues with full-service packages. Various locations and capacities available for your special day.',
+    price: 15000,
+    priceDescription: '$15,000 starting price',
+    icon: '💒'
   }
 ]
