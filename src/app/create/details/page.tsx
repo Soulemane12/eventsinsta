@@ -321,22 +321,17 @@ function DetailsContent() {
                   }}
                   onBlur={e => {
                     // Validate when user finishes typing
-                    const month = e.target.value
                     const currentDate = date.split('-')
-
-                    if (month && month.length === 2) {
-                      const monthNum = parseInt(month)
-                      if (monthNum < 1 || monthNum > 12) {
-                        setDateError('Month must be between 01 and 12')
-                      } else if (currentDate[0] && currentDate[1] && currentDate[2]) {
-                        const error = validateDate(currentDate[0], currentDate[1], currentDate[2])
-                        setDateError(error)
-                      } else {
-                        setDateError('')
-                      }
+                    
+                    // Only validate if we have a complete date
+                    if (currentDate[0] && currentDate[1] && currentDate[2]) {
+                      const error = validateDate(currentDate[0], currentDate[1], currentDate[2])
+                      setDateError(error)
+                    } else {
+                      setDateError('')
                     }
                   }}
-                  className={`text-center text-base ${dateError ? 'border-red-500' : ''}`}
+                  className={`text-center text-base ${dateError ? 'border-red-500' : ''} ${!dateError && date.split('-')[1] && date.split('-')[1].length === 2 ? 'border-green-500' : ''}`}
                 />
                 <div className="text-xs text-gray-500 text-center mt-1">Month</div>
               </div>
@@ -365,22 +360,17 @@ function DetailsContent() {
                   }}
                   onBlur={e => {
                     // Validate when user finishes typing
-                    const day = e.target.value
                     const currentDate = date.split('-')
-
-                    if (day && day.length === 2) {
-                      const dayNum = parseInt(day)
-                      if (dayNum < 1 || dayNum > 31) {
-                        setDateError('Day must be between 01 and 31')
-                      } else if (currentDate[0] && currentDate[1] && currentDate[2]) {
-                        const error = validateDate(currentDate[0], currentDate[1], currentDate[2])
-                        setDateError(error)
-                      } else {
-                        setDateError('')
-                      }
+                    
+                    // Only validate if we have a complete date
+                    if (currentDate[0] && currentDate[1] && currentDate[2]) {
+                      const error = validateDate(currentDate[0], currentDate[1], currentDate[2])
+                      setDateError(error)
+                    } else {
+                      setDateError('')
                     }
                   }}
-                  className={`text-center text-base ${dateError ? 'border-red-500' : ''}`}
+                  className={`text-center text-base ${dateError ? 'border-red-500' : ''} ${!dateError && date.split('-')[2] && date.split('-')[2].length === 2 ? 'border-green-500' : ''}`}
                 />
                 <div className="text-xs text-gray-500 text-center mt-1">Day</div>
               </div>
@@ -443,6 +433,12 @@ function DetailsContent() {
             {dateError && (
               <div className="mt-2 text-sm text-red-600 bg-red-50 p-2 rounded-lg">
                 ⚠️ {dateError}
+              </div>
+            )}
+            {!dateError && date && date.split('-')[0] && date.split('-')[1] && date.split('-')[2] && 
+             date.split('-')[0].length === 4 && date.split('-')[1].length === 2 && date.split('-')[2].length === 2 && (
+              <div className="mt-2 text-sm text-green-600 bg-green-50 p-2 rounded-lg flex items-center gap-2">
+                ✅ Valid date selected
               </div>
             )}
           </Field>
