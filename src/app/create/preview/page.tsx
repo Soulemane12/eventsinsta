@@ -282,7 +282,7 @@ function PreviewContent() {
     } else if (selectedSportsArena) {
       venueCost = getSportsArenaPriceByGuestCount(selectedSportsArena, eventData.guestCount)
     } else if (eventData.venue && eventData.venue !== 'venue-restaurant' && eventData.venue !== 'venue-sports-arena') {
-      venueCost = 4000 // Default venue cost
+      venueCost = getVenueCost(eventData.venue, eventData.guestCount)
     }
     
     return venueCost + eventData.servicesTotal
