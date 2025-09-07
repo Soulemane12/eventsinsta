@@ -117,6 +117,20 @@ function getVenueDescription(venueId: string): string {
   return venue ? venue.description : 'Selected venue for your event'
 }
 
+function getVenueCost(venueId: string, guestCount: number): number {
+  if (!venueId) return 0
+  const venue = VENUE_SERVICES.find(v => v.id === venueId)
+  if (!venue) return 0
+  
+  // For restaurant venues, use the restaurant pricing
+  if (venueId === 'venue-restaurant') {
+    return 0 // Will be handled separately with selectedRestaurant
+  }
+  
+  // For other venues, return the base price
+  return venue.price || 0
+}
+
 function formatDate(dateString: string): string {
   if (!dateString) return 'Not set'
   try {
@@ -659,7 +673,7 @@ function PreviewContent() {
               {eventData.venue && eventData.venue !== 'venue-restaurant' && eventData.venue !== 'venue-sports-arena' && (
                 <div className="flex justify-between">
                   <span>Venue Cost:</span>
-                  <span className="font-semibold">$3,000 - $5,000</span>
+                  <span className="font-semibold">${getVenueCost(eventData.venue, eventData.guestCount)}</span>
                 </div>
               )}
               {eventData.servicesTotal > 0 && (
