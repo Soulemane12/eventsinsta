@@ -8,6 +8,7 @@ import { RESTAURANTS, getRestaurantPriceByGuestCount } from '../../../data/resta
 import { SPORTS_ARENAS, getSportsArenaPriceByGuestCount } from '../../../data/sportsArenas'
 import { getAIRecommendations } from '../../../services/aiRecommendation'
 import { getAISportsArenaRecommendations } from '../../../services/aiSportsArenaRecommendation'
+import { VENUE_SERVICES } from '../../../data/services'
 import { SERVICES } from '../../../data/services'
 import Logo from '../../../components/Logo'
 
@@ -102,6 +103,16 @@ function getBudgetRange(budget: string): { min: number; max: number } {
     case 'budget-4': return { min: 5000, max: 50000 }
     default: return { min: 1000, max: 3000 }
   }
+}
+
+function getVenueDisplayName(venueId: string): string {
+  const venue = VENUE_SERVICES.find(v => v.id === venueId)
+  return venue ? venue.name : venueId.replace('venue-', '').replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())
+}
+
+function getVenueDescription(venueId: string): string {
+  const venue = VENUE_SERVICES.find(v => v.id === venueId)
+  return venue ? venue.description : 'Selected venue for your event'
 }
 
 function formatDate(dateString: string): string {
@@ -314,7 +325,7 @@ function PreviewContent() {
             <div>👥 {eventData.guestCount} guests</div>
             <div>💰 {getBudgetDisplay(eventData.budget)}</div>
             <div>🕐 {formatTime(eventData.time)}</div>
-            {eventData.venue && <div>🏛️ {eventData.venue.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}</div>}
+            {eventData.venue && <div>🏛️ {getVenueDisplayName(eventData.venue)}</div>}
           </div>
         </Card>
 
@@ -324,15 +335,10 @@ function PreviewContent() {
             <div className="text-sm font-medium text-purple-800 mb-2">🏛️ Selected Venue</div>
             <div className="bg-purple-50 p-3 rounded-lg">
               <div className="text-sm font-semibold text-purple-800 mb-1">
-                {eventData.venue.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                {getVenueDisplayName(eventData.venue)}
               </div>
               <div className="text-xs text-purple-700">
-                {eventData.venue === 'venue-yacht' && 'Private yacht rentals for unique waterfront events'}
-                {eventData.venue === 'venue-private-home' && 'Luxury private homes available for events'}
-                {eventData.venue === 'venue-event-space' && 'Dedicated event spaces and halls'}
-                {eventData.venue === 'venue-wedding-metropolitan' && 'Premium wedding venue at Metropolitan, Glen Cove NY'}
-                {eventData.venue === 'venue-wedding-premium' && 'Luxury wedding venues with full-service packages'}
-                {eventData.venue === 'venue-jboogie-yacht' && 'Private yacht party experience with captain and premium amenities'}
+                {getVenueDescription(eventData.venue)}
               </div>
               <div className="text-xs text-purple-600 mt-2">
                 ✅ Venue is confirmed for your event
