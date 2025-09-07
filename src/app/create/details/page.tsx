@@ -226,15 +226,28 @@ function DetailsContent() {
                   placeholder="MM"
                   min="1"
                   max="12"
+                  maxLength={2}
                   value={date.split('-')[1] || ''}
                   onChange={e => {
-                    const month = e.target.value.padStart(2, '0')
+                    let month = e.target.value
+                    
+                    // Prevent invalid month values
+                    if (month && (parseInt(month) < 1 || parseInt(month) > 12)) {
+                      return // Don't update if invalid
+                    }
+                    
+                    // Limit to 2 digits
+                    if (month.length > 2) {
+                      month = month.slice(0, 2)
+                    }
+                    
+                    const paddedMonth = month.padStart(2, '0')
                     const currentDate = date.split('-')
-                    const newDate = `${currentDate[0] || ''}-${month}-${currentDate[2] || ''}`
+                    const newDate = `${currentDate[0] || ''}-${paddedMonth}-${currentDate[2] || ''}`
                     setDate(newDate)
                     
                     // Validate the new date
-                    const error = validateDate(currentDate[0] || '', month, currentDate[2] || '')
+                    const error = validateDate(currentDate[0] || '', paddedMonth, currentDate[2] || '')
                     setDateError(error)
                   }}
                   className={`text-center text-base ${dateError ? 'border-red-500' : ''}`}
@@ -248,15 +261,28 @@ function DetailsContent() {
                   placeholder="DD"
                   min="1"
                   max="31"
+                  maxLength={2}
                   value={date.split('-')[2] || ''}
                   onChange={e => {
-                    const day = e.target.value.padStart(2, '0')
+                    let day = e.target.value
+                    
+                    // Prevent invalid day values
+                    if (day && (parseInt(day) < 1 || parseInt(day) > 31)) {
+                      return // Don't update if invalid
+                    }
+                    
+                    // Limit to 2 digits
+                    if (day.length > 2) {
+                      day = day.slice(0, 2)
+                    }
+                    
+                    const paddedDay = day.padStart(2, '0')
                     const currentDate = date.split('-')
-                    const newDate = `${currentDate[0] || ''}-${currentDate[1] || ''}-${day}`
+                    const newDate = `${currentDate[0] || ''}-${currentDate[1] || ''}-${paddedDay}`
                     setDate(newDate)
                     
                     // Validate the new date
-                    const error = validateDate(currentDate[0] || '', currentDate[1] || '', day)
+                    const error = validateDate(currentDate[0] || '', currentDate[1] || '', paddedDay)
                     setDateError(error)
                   }}
                   className={`text-center text-base ${dateError ? 'border-red-500' : ''}`}
@@ -270,9 +296,26 @@ function DetailsContent() {
                   placeholder="YYYY"
                   min="2024"
                   max="2030"
+                  maxLength={4}
                   value={date.split('-')[0] || ''}
                   onChange={e => {
-                    const year = e.target.value
+                    let year = e.target.value
+                    
+                    // Limit to 4 digits
+                    if (year.length > 4) {
+                      year = year.slice(0, 4)
+                    }
+                    
+                    // Prevent invalid year values
+                    if (year && (parseInt(year) < 2024 || parseInt(year) > 2030)) {
+                      return // Don't update if invalid
+                    }
+                    
+                    // Prevent years starting with 0 (like 0010, 0025, etc.)
+                    if (year && year.length === 4 && year.startsWith('0')) {
+                      return // Don't update if starts with 0
+                    }
+                    
                     const currentDate = date.split('-')
                     const newDate = `${year}-${currentDate[1] || ''}-${currentDate[2] || ''}`
                     setDate(newDate)
