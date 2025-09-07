@@ -302,7 +302,7 @@ function GuestListContent() {
                   ? 'Restaurant Venue (Restaurant Selected)'
                   : eventData.venue 
                     ? eventData.venue.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())
-                    : 'No venue selected'
+                    : 'Venue selection pending'
                 }
               </span>
             </div>
@@ -312,9 +312,37 @@ function GuestListContent() {
             </div>
             <div className="flex justify-between">
               <span>Services:</span>
-              <span className="font-medium">{eventData.services.length} services selected</span>
+              <span className="font-medium">{eventData.services?.length || 0} services selected</span>
             </div>
           </div>
+          
+          {/* Venue Selection Reminder */}
+          {!eventData.venue && (
+            <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+              <div className="text-sm text-yellow-800 font-medium mb-1">📍 Venue Selection Needed</div>
+              <div className="text-xs text-yellow-700 mb-2">
+                Complete your venue selection to finalize your event details.
+              </div>
+              <button
+                onClick={() => {
+                  const params = new URLSearchParams({
+                    eventType: eventData.eventType,
+                    location: eventData.location,
+                    date: eventData.date,
+                    hostName: eventData.customerName || 'Host',
+                    startTime: eventData.time?.split(' - ')[0] || '',
+                    endTime: eventData.time?.split(' - ')[1] || '',
+                    guestCount: eventData.guestCount?.toString() || '',
+                    budget: eventData.budget || ''
+                  })
+                  router.push(`/create/venue?${params.toString()}`)
+                }}
+                className="px-3 py-1 text-xs bg-yellow-600 text-white rounded hover:bg-yellow-700"
+              >
+                Select Venue
+              </button>
+            </div>
+          )}
         </Card>
 
         {/* RSVP Statistics */}
