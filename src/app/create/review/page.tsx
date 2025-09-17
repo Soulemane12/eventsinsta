@@ -198,6 +198,20 @@ function ReviewContent() {
     const selectedRestaurant = searchParams.get('selectedRestaurant') || ''
     const venue = searchParams.get('venue') || ''
 
+    // Debug: Log all URL parameters
+    console.log('[Review] URL Parameters:', {
+      eventType,
+      location,
+      date,
+      time,
+      guestCount,
+      budget,
+      services,
+      servicesTotal,
+      selectedRestaurant,
+      venue
+    })
+
     const data: EventData = {
       eventType,
       location,
@@ -211,6 +225,7 @@ function ReviewContent() {
       venue
     }
 
+    console.log('[Review] Event Data Set:', data)
     setEventData(data)
   }, [searchParams])
 
@@ -231,7 +246,12 @@ function ReviewContent() {
     // For restaurant venues, use restaurant pricing
     if (eventData.venue === 'venue-restaurant' && eventData.selectedRestaurant) {
       const venueCost = getRestaurantPriceByGuestCount(eventData.selectedRestaurant, eventData.guestCount)
-      console.log('[Review] restaurant venue cost', { selectedRestaurant: eventData.selectedRestaurant, guestCount: eventData.guestCount, venueCost })
+      console.log('[Review] restaurant venue cost', { 
+        selectedRestaurant: eventData.selectedRestaurant, 
+        guestCount: eventData.guestCount, 
+        venueCost,
+        venue: eventData.venue
+      })
       return venueCost
     }
     
@@ -564,8 +584,20 @@ function ReviewContent() {
                   <span>${getCurrentVenueCost()}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Services Total:</span>
+                  <span>Services Total (from URL):</span>
                   <span>${eventData.servicesTotal}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Selected Restaurant:</span>
+                  <span>{eventData.selectedRestaurant || 'None'}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Venue:</span>
+                  <span>{eventData.venue || 'None'}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Guest Count:</span>
+                  <span>{eventData.guestCount}</span>
                 </div>
                 <div className="flex justify-between font-medium">
                   <span>Calculated Total:</span>
