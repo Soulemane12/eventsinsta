@@ -136,6 +136,8 @@ function DetailsContent() {
     let hours = parseInt(timeParts[0])
     let minutes = timeParts[1] ? parseInt(timeParts[1]) : 0
     
+    console.log('[Details] parseCustomTime:', { timeStr, period, hours, minutes })
+    
     if (isNaN(hours) || isNaN(minutes)) return null
     if (hours < 1 || hours > 12 || minutes < 0 || minutes > 59) return null
     
@@ -145,6 +147,7 @@ function DetailsContent() {
       hours = 0
     }
     
+    console.log('[Details] parseCustomTime result:', { hours, minutes })
     return { hours, minutes }
   }
 
@@ -160,6 +163,8 @@ function DetailsContent() {
   }
 
   const formatTimeInput = (value: string, isEndTime: boolean = false): string => {
+    console.log('[Details] formatTimeInput input:', { value, isEndTime })
+    
     // Check for AM/PM in the input
     const hasAM = /am/i.test(value)
     const hasPM = /pm/i.test(value)
@@ -182,16 +187,24 @@ function DetailsContent() {
     // Remove any non-numeric characters except colon
     let cleaned = value.replace(/[^\d:]/g, '')
     
+    console.log('[Details] formatTimeInput cleaned:', { cleaned })
+    
     // If user types a single digit (1-9), automatically add :00
     if (cleaned.length === 1 && /^[1-9]$/.test(cleaned)) {
-      return cleaned + ':00'
+      const result = cleaned + ':00'
+      console.log('[Details] formatTimeInput single digit result:', result)
+      return result
     }
     
-    // If user types two digits without colon, add colon
+    // If user types two digits without colon, check if it's a valid hour (10, 11, 12)
     if (cleaned.length === 2 && !cleaned.includes(':')) {
-      return cleaned + ':00'
+      const hour = parseInt(cleaned)
+      const result = cleaned + ':00'
+      console.log('[Details] formatTimeInput two digits:', { hour, result })
+      return result
     }
     
+    console.log('[Details] formatTimeInput final result:', cleaned)
     return cleaned
   }
 
