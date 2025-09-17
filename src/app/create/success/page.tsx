@@ -100,6 +100,7 @@ function SuccessContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [eventData, setEventData] = useState<EventData | null>(null)
+  const [totalCost, setTotalCost] = useState(0)
   const [message, setMessage] = useState('')
   const [messageSent, setMessageSent] = useState(false)
 
@@ -114,6 +115,7 @@ function SuccessContent() {
     const venue = searchParams.get('venue') || ''
     const services = searchParams.get('services')?.split(',').filter(Boolean) || []
     const servicesTotal = parseInt(searchParams.get('servicesTotal') || '0')
+    const totalCostParam = parseInt(searchParams.get('totalCost') || '0')
     const selectedRestaurant = searchParams.get('selectedRestaurant') || ''
     const customerName = searchParams.get('customerName') || 'Billy Duc'
 
@@ -132,6 +134,11 @@ function SuccessContent() {
     }
 
     setEventData(data)
+    setTotalCost(totalCostParam)
+
+    // Debug: Log the total cost
+    console.log('[Success] Total cost from URL:', totalCostParam)
+    console.log('[Success] Calculated total cost:', getTotalCost())
 
     // Save event to localStorage for My Events page
     const eventToSave = {
@@ -222,7 +229,28 @@ function SuccessContent() {
             <div>📍 {eventData.location}</div>
             <div>📅 {formatDate(eventData.date)} at {formatTime(eventData.time)}</div>
             <div>👥 {eventData.guestCount} guests</div>
-            <div className="font-medium text-purple-600">💰 ${getTotalCost().toLocaleString()} total</div>
+            <div className="font-medium text-purple-600">💰 ${totalCost.toLocaleString()} total</div>
+            
+            {/* Debug: Show cost breakdown */}
+            <div className="mt-2 p-2 bg-gray-50 rounded text-xs">
+              <div className="font-medium text-gray-700 mb-1">🔍 Debug Cost Breakdown:</div>
+              <div className="flex justify-between">
+                <span>Total from URL:</span>
+                <span>${totalCost}</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Calculated Total:</span>
+                <span>${getTotalCost()}</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Venue Cost:</span>
+                <span>${getCurrentVenueCost()}</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Services Total:</span>
+                <span>${eventData.servicesTotal}</span>
+              </div>
+            </div>
           </div>
           
           {/* Venue Information */}

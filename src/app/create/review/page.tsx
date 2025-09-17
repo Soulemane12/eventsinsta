@@ -311,6 +311,7 @@ function ReviewContent() {
       budget: eventData!.budget,
       services: eventData!.services.join(','),
       servicesTotal: eventData!.servicesTotal.toString(),
+      totalCost: getTotalCost().toString(),
       selectedRestaurant: eventData!.selectedRestaurant,
       customerName: bookingData.name
     })
