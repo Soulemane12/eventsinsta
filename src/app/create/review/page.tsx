@@ -127,7 +127,9 @@ function getVenueCost(venueId: string, guestCount: number): number {
   }
   
   // For other venues, return the base price
-  return venue.price || 0
+  const venuePrice = venue.price || 0
+  console.log('[Review] getVenueCost', { venueId, guestCount, venueName: venue?.name, venuePrice })
+  return venuePrice
 }
 
 // Date validation functions for date of birth
@@ -219,18 +221,32 @@ function ReviewContent() {
   const getCurrentVenueCost = () => {
     if (!eventData) return 0
     
+    // Debug: log inputs and intermediate values
+    console.log('[Review] getCurrentVenueCost inputs', {
+      venue: eventData.venue,
+      selectedRestaurant: eventData.selectedRestaurant,
+      guestCount: eventData.guestCount
+    })
+
     // For restaurant venues, use restaurant pricing
     if (eventData.venue === 'venue-restaurant' && eventData.selectedRestaurant) {
-    return getRestaurantPriceByGuestCount(eventData.selectedRestaurant, eventData.guestCount)
+      const venueCost = getRestaurantPriceByGuestCount(eventData.selectedRestaurant, eventData.guestCount)
+      console.log('[Review] restaurant venue cost', { selectedRestaurant: eventData.selectedRestaurant, guestCount: eventData.guestCount, venueCost })
+      return venueCost
     }
     
     // For other venues, use venue pricing
-    return getVenueCost(eventData.venue, eventData.guestCount)
+    const otherVenueCost = getVenueCost(eventData.venue, eventData.guestCount)
+    console.log('[Review] other venue cost', { venue: eventData.venue, guestCount: eventData.guestCount, otherVenueCost })
+    return otherVenueCost
   }
 
   const getTotalCost = () => {
     if (!eventData) return 0
-    return getCurrentVenueCost() + eventData.servicesTotal
+    const venueCost = getCurrentVenueCost()
+    const total = venueCost + eventData.servicesTotal
+    console.log('[Review] getTotalCost', { venueCost, servicesTotal: eventData.servicesTotal, total })
+    return total
   }
 
   // Update booking data when date of birth changes
@@ -538,6 +554,23 @@ function ReviewContent() {
               <div className="flex justify-between items-center font-semibold">
                 <span>Total:</span>
                 <span className="text-lg">${getTotalCost().toLocaleString()}</span>
+              </div>
+              
+              {/* Debug: Show cost breakdown */}
+              <div className="mt-2 p-2 bg-gray-50 rounded text-xs">
+                <div className="font-medium text-gray-700 mb-1">🔍 Debug Cost Breakdown:</div>
+                <div className="flex justify-between">
+                  <span>Venue Cost:</span>
+                  <span>${getCurrentVenueCost()}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Services Total:</span>
+                  <span>${eventData.servicesTotal}</span>
+                </div>
+                <div className="flex justify-between font-medium">
+                  <span>Calculated Total:</span>
+                  <span>${getCurrentVenueCost() + eventData.servicesTotal}</span>
+                </div>
               </div>
             </div>
           </div>
