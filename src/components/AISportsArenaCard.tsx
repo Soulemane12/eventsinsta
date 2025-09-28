@@ -155,6 +155,7 @@ export default function AISportsArenaCard({
                         className="w-4 h-4 text-purple-600 cursor-pointer"
                         onClick={(e) => {
                           e.stopPropagation()
+                          console.log('Package clicked:', pkg.name, 'for arena:', arena.id)
                           if (onPackageSelect) {
                             onPackageSelect(arena.id, pkg.name)
                           }

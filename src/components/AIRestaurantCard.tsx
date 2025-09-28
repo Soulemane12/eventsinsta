@@ -155,6 +155,7 @@ export default function AIRestaurantCard({
                         className="w-4 h-4 text-purple-600 cursor-pointer"
                         onClick={(e) => {
                           e.stopPropagation()
+                          console.log('Package clicked:', pkg.name, 'for restaurant:', restaurant.id)
                           if (onPackageSelect) {
                             onPackageSelect(restaurant.id, pkg.name)
                           }

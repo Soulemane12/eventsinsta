@@ -169,8 +169,8 @@ function PreviewContent() {
   const [aiSportsArenaRecommendations, setAiSportsArenaRecommendations] = useState<AISportsArenaRecommendation[]>([])
   const [selectedRestaurant, setSelectedRestaurant] = useState<string>('')
   const [selectedSportsArena, setSelectedSportsArena] = useState<string>('')
-  const [selectedRestaurantPackage, setSelectedRestaurantPackage] = useState<string>('')
-  const [selectedSportsArenaPackage, setSelectedSportsArenaPackage] = useState<string>('')
+  const [selectedRestaurantPackages, setSelectedRestaurantPackages] = useState<{[key: string]: string}>({})
+  const [selectedSportsArenaPackages, setSelectedSportsArenaPackages] = useState<{[key: string]: string}>({})
   const [loading, setLoading] = useState(true)
   const [eventData, setEventData] = useState<EventData | null>(null)
 
@@ -210,11 +210,11 @@ function PreviewContent() {
     // Clear restaurant and sports arena selections when venue changes
     if (venue !== 'venue-restaurant') {
       setSelectedRestaurant('')
-      setSelectedRestaurantPackage('')
+      setSelectedRestaurantPackages({})
     }
     if (venue !== 'venue-sports-arena') {
       setSelectedSportsArena('')
-      setSelectedSportsArenaPackage('')
+      setSelectedSportsArenaPackages({})
     }
   }, [searchParams])
 
@@ -283,26 +283,42 @@ function PreviewContent() {
 
   // Package selection handlers
   const handleRestaurantPackageSelect = (restaurantId: string, packageName: string) => {
-    if (selectedRestaurant === restaurantId) {
-      setSelectedRestaurantPackage(packageName)
-    }
+    console.log('handleRestaurantPackageSelect called:', restaurantId, packageName)
+    // Select the restaurant and package
+    setSelectedRestaurant(restaurantId)
+    setSelectedRestaurantPackages(prev => {
+      const newState = {
+        ...prev,
+        [restaurantId]: packageName
+      }
+      console.log('New restaurant packages state:', newState)
+      return newState
+    })
   }
 
   const handleSportsArenaPackageSelect = (arenaId: string, packageName: string) => {
-    if (selectedSportsArena === arenaId) {
-      setSelectedSportsArenaPackage(packageName)
-    }
+    console.log('handleSportsArenaPackageSelect called:', arenaId, packageName)
+    // Select the arena and package
+    setSelectedSportsArena(arenaId)
+    setSelectedSportsArenaPackages(prev => {
+      const newState = {
+        ...prev,
+        [arenaId]: packageName
+      }
+      console.log('New arena packages state:', newState)
+      return newState
+    })
   }
 
   // Clear package selection when restaurant/arena changes
   const handleRestaurantSelect = (restaurantId: string) => {
     setSelectedRestaurant(restaurantId)
-    setSelectedRestaurantPackage('') // Clear package selection
+    // Don't clear package selection - let users keep their package choice
   }
 
   const handleSportsArenaSelect = (arenaId: string) => {
     setSelectedSportsArena(arenaId)
-    setSelectedSportsArenaPackage('') // Clear package selection
+    // Don't clear package selection - let users keep their package choice
   }
 
   const getTotalCost = () => {
@@ -310,20 +326,22 @@ function PreviewContent() {
 
     let venueCost = 0
     if (selectedRestaurant) {
-      if (selectedRestaurantPackage) {
+      const selectedPackage = selectedRestaurantPackages[selectedRestaurant]
+      if (selectedPackage) {
         // Use selected package price
         const restaurant = RESTAURANTS.find(r => r.id === selectedRestaurant)
-        const selectedPkg = restaurant?.packages.find(p => p.name === selectedRestaurantPackage)
+        const selectedPkg = restaurant?.packages.find(p => p.name === selectedPackage)
         venueCost = selectedPkg?.price || 0
       } else {
         // Use default pricing logic
         venueCost = getRestaurantPriceByGuestCount(selectedRestaurant, eventData.guestCount)
       }
     } else if (selectedSportsArena) {
-      if (selectedSportsArenaPackage) {
+      const selectedPackage = selectedSportsArenaPackages[selectedSportsArena]
+      if (selectedPackage) {
         // Use selected package price
         const arena = SPORTS_ARENAS.find(a => a.id === selectedSportsArena)
-        const selectedPkg = arena?.packages.find(p => p.name === selectedSportsArenaPackage)
+        const selectedPkg = arena?.packages.find(p => p.name === selectedPackage)
         venueCost = selectedPkg?.price || 0
       } else {
         // Use default pricing logic
@@ -510,7 +528,7 @@ function PreviewContent() {
                   isSelected={selectedRestaurant === restaurant.id}
                   showDetails={true}
                   guestCount={eventData.guestCount}
-                  selectedPackage={selectedRestaurant === restaurant.id ? selectedRestaurantPackage : undefined}
+                  selectedPackage={selectedRestaurantPackages[restaurant.id]}
                   onPackageSelect={handleRestaurantPackageSelect}
                 />
               ))}
@@ -532,7 +550,7 @@ function PreviewContent() {
                   isSelected={selectedSportsArena === arena.id}
                   showDetails={true}
                   guestCount={eventData.guestCount}
-                  selectedPackage={selectedSportsArena === arena.id ? selectedSportsArenaPackage : undefined}
+                  selectedPackage={selectedSportsArenaPackages[arena.id]}
                   onPackageSelect={handleSportsArenaPackageSelect}
                 />
               ))}
