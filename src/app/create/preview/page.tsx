@@ -338,14 +338,21 @@ function PreviewContent() {
       }
     } else if (selectedSportsArena) {
       const selectedPackage = selectedSportsArenaPackages[selectedSportsArena]
+      console.log('getTotalCost - Sports Arena:', {
+        selectedSportsArena,
+        selectedPackage,
+        selectedSportsArenaPackages
+      })
       if (selectedPackage) {
         // Use selected package price
         const arena = SPORTS_ARENAS.find(a => a.id === selectedSportsArena)
         const selectedPkg = arena?.packages.find(p => p.name === selectedPackage)
         venueCost = selectedPkg?.price || 0
+        console.log('getTotalCost - Package price:', { arena: arena?.name, pkg: selectedPkg?.name, price: selectedPkg?.price, venueCost })
       } else {
         // Use default pricing logic
         venueCost = getSportsArenaPriceByGuestCount(selectedSportsArena, eventData.guestCount)
+        console.log('getTotalCost - Default price:', venueCost)
       }
     } else if (eventData.venue && eventData.venue !== 'venue-restaurant' && eventData.venue !== 'venue-sports-arena') {
       venueCost = getVenueCost(eventData.venue, eventData.guestCount)
@@ -755,12 +762,20 @@ function PreviewContent() {
                     <span>🏟️ {SPORTS_ARENAS.find(a => a.id === selectedSportsArena)?.name}:</span>
                     <span className="font-semibold">${(() => {
                       const selectedPackage = selectedSportsArenaPackages[selectedSportsArena]
+                      console.log('Sports Arena Cost Calculation:', {
+                        selectedSportsArena,
+                        selectedPackage,
+                        selectedSportsArenaPackages
+                      })
                       if (selectedPackage) {
                         const arena = SPORTS_ARENAS.find(a => a.id === selectedSportsArena)
                         const pkg = arena?.packages.find(p => p.name === selectedPackage)
+                        console.log('Found arena and package:', { arena: arena?.name, pkg: pkg?.name, price: pkg?.price })
                         return pkg?.price || 0
                       }
-                      return getSportsArenaPriceByGuestCount(selectedSportsArena, eventData.guestCount)
+                      const defaultPrice = getSportsArenaPriceByGuestCount(selectedSportsArena, eventData.guestCount)
+                      console.log('Using default price:', defaultPrice)
+                      return defaultPrice
                     })()}</span>
                   </div>
                   {selectedSportsArenaPackages[selectedSportsArena] && (
@@ -832,6 +847,13 @@ function PreviewContent() {
                             ${(() => {
                               const arena = SPORTS_ARENAS.find(a => a.id === selectedSportsArena)
                               const pkg = arena?.packages.find(p => p.name === selectedSportsArenaPackages[selectedSportsArena])
+                              console.log('Success message pricing:', {
+                                selectedSportsArena,
+                                packageName: selectedSportsArenaPackages[selectedSportsArena],
+                                arena: arena?.name,
+                                pkg: pkg?.name,
+                                price: pkg?.price
+                              })
                               return pkg?.price || 0
                             })()}
                           </div>
