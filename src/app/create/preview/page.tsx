@@ -729,15 +729,45 @@ function PreviewContent() {
             <div className="text-sm font-medium text-purple-800 mb-2">💰 Cost Summary</div>
             <div className="space-y-2 text-xs">
               {selectedRestaurant && (
-                <div className="flex justify-between">
-                  <span>Restaurant Cost ({eventData.guestCount} guests):</span>
-                  <span className="font-semibold">${getRestaurantPriceByGuestCount(selectedRestaurant, eventData.guestCount)}</span>
+                <div>
+                  <div className="flex justify-between">
+                    <span>🍽️ {RESTAURANTS.find(r => r.id === selectedRestaurant)?.name}:</span>
+                    <span className="font-semibold">${(() => {
+                      const selectedPackage = selectedRestaurantPackages[selectedRestaurant]
+                      if (selectedPackage) {
+                        const restaurant = RESTAURANTS.find(r => r.id === selectedRestaurant)
+                        const pkg = restaurant?.packages.find(p => p.name === selectedPackage)
+                        return pkg?.price || 0
+                      }
+                      return getRestaurantPriceByGuestCount(selectedRestaurant, eventData.guestCount)
+                    })()}</span>
+                  </div>
+                  {selectedRestaurantPackages[selectedRestaurant] && (
+                    <div className="text-xs text-purple-600 ml-2">
+                      📦 Package: {selectedRestaurantPackages[selectedRestaurant]}
+                    </div>
+                  )}
                 </div>
               )}
               {selectedSportsArena && (
-                <div className="flex justify-between">
-                  <span>Sports Arena Cost ({eventData.guestCount} guests):</span>
-                  <span className="font-semibold">${getSportsArenaPriceByGuestCount(selectedSportsArena, eventData.guestCount)}</span>
+                <div>
+                  <div className="flex justify-between">
+                    <span>🏟️ {SPORTS_ARENAS.find(a => a.id === selectedSportsArena)?.name}:</span>
+                    <span className="font-semibold">${(() => {
+                      const selectedPackage = selectedSportsArenaPackages[selectedSportsArena]
+                      if (selectedPackage) {
+                        const arena = SPORTS_ARENAS.find(a => a.id === selectedSportsArena)
+                        const pkg = arena?.packages.find(p => p.name === selectedPackage)
+                        return pkg?.price || 0
+                      }
+                      return getSportsArenaPriceByGuestCount(selectedSportsArena, eventData.guestCount)
+                    })()}</span>
+                  </div>
+                  {selectedSportsArenaPackages[selectedSportsArena] && (
+                    <div className="text-xs text-purple-600 ml-2">
+                      📦 Package: {selectedSportsArenaPackages[selectedSportsArena]}
+                    </div>
+                  )}
                 </div>
               )}
               {eventData.venue && eventData.venue !== 'venue-restaurant' && eventData.venue !== 'venue-sports-arena' && (
@@ -771,10 +801,44 @@ function PreviewContent() {
               {selectedRestaurant ? '✅ Restaurant Selected!' : selectedSportsArena ? '✅ Sports Arena Selected!' : '✅ Venue Confirmed!'}
             </div>
           <div className="text-xs text-green-700">
-              {selectedRestaurant 
-                ? `Great choice! This restaurant is perfect for your ${eventData.eventType.toLowerCase()} celebration.`
+              {selectedRestaurant
+                ? (
+                  <div>
+                    <div className="mb-2">Great choice! <strong>{RESTAURANTS.find(r => r.id === selectedRestaurant)?.name}</strong> is perfect for your {eventData.eventType.toLowerCase()} celebration.</div>
+                    {selectedRestaurantPackages[selectedRestaurant] && (
+                      <div className="bg-white p-2 rounded border border-green-200">
+                        <div className="text-green-800 font-medium">📦 Selected Package:</div>
+                        <div className="text-green-700">{selectedRestaurantPackages[selectedRestaurant]}</div>
+                        <div className="text-green-600 font-semibold">
+                          ${(() => {
+                            const restaurant = RESTAURANTS.find(r => r.id === selectedRestaurant)
+                            const pkg = restaurant?.packages.find(p => p.name === selectedRestaurantPackages[selectedRestaurant])
+                            return pkg?.price || 0
+                          })()}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )
                 : selectedSportsArena
-                  ? `Excellent choice! ${SPORTS_ARENAS.find(a => a.id === selectedSportsArena)?.name} is perfect for your ${eventData.eventType.toLowerCase()} event. 🏀 Perfect for sporting events like NY Knicks games, boxing matches, or basketball tournaments!`
+                  ? (
+                    <div>
+                      <div className="mb-2">Excellent choice! <strong>{SPORTS_ARENAS.find(a => a.id === selectedSportsArena)?.name}</strong> is perfect for your {eventData.eventType.toLowerCase()} event. 🏀</div>
+                      {selectedSportsArenaPackages[selectedSportsArena] && (
+                        <div className="bg-white p-2 rounded border border-green-200">
+                          <div className="text-green-800 font-medium">📦 Selected Package:</div>
+                          <div className="text-green-700">{selectedSportsArenaPackages[selectedSportsArena]}</div>
+                          <div className="text-green-600 font-semibold">
+                            ${(() => {
+                              const arena = SPORTS_ARENAS.find(a => a.id === selectedSportsArena)
+                              const pkg = arena?.packages.find(p => p.name === selectedSportsArenaPackages[selectedSportsArena])
+                              return pkg?.price || 0
+                            })()}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )
                   : eventData.venue === 'venue-sports-arena' || eventData.venue === 'venue-madison-square-garden'
                     ? `Perfect! Your ${eventData.venue.replace('venue-', '').replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())} venue is confirmed for your event. 🏀 Perfect for sporting events like NY Knicks games, boxing matches, or basketball tournaments!`
                     : `Perfect! Your ${eventData.venue.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())} venue is confirmed for your event.`
