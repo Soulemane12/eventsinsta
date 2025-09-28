@@ -1,70 +1,77 @@
-import React, { useState } from 'react'
-import { Restaurant, getRestaurantPriceByGuestCount } from '../data/restaurants'
-
-interface AIRecommendation {
-  restaurantId: string
-  confidence: number
-  reasoning: string
-  bestPackage: string
-  whyPerfect: string
-}
+import React from 'react'
+import { Restaurant } from '../data/restaurants'
+import { getRestaurantPriceByGuestCount } from '../data/restaurants'
 
 interface AIRestaurantCardProps {
   restaurant: Restaurant
-  aiRecommendation?: AIRecommendation
+  aiRecommendation?: {
+    restaurantId: string
+    confidence: number
+    reasoning: string
+    bestPackage: string
+    whyPerfect: string
+  }
   onSelect: (restaurantId: string) => void
   isSelected: boolean
   showDetails?: boolean
-  guestCount?: number
+  guestCount: number
 }
 
-export default function AIRestaurantCard({ 
-  restaurant, 
-  aiRecommendation, 
-  onSelect, 
+export default function AIRestaurantCard({
+  restaurant,
+  aiRecommendation,
+  onSelect,
   isSelected,
   showDetails = false,
-  guestCount = 2
+  guestCount
 }: AIRestaurantCardProps) {
-  const [expanded, setExpanded] = useState(false)
-
-  const getConfidenceColor = (confidence: number) => {
-    if (confidence >= 0.8) return 'text-green-600 bg-green-100'
-    if (confidence >= 0.6) return 'text-yellow-600 bg-yellow-100'
-    return 'text-red-600 bg-red-100'
+  const getPackageForGuestCount = () => {
+    if (guestCount <= 2) {
+      return restaurant.packages.find(p => p.guestCount === 2)
+    } else if (guestCount <= 25) {
+      return restaurant.packages.find(p => p.guestCount === 25)
+    } else if (guestCount <= 50) {
+      return restaurant.packages.find(p => p.guestCount === 50)
+    } else {
+      return restaurant.packages.find(p => p.guestCount === 50)
+    }
   }
 
-  const getConfidenceText = (confidence: number) => {
-    if (confidence >= 0.8) return 'Perfect Match'
-    if (confidence >= 0.6) return 'Good Match'
-    return 'Fair Match'
-  }
-
-  const getRestaurantPrice = () => {
-    return getRestaurantPriceByGuestCount(restaurant.id, guestCount)
-  }
+  const recommendedPackage = getPackageForGuestCount()
+  const totalPrice = getRestaurantPriceByGuestCount(restaurant.id, guestCount)
 
   return (
-    <div 
+    <div
       className={`rounded-2xl bg-white shadow-lg border-2 transition-all cursor-pointer ${
-        isSelected 
-          ? 'border-purple-600 bg-purple-50' 
+        isSelected
+          ? 'border-purple-600 bg-purple-50'
           : 'border-gray-200 hover:border-purple-300'
       }`}
       onClick={() => onSelect(restaurant.id)}
     >
       <div className="p-6">
-        {/* Header with AI Recommendation */}
-        <div className="flex items-start justify-between mb-4">
-          <div className="flex-1">
-            <div className="flex items-center gap-2 mb-1">
-              <h3 className="text-xl font-bold text-gray-900">{restaurant.name}</h3>
-              {aiRecommendation && (
-                <span className={`px-2 py-1 rounded-full text-xs font-medium ${getConfidenceColor(aiRecommendation.confidence)}`}>
-                  {getConfidenceText(aiRecommendation.confidence)}
-                </span>
-              )}
+        {/* AI Recommendation Badge */}
+        {aiRecommendation && (
+          <div className="mb-4 p-3 bg-green-50 rounded-lg border border-green-200">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+              <span className="text-xs font-medium text-green-800">
+                🤖 AI Recommended ({Math.round(aiRecommendation.confidence * 100)}% match)
+              </span>
             </div>
+            <div className="text-xs text-green-700 mb-1">
+              <strong>Why perfect:</strong> {aiRecommendation.whyPerfect}
+            </div>
+            <div className="text-xs text-green-600">
+              <strong>Best package:</strong> {aiRecommendation.bestPackage}
+            </div>
+          </div>
+        )}
+
+        {/* Header */}
+        <div className="flex items-start justify-between mb-4">
+          <div>
+            <h3 className="text-xl font-bold text-gray-900 mb-1">{restaurant.name}</h3>
             <p className="text-sm text-gray-600 mb-2">{restaurant.cuisine}</p>
             <div className="flex items-center gap-2 text-xs text-gray-500">
               <span>📍 {restaurant.address}</span>
@@ -77,111 +84,70 @@ export default function AIRestaurantCard({
           )}
         </div>
 
-        {/* Recommendation Section */}
-        {aiRecommendation && (
-          <div className="bg-gradient-to-r from-purple-50 to-blue-50 p-4 rounded-xl mb-4 border border-purple-200">
-            <div className="flex items-center gap-2 mb-2">
-              <div className="w-5 h-5 bg-purple-600 rounded-full flex items-center justify-center">
-                <span className="text-white text-xs">⭐</span>
+        {/* Description */}
+        <p className="text-sm text-gray-700 mb-4 leading-relaxed">
+          {restaurant.description}
+        </p>
+
+        {/* Recommended Package for Guest Count */}
+        {recommendedPackage && (
+          <div className="mb-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
+            <div className="flex justify-between items-start mb-2">
+              <div>
+                <h5 className="font-medium text-blue-900">Recommended for {guestCount} guests</h5>
+                <p className="text-sm font-semibold text-blue-800">{recommendedPackage.name}</p>
               </div>
-              <span className="text-sm font-semibold text-purple-800">Perfect Match</span>
-              <span className="text-xs text-gray-500">({Math.round(aiRecommendation.confidence * 100)}% match)</span>
+              <span className="text-lg font-bold text-blue-600">${totalPrice}</span>
             </div>
-            <p className="text-sm text-gray-700 mb-2">{aiRecommendation.reasoning}</p>
-            <div className="text-xs text-purple-700">
-              <strong>Best Package:</strong> {aiRecommendation.bestPackage}
+            <p className="text-xs text-blue-700 mb-2">{recommendedPackage.description}</p>
+            <div className="text-xs text-blue-600">
+              <span className="font-medium">Includes:</span> {recommendedPackage.includes.join(', ')}
             </div>
           </div>
         )}
 
-        {/* Quick Info */}
-        <div className="grid grid-cols-2 gap-3 mb-4 text-sm">
-          <div className="bg-gray-50 p-2 rounded-lg">
-            <div className="font-medium text-gray-700">Price for {guestCount} guests</div>
-            <div className="text-lg font-bold text-purple-600">${getRestaurantPrice()}</div>
+        {/* All Packages (if showDetails is true) */}
+        {showDetails && (
+          <div className="space-y-3 mb-4">
+            <h4 className="font-semibold text-gray-900">All Available Packages:</h4>
+            {restaurant.packages.map((pkg, index) => (
+              <div key={index} className="bg-gray-50 rounded-lg p-3">
+                <div className="flex justify-between items-start mb-2">
+                  <h5 className="font-medium text-gray-900">{pkg.name}</h5>
+                  <span className="text-lg font-bold text-purple-600">${pkg.price}</span>
+                </div>
+                <p className="text-xs text-gray-600 mb-2">{pkg.description}</p>
+                <div className="text-xs text-gray-500">
+                  <span className="font-medium">Includes:</span> {pkg.includes.join(', ')}
+                </div>
+                {pkg.guestCount && (
+                  <div className="text-xs text-gray-500 mt-1">
+                    <span className="font-medium">Capacity:</span> Up to {pkg.guestCount} guests
+                  </div>
+                )}
+              </div>
+            ))}
           </div>
-          <div className="bg-gray-50 p-2 rounded-lg">
-            <div className="font-medium text-gray-700">Capacity</div>
-            <div className="text-gray-600">{restaurant.guestRange.min}-{restaurant.guestRange.max} guests</div>
-          </div>
-        </div>
+        )}
 
         {/* Features */}
         <div className="flex flex-wrap gap-2 mb-4">
-          {restaurant.features.slice(0, 4).map((feature, index) => (
-            <span 
-              key={index} 
+          {restaurant.features.map((feature, index) => (
+            <span
+              key={index}
               className="px-2 py-1 bg-purple-100 text-purple-700 text-xs rounded-full"
             >
               {feature}
             </span>
           ))}
-          {restaurant.features.length > 4 && (
-            <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">
-              +{restaurant.features.length - 4} more
-            </span>
-          )}
         </div>
 
-        {/* Expandable Details */}
-        {showDetails && (
-          <div>
-            <button
-              onClick={(e) => {
-                e.stopPropagation()
-                setExpanded(!expanded)
-              }}
-              className="text-sm text-purple-600 hover:text-purple-700 font-medium mb-3"
-            >
-              {expanded ? 'Show Less' : 'Show Details'}
-            </button>
-            
-            {expanded && (
-              <div className="space-y-4">
-                {/* Packages */}
-                <div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Available Packages:</h4>
-                  <div className="space-y-2">
-                    {restaurant.packages.map((pkg, index) => (
-                      <div key={index} className="bg-gray-50 rounded-lg p-3">
-                        <div className="flex justify-between items-start mb-1">
-                          <h5 className="font-medium text-gray-900 text-sm">{pkg.name}</h5>
-                          <span className="text-sm font-bold text-purple-600">${pkg.price}</span>
-                        </div>
-                        <p className="text-xs text-gray-600 mb-2">{pkg.description}</p>
-                        <div className="text-xs text-gray-500">
-                          <span className="font-medium">Includes:</span> {pkg.includes.join(', ')}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Contact Info */}
-                <div className="text-xs text-gray-500 space-y-1">
-                  <div>📞 {restaurant.phone}</div>
-                  <div>📧 {restaurant.email}</div>
-                  <div>🕒 {restaurant.hours}</div>
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Action Button */}
-        <button
-          onClick={(e) => {
-            e.stopPropagation()
-            onSelect(restaurant.id)
-          }}
-          className={`w-full mt-4 py-2 px-4 rounded-lg font-medium transition-colors ${
-            isSelected
-              ? 'bg-purple-600 text-white'
-              : 'bg-purple-100 text-purple-700 hover:bg-purple-200'
-          }`}
-        >
-          {isSelected ? 'Selected' : 'Select This Restaurant'}
-        </button>
+        {/* Contact Info */}
+        <div className="text-xs text-gray-500 space-y-1">
+          <div>📞 {restaurant.phone}</div>
+          <div>📧 {restaurant.email}</div>
+          <div>🕒 {restaurant.hours}</div>
+        </div>
       </div>
     </div>
   )

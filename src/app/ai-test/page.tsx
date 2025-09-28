@@ -190,6 +190,7 @@ export default function RestaurantTest() {
                   onSelect={() => {}}
                   isSelected={false}
                   showDetails={true}
+                  guestCount={selectedScenario.guestCount}
                 />
               ))}
             </div>
