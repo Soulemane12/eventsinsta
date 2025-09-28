@@ -347,7 +347,17 @@ function PreviewContent() {
         // Use selected package price
         const arena = SPORTS_ARENAS.find(a => a.id === selectedSportsArena)
         const selectedPkg = arena?.packages.find(p => p.name === selectedPackage)
-        venueCost = selectedPkg?.price || 0
+        if (selectedPkg?.price) {
+          venueCost = selectedPkg.price
+        } else {
+          // Fallback: try partial name matching
+          const fallbackPkg = arena?.packages.find(p =>
+            p.name.toLowerCase().includes(selectedPackage.toLowerCase()) ||
+            selectedPackage.toLowerCase().includes(p.name.toLowerCase())
+          )
+          venueCost = fallbackPkg?.price || 0
+          console.log('getTotalCost - Fallback package:', { fallbackPkg: fallbackPkg?.name, price: fallbackPkg?.price })
+        }
         console.log('getTotalCost - Package price:', { arena: arena?.name, pkg: selectedPkg?.name, price: selectedPkg?.price, venueCost })
       } else {
         // Use default pricing logic
@@ -771,7 +781,16 @@ function PreviewContent() {
                         const arena = SPORTS_ARENAS.find(a => a.id === selectedSportsArena)
                         const pkg = arena?.packages.find(p => p.name === selectedPackage)
                         console.log('Found arena and package:', { arena: arena?.name, pkg: pkg?.name, price: pkg?.price })
-                        return pkg?.price || 0
+                        if (pkg?.price) {
+                          return pkg.price
+                        }
+                        // Fallback: if exact match fails, try to find package by partial name match
+                        const fallbackPkg = arena?.packages.find(p =>
+                          p.name.toLowerCase().includes(selectedPackage.toLowerCase()) ||
+                          selectedPackage.toLowerCase().includes(p.name.toLowerCase())
+                        )
+                        console.log('Fallback package search:', { fallbackPkg: fallbackPkg?.name, price: fallbackPkg?.price })
+                        return fallbackPkg?.price || 0
                       }
                       const defaultPrice = getSportsArenaPriceByGuestCount(selectedSportsArena, eventData.guestCount)
                       console.log('Using default price:', defaultPrice)
@@ -854,7 +873,16 @@ function PreviewContent() {
                                 pkg: pkg?.name,
                                 price: pkg?.price
                               })
-                              return pkg?.price || 0
+                              if (pkg?.price) {
+                                return pkg.price
+                              }
+                              // Fallback matching
+                              const fallbackPkg = arena?.packages.find(p =>
+                                p.name.toLowerCase().includes(selectedSportsArenaPackages[selectedSportsArena]?.toLowerCase() || '') ||
+                                (selectedSportsArenaPackages[selectedSportsArena]?.toLowerCase() || '').includes(p.name.toLowerCase())
+                              )
+                              console.log('Success message fallback:', { fallbackPkg: fallbackPkg?.name, price: fallbackPkg?.price })
+                              return fallbackPkg?.price || 0
                             })()}
                           </div>
                         </div>
