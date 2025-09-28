@@ -147,6 +147,10 @@ function formatDate(dateString: string): string {
 
 function formatTime(timeString: string): string {
   if (!timeString) return 'Not set'
+  // If it already contains AM/PM or looks like a time range, return as is
+  if (timeString.includes('AM') || timeString.includes('PM') || timeString.includes(' - ')) {
+    return timeString
+  }
   try {
     const [hours, minutes] = timeString.split(':')
     const hour = parseInt(hours)

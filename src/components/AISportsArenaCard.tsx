@@ -152,8 +152,13 @@ export default function AISportsArenaCard({
                         type="radio"
                         checked={isPackageSelected}
                         onChange={() => {}}
-                        className="w-4 h-4 text-purple-600"
-                        onClick={(e) => e.stopPropagation()}
+                        className="w-4 h-4 text-purple-600 cursor-pointer"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          if (onPackageSelect) {
+                            onPackageSelect(arena.id, pkg.name)
+                          }
+                        }}
                       />
                       <div>
                         <h5 className="font-medium text-gray-900">{pkg.name}</h5>
