@@ -177,24 +177,34 @@ export function getMatchingSportsArenas(
 }
 
 export function getSportsArenaPriceByGuestCount(arenaId: string, guestCount: number): number {
+  console.log('getSportsArenaPriceByGuestCount called:', { arenaId, guestCount })
   const arena = SPORTS_ARENAS.find(a => a.id === arenaId)
-  if (!arena) return 0
+  console.log('Found arena:', arena?.name)
+  if (!arena) {
+    console.log('No arena found for id:', arenaId)
+    return 0
+  }
 
   // Find the appropriate package based on guest count
   if (guestCount <= 20) {
     const suitePackage = arena.packages.find(p => p.guestCount === 20)
+    console.log('Guest count <= 20, found package:', suitePackage?.name, 'price:', suitePackage?.price)
     return suitePackage?.price || 0
   } else if (guestCount <= 50) {
     const smallGroupPackage = arena.packages.find(p => p.guestCount === 50)
+    console.log('Guest count <= 50, found package:', smallGroupPackage?.name, 'price:', smallGroupPackage?.price)
     return smallGroupPackage?.price || 0
   } else if (guestCount <= 100) {
     const largeGroupPackage = arena.packages.find(p => p.guestCount === 100)
+    console.log('Guest count <= 100, found package:', largeGroupPackage?.name, 'price:', largeGroupPackage?.price)
     return largeGroupPackage?.price || 0
   } else {
     // For larger groups, calculate based on 100-guest package
     const largeGroupPackage = arena.packages.find(p => p.guestCount === 100)
     const basePrice = largeGroupPackage?.price || 0
-    return Math.ceil(guestCount / 100) * basePrice
+    const calculatedPrice = Math.ceil(guestCount / 100) * basePrice
+    console.log('Guest count > 100, calculated price:', calculatedPrice, 'base price:', basePrice)
+    return calculatedPrice
   }
 }
 
