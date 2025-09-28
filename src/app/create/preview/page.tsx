@@ -165,6 +165,8 @@ function PreviewContent() {
   const [aiSportsArenaRecommendations, setAiSportsArenaRecommendations] = useState<AISportsArenaRecommendation[]>([])
   const [selectedRestaurant, setSelectedRestaurant] = useState<string>('')
   const [selectedSportsArena, setSelectedSportsArena] = useState<string>('')
+  const [selectedRestaurantPackage, setSelectedRestaurantPackage] = useState<string>('')
+  const [selectedSportsArenaPackage, setSelectedSportsArenaPackage] = useState<string>('')
   const [loading, setLoading] = useState(true)
   const [eventData, setEventData] = useState<EventData | null>(null)
 
@@ -204,9 +206,11 @@ function PreviewContent() {
     // Clear restaurant and sports arena selections when venue changes
     if (venue !== 'venue-restaurant') {
       setSelectedRestaurant('')
+      setSelectedRestaurantPackage('')
     }
     if (venue !== 'venue-sports-arena') {
       setSelectedSportsArena('')
+      setSelectedSportsArenaPackage('')
     }
   }, [searchParams])
 
@@ -273,18 +277,58 @@ function PreviewContent() {
     return aiSportsArenaRecommendations.some(rec => rec.arenaId === arena.id)
   })
 
+  // Package selection handlers
+  const handleRestaurantPackageSelect = (restaurantId: string, packageName: string) => {
+    if (selectedRestaurant === restaurantId) {
+      setSelectedRestaurantPackage(packageName)
+    }
+  }
+
+  const handleSportsArenaPackageSelect = (arenaId: string, packageName: string) => {
+    if (selectedSportsArena === arenaId) {
+      setSelectedSportsArenaPackage(packageName)
+    }
+  }
+
+  // Clear package selection when restaurant/arena changes
+  const handleRestaurantSelect = (restaurantId: string) => {
+    setSelectedRestaurant(restaurantId)
+    setSelectedRestaurantPackage('') // Clear package selection
+  }
+
+  const handleSportsArenaSelect = (arenaId: string) => {
+    setSelectedSportsArena(arenaId)
+    setSelectedSportsArenaPackage('') // Clear package selection
+  }
+
   const getTotalCost = () => {
     if (!eventData) return 0
-    
+
     let venueCost = 0
     if (selectedRestaurant) {
-      venueCost = getRestaurantPriceByGuestCount(selectedRestaurant, eventData.guestCount)
+      if (selectedRestaurantPackage) {
+        // Use selected package price
+        const restaurant = RESTAURANTS.find(r => r.id === selectedRestaurant)
+        const selectedPkg = restaurant?.packages.find(p => p.name === selectedRestaurantPackage)
+        venueCost = selectedPkg?.price || 0
+      } else {
+        // Use default pricing logic
+        venueCost = getRestaurantPriceByGuestCount(selectedRestaurant, eventData.guestCount)
+      }
     } else if (selectedSportsArena) {
-      venueCost = getSportsArenaPriceByGuestCount(selectedSportsArena, eventData.guestCount)
+      if (selectedSportsArenaPackage) {
+        // Use selected package price
+        const arena = SPORTS_ARENAS.find(a => a.id === selectedSportsArena)
+        const selectedPkg = arena?.packages.find(p => p.name === selectedSportsArenaPackage)
+        venueCost = selectedPkg?.price || 0
+      } else {
+        // Use default pricing logic
+        venueCost = getSportsArenaPriceByGuestCount(selectedSportsArena, eventData.guestCount)
+      }
     } else if (eventData.venue && eventData.venue !== 'venue-restaurant' && eventData.venue !== 'venue-sports-arena') {
       venueCost = getVenueCost(eventData.venue, eventData.guestCount)
     }
-    
+
     return venueCost + eventData.servicesTotal
   }
 
@@ -458,10 +502,12 @@ function PreviewContent() {
                   key={restaurant.id}
                   restaurant={restaurant}
                   aiRecommendation={getRecommendationForRestaurant(restaurant.id)}
-                  onSelect={setSelectedRestaurant}
+                  onSelect={handleRestaurantSelect}
                   isSelected={selectedRestaurant === restaurant.id}
                   showDetails={true}
                   guestCount={eventData.guestCount}
+                  selectedPackage={selectedRestaurant === restaurant.id ? selectedRestaurantPackage : undefined}
+                  onPackageSelect={handleRestaurantPackageSelect}
                 />
               ))}
                     </div>
@@ -478,10 +524,12 @@ function PreviewContent() {
                   key={arena.id}
                   arena={arena}
                   aiRecommendation={getRecommendationForSportsArena(arena.id)}
-                  onSelect={setSelectedSportsArena}
+                  onSelect={handleSportsArenaSelect}
                   isSelected={selectedSportsArena === arena.id}
                   showDetails={true}
                   guestCount={eventData.guestCount}
+                  selectedPackage={selectedSportsArena === arena.id ? selectedSportsArenaPackage : undefined}
+                  onPackageSelect={handleSportsArenaPackageSelect}
                 />
               ))}
                     </div>
