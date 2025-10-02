@@ -4,6 +4,7 @@ import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { getRestaurantPriceByGuestCount } from '../../../data/restaurants'
 import { SERVICES, VENUE_SERVICES } from '../../../data/services'
+import { getSportsArenaPriceByGuestCount } from '../../../data/sportsArenas'
 import Logo from '../../../components/Logo'
 
 const BrandPurple = 'bg-purple-800'
@@ -80,6 +81,7 @@ interface EventData {
   services: string[]
   servicesTotal: number
   selectedRestaurant: string
+  selectedSportsArena: string
   venue: string
 }
 
@@ -196,6 +198,7 @@ function ReviewContent() {
     const services = searchParams.get('services')?.split(',').filter(Boolean) || []
     const servicesTotal = parseInt(searchParams.get('servicesTotal') || '0')
     const selectedRestaurant = searchParams.get('selectedRestaurant') || ''
+    const selectedSportsArena = searchParams.get('selectedSportsArena') || ''
     const venue = searchParams.get('venue') || ''
 
     // Debug: Log all URL parameters
@@ -209,6 +212,7 @@ function ReviewContent() {
       services,
       servicesTotal,
       selectedRestaurant,
+      selectedSportsArena,
       venue
     })
 
@@ -222,6 +226,7 @@ function ReviewContent() {
       services,
       servicesTotal,
       selectedRestaurant,
+      selectedSportsArena,
       venue
     }
 
@@ -235,26 +240,39 @@ function ReviewContent() {
 
   const getCurrentVenueCost = () => {
     if (!eventData) return 0
-    
+
     // Debug: log inputs and intermediate values
     console.log('[Review] getCurrentVenueCost inputs', {
       venue: eventData.venue,
       selectedRestaurant: eventData.selectedRestaurant,
+      selectedSportsArena: eventData.selectedSportsArena,
       guestCount: eventData.guestCount
     })
 
     // For restaurant venues, use restaurant pricing
     if (eventData.venue === 'venue-restaurant' && eventData.selectedRestaurant) {
       const venueCost = getRestaurantPriceByGuestCount(eventData.selectedRestaurant, eventData.guestCount)
-      console.log('[Review] restaurant venue cost', { 
-        selectedRestaurant: eventData.selectedRestaurant, 
-        guestCount: eventData.guestCount, 
+      console.log('[Review] restaurant venue cost', {
+        selectedRestaurant: eventData.selectedRestaurant,
+        guestCount: eventData.guestCount,
         venueCost,
         venue: eventData.venue
       })
       return venueCost
     }
-    
+
+    // For sports arena venues, use sports arena pricing
+    if (eventData.venue === 'venue-sports-arena' && eventData.selectedSportsArena) {
+      const venueCost = getSportsArenaPriceByGuestCount(eventData.selectedSportsArena, eventData.guestCount)
+      console.log('[Review] sports arena venue cost', {
+        selectedSportsArena: eventData.selectedSportsArena,
+        guestCount: eventData.guestCount,
+        venueCost,
+        venue: eventData.venue
+      })
+      return venueCost
+    }
+
     // For other venues, use venue pricing
     const otherVenueCost = getVenueCost(eventData.venue, eventData.guestCount)
     console.log('[Review] other venue cost', { venue: eventData.venue, guestCount: eventData.guestCount, otherVenueCost })
@@ -591,6 +609,10 @@ function ReviewContent() {
                 <div className="flex justify-between">
                   <span>Selected Restaurant:</span>
                   <span>{eventData.selectedRestaurant || 'None'}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Selected Sports Arena:</span>
+                  <span>{eventData.selectedSportsArena || 'None'}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Venue:</span>
