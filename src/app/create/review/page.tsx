@@ -130,7 +130,6 @@ function getVenueCost(venueId: string, guestCount: number): number {
   
   // For other venues, return the base price
   const venuePrice = venue.price || 0
-  console.log('[Review] getVenueCost', { venueId, guestCount, venueName: venue?.name, venuePrice })
   return venuePrice
 }
 
@@ -201,20 +200,6 @@ function ReviewContent() {
     const selectedSportsArena = searchParams.get('selectedSportsArena') || ''
     const venue = searchParams.get('venue') || ''
 
-    // Debug: Log all URL parameters
-    console.log('[Review] URL Parameters:', {
-      eventType,
-      location,
-      date,
-      time,
-      guestCount,
-      budget,
-      services,
-      servicesTotal,
-      selectedRestaurant,
-      selectedSportsArena,
-      venue
-    })
 
     const data: EventData = {
       eventType,
@@ -230,7 +215,6 @@ function ReviewContent() {
       venue
     }
 
-    console.log('[Review] Event Data Set:', data)
     setEventData(data)
   }, [searchParams])
 
@@ -241,41 +225,21 @@ function ReviewContent() {
   const getCurrentVenueCost = () => {
     if (!eventData) return 0
 
-    // Debug: log inputs and intermediate values
-    console.log('[Review] getCurrentVenueCost inputs', {
-      venue: eventData.venue,
-      selectedRestaurant: eventData.selectedRestaurant,
-      selectedSportsArena: eventData.selectedSportsArena,
-      guestCount: eventData.guestCount
-    })
 
     // For restaurant venues, use restaurant pricing
     if (eventData.venue === 'venue-restaurant' && eventData.selectedRestaurant) {
       const venueCost = getRestaurantPriceByGuestCount(eventData.selectedRestaurant, eventData.guestCount)
-      console.log('[Review] restaurant venue cost', {
-        selectedRestaurant: eventData.selectedRestaurant,
-        guestCount: eventData.guestCount,
-        venueCost,
-        venue: eventData.venue
-      })
       return venueCost
     }
 
     // For sports arena venues, use sports arena pricing
     if (eventData.venue === 'venue-sports-arena' && eventData.selectedSportsArena) {
       const venueCost = getSportsArenaPriceByGuestCount(eventData.selectedSportsArena, eventData.guestCount)
-      console.log('[Review] sports arena venue cost', {
-        selectedSportsArena: eventData.selectedSportsArena,
-        guestCount: eventData.guestCount,
-        venueCost,
-        venue: eventData.venue
-      })
       return venueCost
     }
 
     // For other venues, use venue pricing
     const otherVenueCost = getVenueCost(eventData.venue, eventData.guestCount)
-    console.log('[Review] other venue cost', { venue: eventData.venue, guestCount: eventData.guestCount, otherVenueCost })
     return otherVenueCost
   }
 
@@ -283,7 +247,6 @@ function ReviewContent() {
     if (!eventData) return 0
     const venueCost = getCurrentVenueCost()
     const total = venueCost + eventData.servicesTotal
-    console.log('[Review] getTotalCost', { venueCost, servicesTotal: eventData.servicesTotal, total })
     return total
   }
 
@@ -318,7 +281,6 @@ function ReviewContent() {
 
   function bookEvent() {
     // In a real app, this would process the booking with the collected data
-    console.log('Booking event with data:', { eventData, bookingData })
     
     const params = new URLSearchParams({
       eventType: eventData!.eventType,
@@ -593,39 +555,6 @@ function ReviewContent() {
               <div className="flex justify-between items-center font-semibold">
                 <span>Total:</span>
                 <span className="text-lg">${getTotalCost().toLocaleString()}</span>
-              </div>
-              
-              {/* Debug: Show cost breakdown */}
-              <div className="mt-2 p-2 bg-gray-50 rounded text-xs">
-                <div className="font-medium text-gray-700 mb-1">🔍 Debug Cost Breakdown:</div>
-                <div className="flex justify-between">
-                  <span>Venue Cost:</span>
-                  <span>${getCurrentVenueCost()}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Services Total (from URL):</span>
-                  <span>${eventData.servicesTotal}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Selected Restaurant:</span>
-                  <span>{eventData.selectedRestaurant || 'None'}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Selected Sports Arena:</span>
-                  <span>{eventData.selectedSportsArena || 'None'}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Venue:</span>
-                  <span>{eventData.venue || 'None'}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Guest Count:</span>
-                  <span>{eventData.guestCount}</span>
-                </div>
-                <div className="flex justify-between font-medium">
-                  <span>Calculated Total:</span>
-                  <span>${getCurrentVenueCost() + eventData.servicesTotal}</span>
-                </div>
               </div>
             </div>
           </div>
