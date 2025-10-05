@@ -526,41 +526,68 @@ function DetailsContent() {
 
               <div className="grid grid-cols-2 gap-4">
                 <Field label="Start Time">
-                  <div className="flex items-center gap-2">
-                    <Input
-                      placeholder="2:30"
-                      value={customStartTime}
-                      onChange={e => setCustomStartTime(formatTimeInput(e.target.value, false))}
-                      className="text-center flex-1"
-                    />
-                    <select
-                      value={customStartPeriod}
-                      onChange={e => setCustomStartPeriod(e.target.value)}
-                      className="h-12 rounded-xl border border-gray-300 px-3 outline-none focus:ring-2 focus:ring-purple-300 text-base"
-                    >
-                      <option value="AM">AM</option>
-                      <option value="PM">PM</option>
-                    </select>
-                  </div>
+                  <select
+                    value={customStartTime && customStartPeriod ? `${customStartTime} ${customStartPeriod}` : ''}
+                    onChange={e => {
+                      const [time, period] = e.target.value.split(' ')
+                      setCustomStartTime(time)
+                      setCustomStartPeriod(period)
+                    }}
+                    className="w-full h-12 rounded-xl border border-gray-300 px-4 outline-none focus:ring-2 focus:ring-purple-300 text-base"
+                  >
+                    <option value="">Select start time</option>
+                    <option value="6:00 AM">6:00 AM</option>
+                    <option value="7:00 AM">7:00 AM</option>
+                    <option value="8:00 AM">8:00 AM</option>
+                    <option value="9:00 AM">9:00 AM</option>
+                    <option value="10:00 AM">10:00 AM</option>
+                    <option value="11:00 AM">11:00 AM</option>
+                    <option value="12:00 PM">12:00 PM</option>
+                    <option value="1:00 PM">1:00 PM</option>
+                    <option value="2:00 PM">2:00 PM</option>
+                    <option value="3:00 PM">3:00 PM</option>
+                    <option value="4:00 PM">4:00 PM</option>
+                    <option value="5:00 PM">5:00 PM</option>
+                    <option value="6:00 PM">6:00 PM</option>
+                    <option value="7:00 PM">7:00 PM</option>
+                    <option value="8:00 PM">8:00 PM</option>
+                    <option value="9:00 PM">9:00 PM</option>
+                    <option value="10:00 PM">10:00 PM</option>
+                    <option value="11:00 PM">11:00 PM</option>
+                  </select>
                 </Field>
 
                 <Field label="End Time">
-                  <div className="flex items-center gap-2">
-                    <Input
-                      placeholder="6:00"
-                      value={customEndTime}
-                      onChange={e => setCustomEndTime(formatTimeInput(e.target.value, true))}
-                      className="text-center flex-1"
-                    />
-                    <select
-                      value={customEndPeriod}
-                      onChange={e => setCustomEndPeriod(e.target.value)}
-                      className="h-12 rounded-xl border border-gray-300 px-3 outline-none focus:ring-2 focus:ring-purple-300 text-base"
-                    >
-                      <option value="AM">AM</option>
-                      <option value="PM">PM</option>
-                    </select>
-                  </div>
+                  <select
+                    value={customEndTime && customEndPeriod ? `${customEndTime} ${customEndPeriod}` : ''}
+                    onChange={e => {
+                      const [time, period] = e.target.value.split(' ')
+                      setCustomEndTime(time)
+                      setCustomEndPeriod(period)
+                    }}
+                    className="w-full h-12 rounded-xl border border-gray-300 px-4 outline-none focus:ring-2 focus:ring-purple-300 text-base"
+                  >
+                    <option value="">Select end time</option>
+                    <option value="8:00 AM">8:00 AM</option>
+                    <option value="9:00 AM">9:00 AM</option>
+                    <option value="10:00 AM">10:00 AM</option>
+                    <option value="11:00 AM">11:00 AM</option>
+                    <option value="12:00 PM">12:00 PM</option>
+                    <option value="1:00 PM">1:00 PM</option>
+                    <option value="2:00 PM">2:00 PM</option>
+                    <option value="3:00 PM">3:00 PM</option>
+                    <option value="4:00 PM">4:00 PM</option>
+                    <option value="5:00 PM">5:00 PM</option>
+                    <option value="6:00 PM">6:00 PM</option>
+                    <option value="7:00 PM">7:00 PM</option>
+                    <option value="8:00 PM">8:00 PM</option>
+                    <option value="9:00 PM">9:00 PM</option>
+                    <option value="10:00 PM">10:00 PM</option>
+                    <option value="11:00 PM">11:00 PM</option>
+                    <option value="12:00 AM">12:00 AM</option>
+                    <option value="1:00 AM">1:00 AM</option>
+                    <option value="2:00 AM">2:00 AM</option>
+                  </select>
                 </Field>
               </div>
 
@@ -581,7 +608,7 @@ function DetailsContent() {
               )}
 
               <div className="text-xs text-gray-500 bg-gray-50 p-3 rounded-lg">
-                💡 Enter time like "2:30" or just "2" and select AM/PM, or use quick presets above
+                💡 Select times from dropdowns or use quick preset buttons above
               </div>
             </div>
           </Field>
