@@ -179,6 +179,15 @@ export const SERVICES: Service[] = [
     priceDescription: '$1,500 for up to 35 kids',
     icon: '🎂'
   },
+  {
+    id: 'chuck-e-cheese',
+    name: 'Chuck E. Cheese',
+    category: 'Kids',
+    description: 'Fun-filled birthday party at Chuck E. Cheese with games, entertainment, and food. Perfect for kids birthday celebrations.',
+    price: 800,
+    priceDescription: '$800 for party package',
+    icon: '🧀'
+  },
 
 
 
@@ -299,31 +308,31 @@ export const SERVICES: Service[] = [
 
   // Health & Wellness
   {
-    id: 'health-wellness-midtown-biohack',
-    name: 'Midtown Biohack',
+    id: 'midtown-biohack-dr-chuck-morris',
+    name: 'Midtown Biohack - Led by Dr Chuck Morris',
     category: 'Health & Wellness',
-    description: 'Premium health and wellness experience at Midtown Biohack. Includes personalized wellness assessment, treatments, and recovery services.',
-    price: 1000,
-    priceDescription: '$1,000 per session',
+    description: 'Premium biohacking session led by Dr Chuck Morris. Advanced wellness treatments and personalized health optimization for groups.',
+    price: 5000,
+    priceDescription: '$5,000 for 5 people (2 hours)',
     icon: '🧘'
   },
   {
-    id: 'health-wellness-platinum-spa',
-    name: 'Platinum Wellness Spa',
+    id: 'ifs-session-ty-cutner',
+    name: 'IFS Session - Led by TY Cutner',
     category: 'Health & Wellness',
-    description: 'Luxury wellness spa experience with premium treatments, relaxation services, and personalized wellness programs.',
-    price: 1000,
-    priceDescription: '$1,000 per session',
-    icon: '🧘'
-  },
-  {
-    id: 'emotional-mental-coaching-ifs',
-    name: 'Emotional & Mental Coaching (IFS by Ty Cutner)',
-    category: 'Health & Wellness',
-    description: 'Professional Internal Family Systems (IFS) coaching sessions with Ty Cutner. Transformative emotional and mental wellness coaching for groups.',
-    price: 1500,
-    priceDescription: '$1,500 for group of 5 (2 hours)',
+    description: 'Internal Family Systems (IFS) therapy session led by TY Cutner. Transformative emotional and mental wellness coaching for groups.',
+    price: 5000,
+    priceDescription: '$5,000 for 5 people (1.5 hours)',
     icon: '🧠'
+  },
+  {
+    id: 'boxing-lessons-eric-kelly',
+    name: 'Boxing Lessons - Led by Eric Kelly',
+    category: 'Health & Wellness',
+    description: 'Professional boxing training sessions led by Eric Kelly. Expert instruction and fitness training for groups.',
+    price: 1000,
+    priceDescription: '$1,000 for 10 people (1.5 hours)',
+    icon: '🥊'
   },
 
 ]
@@ -337,7 +346,6 @@ export const SERVICE_CATEGORIES = [
   'Decorations',
   'Entertainment',
   'Kids',
-  'Wedding',
   'Sporting Events',
   'Vacation',
   'Mobile Professionals',
@@ -361,7 +369,7 @@ export const VENUE_SERVICES: Service[] = [
     id: 'venue-private-home',
     name: 'Private Home',
     category: 'Venue',
-    description: 'Luxury private homes available for events. Various locations and sizes to accommodate different group sizes.',
+    description: 'Luxury private homes available for events. Various locations and sizes to accommodate different group sizes. Available in Manhattan, Brooklyn, Queens, and Long Island.',
     price: 0,
     priceDescription: 'Contact for pricing',
     icon: '🏠'
@@ -370,7 +378,7 @@ export const VENUE_SERVICES: Service[] = [
     id: 'venue-yacht',
     name: 'Yacht',
     category: 'Venue',
-    description: 'Private yacht rentals for unique waterfront events and celebrations.',
+    description: 'Private yacht rentals for unique waterfront events and celebrations. Departing from Chelsea Piers Marina, Pier 62, New York, NY 10011.',
     price: 2500,
     priceDescription: '$2,500 for 3 hours',
     icon: '🛥️'
@@ -379,7 +387,7 @@ export const VENUE_SERVICES: Service[] = [
     id: 'venue-restaurant',
     name: 'Restaurant',
     category: 'Venue',
-    description: 'Private dining rooms and restaurant venues for intimate or large gatherings.',
+    description: 'Private dining rooms and restaurant venues for intimate or large gatherings. Premium locations throughout NYC including Manhattan, Brooklyn, and Queens.',
     price: 0,
     priceDescription: 'Contact for pricing',
     icon: '🍽️'
@@ -388,7 +396,7 @@ export const VENUE_SERVICES: Service[] = [
     id: 'venue-event-space',
     name: 'Event Space',
     category: 'Venue',
-    description: 'Dedicated event spaces and halls perfect for conferences, parties, and special occasions.',
+    description: 'Dedicated event spaces and halls perfect for conferences, parties, and special occasions. Located at 350 Fifth Avenue, New York, NY 10118 and other prime locations.',
     price: 0,
     priceDescription: 'Contact for pricing',
     icon: '🏛️'
@@ -397,7 +405,7 @@ export const VENUE_SERVICES: Service[] = [
     id: 'venue-sports-arena',
     name: 'Sports Arena',
     category: 'Venue',
-    description: 'Professional sports arenas and stadiums for large-scale events, corporate gatherings, and special celebrations.',
+    description: 'Professional sports arenas and stadiums for large-scale events, corporate gatherings, and special celebrations. Including Madison Square Garden, 4 Pennsylvania Plaza, New York, NY 10001.',
     price: 0,
     priceDescription: 'Contact for pricing',
     icon: '🏟️'
@@ -406,27 +414,18 @@ export const VENUE_SERVICES: Service[] = [
     id: 'venue-health-wellness',
     name: 'Health & Wellness',
     category: 'Venue',
-    description: 'Wellness centers, spas, and health facilities perfect for wellness retreats, corporate wellness events, and relaxation-focused gatherings.',
+    description: 'Wellness centers, spas, and health facilities perfect for wellness retreats, corporate wellness events, and relaxation-focused gatherings. Located at 225 Liberty Street, New York, NY 10281 and surrounding areas.',
     price: 0,
     priceDescription: 'Contact for pricing',
     icon: '🧘‍♀️'
   },
   {
     id: 'venue-wedding',
-    name: 'Metropolitan Wedding Venue',
+    name: 'Wedding Venue',
     category: 'Venue',
-    description: 'Premium wedding venue at Metropolitan, Glen Cove NY. Accommodates up to 250 guests with full-service packages.',
-    price: 50000,
-    priceDescription: '$50,000 for 250 guests',
-    icon: '💒'
-  },
-  {
-    id: 'venue-wedding-premium',
-    name: 'Premium Wedding Venues',
-    category: 'Venue',
-    description: 'Luxury wedding venues with full-service packages. Various locations and capacities available for your special day.',
-    price: 15000,
-    priceDescription: '$15,000 starting price',
+    description: 'Beautiful wedding venues with full-service packages. Choose from various locations and capacities for your special day. Premium venues available throughout NYC and Long Island.',
+    price: 0,
+    priceDescription: 'Contact for pricing',
     icon: '💒'
   },
 ]

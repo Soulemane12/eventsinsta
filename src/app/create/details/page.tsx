@@ -136,18 +136,14 @@ function DetailsContent() {
     let hours = parseInt(timeParts[0])
     let minutes = timeParts[1] ? parseInt(timeParts[1]) : 0
     
-    console.log('[Details] parseCustomTime:', { timeStr, period, hours, minutes })
-    
     if (isNaN(hours) || isNaN(minutes)) return null
     if (hours < 1 || hours > 12 || minutes < 0 || minutes > 59) return null
-    
+
     if (period === 'PM' && hours !== 12) {
       hours += 12
     } else if (period === 'AM' && hours === 12) {
       hours = 0
     }
-    
-    console.log('[Details] parseCustomTime result:', { hours, minutes })
     return { hours, minutes }
   }
 
@@ -163,13 +159,11 @@ function DetailsContent() {
   }
 
   const formatTimeInput = (value: string, isEndTime: boolean = false): string => {
-    console.log('[Details] formatTimeInput input:', { value, isEndTime })
-    
     // Check for AM/PM in the input
     const hasAM = /am/i.test(value)
     const hasPM = /pm/i.test(value)
-    
-    // Set the period if detected
+
+    // Set the period if detected in the input
     if (hasAM && !hasPM) {
       if (isEndTime) {
         setCustomEndPeriod('AM')
@@ -183,28 +177,50 @@ function DetailsContent() {
         setCustomStartPeriod('PM')
       }
     }
-    
+
     // Remove any non-numeric characters except colon
     let cleaned = value.replace(/[^\d:]/g, '')
-    
-    console.log('[Details] formatTimeInput cleaned:', { cleaned })
-    
+
     // If user types a single digit (1-9), automatically add :00
     if (cleaned.length === 1 && /^[1-9]$/.test(cleaned)) {
-      const result = cleaned + ':00'
-      console.log('[Details] formatTimeInput single digit result:', result)
-      return result
+      return cleaned + ':00'
     }
-    
-    // If user types two digits without colon, check if it's a valid hour (10, 11, 12)
+
+    // If user types two digits without colon, add :00
     if (cleaned.length === 2 && !cleaned.includes(':')) {
       const hour = parseInt(cleaned)
-      const result = cleaned + ':00'
-      console.log('[Details] formatTimeInput two digits:', { hour, result })
-      return result
+      // Only auto-format if it's a valid hour (1-12)
+      if (hour >= 1 && hour <= 12) {
+        return cleaned + ':00'
+      }
     }
-    
-    console.log('[Details] formatTimeInput final result:', cleaned)
+
+    // Handle cases like "8p" or "8pm" - should set PM and return "8:00"
+    if (/^(\d{1,2})[p]/i.test(value)) {
+      const hour = value.match(/^(\d{1,2})/)?.[1]
+      if (hour) {
+        if (isEndTime) {
+          setCustomEndPeriod('PM')
+        } else {
+          setCustomStartPeriod('PM')
+        }
+        return hour + ':00'
+      }
+    }
+
+    // Handle cases like "8a" or "8am" - should set AM and return "8:00"
+    if (/^(\d{1,2})[a]/i.test(value)) {
+      const hour = value.match(/^(\d{1,2})/)?.[1]
+      if (hour) {
+        if (isEndTime) {
+          setCustomEndPeriod('AM')
+        } else {
+          setCustomStartPeriod('AM')
+        }
+        return hour + ':00'
+      }
+    }
+
     return cleaned
   }
 
@@ -304,6 +320,19 @@ function DetailsContent() {
               onChange={setLocation}
               placeholder="Start typing city or state..."
             />
+            {/* Display selected location info */}
+            {location && (
+              <div className="mt-2 bg-green-50 p-3 rounded-xl">
+                <div className="text-sm font-medium text-green-800 mb-1">📍 Selected Location</div>
+                <div className="text-sm text-green-700 flex items-center gap-2">
+                  <span>🏙️</span>
+                  <span>{location}</span>
+                </div>
+                <div className="text-xs text-green-600 mt-1">
+                  We'll find venues and services available in this area
+                </div>
+              </div>
+            )}
           </Field>
 
           <Field label="Event Date">
@@ -440,16 +469,71 @@ function DetailsContent() {
 
           <Field label="Event Time">
             <div className="space-y-4">
+              {/* Quick Time Presets */}
+              <div className="bg-blue-50 p-3 rounded-xl">
+                <div className="text-sm font-medium text-blue-800 mb-2">⏰ Quick Time Options</div>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setCustomStartTime('10:00')
+                      setCustomStartPeriod('AM')
+                      setCustomEndTime('2:00')
+                      setCustomEndPeriod('PM')
+                    }}
+                    className="text-xs bg-white border border-blue-200 rounded-lg p-2 hover:bg-blue-50 transition-colors"
+                  >
+                    Morning: 10AM - 2PM
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setCustomStartTime('2:00')
+                      setCustomStartPeriod('PM')
+                      setCustomEndTime('6:00')
+                      setCustomEndPeriod('PM')
+                    }}
+                    className="text-xs bg-white border border-blue-200 rounded-lg p-2 hover:bg-blue-50 transition-colors"
+                  >
+                    Afternoon: 2PM - 6PM
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setCustomStartTime('6:00')
+                      setCustomStartPeriod('PM')
+                      setCustomEndTime('10:00')
+                      setCustomEndPeriod('PM')
+                    }}
+                    className="text-xs bg-white border border-blue-200 rounded-lg p-2 hover:bg-blue-50 transition-colors"
+                  >
+                    Evening: 6PM - 10PM
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setCustomStartTime('7:00')
+                      setCustomStartPeriod('PM')
+                      setCustomEndTime('12:00')
+                      setCustomEndPeriod('AM')
+                    }}
+                    className="text-xs bg-white border border-blue-200 rounded-lg p-2 hover:bg-blue-50 transition-colors"
+                  >
+                    Night: 7PM - 12AM
+                  </button>
+                </div>
+              </div>
+
               <div className="grid grid-cols-2 gap-4">
                 <Field label="Start Time">
                   <div className="flex items-center gap-2">
-                    <Input 
+                    <Input
                       placeholder="2:30"
                       value={customStartTime}
                       onChange={e => setCustomStartTime(formatTimeInput(e.target.value, false))}
                       className="text-center flex-1"
                     />
-                    <select 
+                    <select
                       value={customStartPeriod}
                       onChange={e => setCustomStartPeriod(e.target.value)}
                       className="h-12 rounded-xl border border-gray-300 px-3 outline-none focus:ring-2 focus:ring-purple-300 text-base"
@@ -459,16 +543,16 @@ function DetailsContent() {
                     </select>
                   </div>
                 </Field>
-                
+
                 <Field label="End Time">
                   <div className="flex items-center gap-2">
-                    <Input 
+                    <Input
                       placeholder="6:00"
                       value={customEndTime}
                       onChange={e => setCustomEndTime(formatTimeInput(e.target.value, true))}
                       className="text-center flex-1"
                     />
-                    <select 
+                    <select
                       value={customEndPeriod}
                       onChange={e => setCustomEndPeriod(e.target.value)}
                       className="h-12 rounded-xl border border-gray-300 px-3 outline-none focus:ring-2 focus:ring-purple-300 text-base"
@@ -479,15 +563,25 @@ function DetailsContent() {
                   </div>
                 </Field>
               </div>
-              
+
+              {/* Display selected time range */}
+              {customStartTime && customStartPeriod && customEndTime && customEndPeriod && !validateCustomTimeRange() && (
+                <div className="bg-green-50 p-3 rounded-xl">
+                  <div className="text-sm font-medium text-green-800 mb-1">✅ Selected Time</div>
+                  <div className="text-sm text-green-700">
+                    {customStartTime} {customStartPeriod} - {customEndTime} {customEndPeriod}
+                  </div>
+                </div>
+              )}
+
               {validateCustomTimeRange() && (
                 <div className="text-sm text-red-600 bg-red-50 p-2 rounded-lg">
                   ⚠️ {validateCustomTimeRange()}
                 </div>
               )}
-              
+
               <div className="text-xs text-gray-500 bg-gray-50 p-3 rounded-lg">
-                💡 Enter time like "2:30" or just "2" and select AM/PM
+                💡 Enter time like "2:30" or just "2" and select AM/PM, or use quick presets above
               </div>
             </div>
           </Field>

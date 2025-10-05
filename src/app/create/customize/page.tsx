@@ -60,6 +60,8 @@ const EVENT_TYPES = [
   { id: 'sporting', name: 'Sporting Event', icon: '⚽', description: 'Sports and recreation' },
   { id: 'kids-event', name: 'Kid\'s Event', icon: '🧸', description: 'Fun for the little ones' },
   { id: 'networking', name: 'Networking Mixer', icon: '🤝', description: 'Professional connections' },
+  { id: 'ladies-night', name: 'Ladies Night Out', icon: '💃', description: 'Fun night out for the ladies' },
+  { id: 'gentlemen-night', name: 'Gentlemen\'s Night Out', icon: '🕺', description: 'Sophisticated night for gentlemen' },
 ]
 
 export default function Customize() {

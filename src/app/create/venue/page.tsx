@@ -122,8 +122,6 @@ function VenueContent() {
     if (guestCountParam) setGuestCount(guestCountParam)
     if (budgetParam) setBudget(budgetParam)
     
-    // Debug: Log the time parameters
-    console.log('Venue page - Time parameters:', { startTimeParam, endTimeParam })
   }, [searchParams])
 
   const venueServices = VENUE_SERVICES
