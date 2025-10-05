@@ -73,7 +73,7 @@ function RestaurantCard({
           </div>
           <div className="text-xs text-gray-600 mb-1">{restaurant.address}</div>
           <div className="text-xs text-gray-500 mb-2">
-            🍽️ {restaurant.cuisine} • ⭐ {restaurant.rating}
+            🍽️ {restaurant.cuisine} • 💰 {restaurant.priceRange}
           </div>
           <div className="text-xs text-gray-600 mb-2">{restaurant.description}</div>
 
