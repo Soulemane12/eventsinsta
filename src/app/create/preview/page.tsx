@@ -103,16 +103,24 @@ function getVenueDescription(venueId: string): string {
 }
 
 function getVenueCost(venueId: string, guestCount: number, venuePrice?: string): number {
+  console.log('getVenueCost called with:', { venueId, guestCount, venuePrice })
+
   if (!venueId) return 0
 
   // Use specific venue price if available
   if (venuePrice) {
-    return parseInt(venuePrice) || 0
+    const price = parseInt(venuePrice) || 0
+    console.log('Using venuePrice:', price)
+    return price
   }
 
   const venue = VENUE_SERVICES.find(v => v.id === venueId)
-  if (!venue) return 0
+  if (!venue) {
+    console.log('No venue found for venueId:', venueId)
+    return 0
+  }
 
+  console.log('Using venue base price:', venue.price)
   return venue.price || 0
 }
 
@@ -155,7 +163,7 @@ function PreviewContent() {
   useEffect(() => {
     // Get event data from URL parameters
     const eventType = searchParams.get('eventType') || 'Anniversary'
-    const location = searchParams.get('location') || 'New York, NY'
+    const location = searchParams.get('venueAddress') || searchParams.get('location') || 'New York, NY'
     const date = searchParams.get('date') || ''
     const time = searchParams.get('time') || ''
     const startTime = searchParams.get('startTime') || ''
@@ -530,7 +538,10 @@ function PreviewContent() {
                       <div className="text-sm font-semibold text-blue-800">
                         {eventData.venueName || getVenueDisplayName(eventData.venue)}
                       </div>
-                      <div className="text-xs text-blue-600">Venue Cost</div>
+                      <div className="text-xs text-blue-600">
+                        {eventData.venuePackage || 'Venue Cost'}
+                        {eventData.guestCount && ` • For ${eventData.guestCount} guests`}
+                      </div>
                     </div>
                   </div>
                   <div className="text-sm font-bold text-blue-800">
