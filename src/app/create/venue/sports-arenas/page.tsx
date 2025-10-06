@@ -2,8 +2,8 @@
 
 import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { VENUE_SERVICES, Service } from '@/data/services'
-import Logo from '../../../components/Logo'
+import { SPORTS_ARENAS, SportsArena } from '@/data/sportsArenas'
+import Logo from '../../../../components/Logo'
 
 const BrandPurple = 'bg-purple-800'
 const BrandPurpleHover = 'hover:bg-purple-900'
@@ -46,36 +46,47 @@ function StepHeader({ step, title }: { step: number; title: string }) {
   )
 }
 
-function VenueCard({ 
-  venue, 
-  isSelected, 
-  onSelect 
-}: { 
-  venue: Service; 
-  isSelected: boolean; 
-  onSelect: () => void 
+function SportsArenaCard({
+  arena,
+  isSelected,
+  onSelect
+}: {
+  arena: SportsArena;
+  isSelected: boolean;
+  onSelect: () => void
 }) {
   return (
     <div
       className={`w-full p-4 transition-all rounded-2xl bg-white shadow cursor-pointer ${
-        isSelected 
-          ? 'border-2 border-purple-600 bg-purple-50' 
-          : venue.id === 'venue-yacht' 
-            ? 'border-2 border-blue-300 bg-blue-50 hover:border-blue-400' 
-            : 'border border-gray-200 hover:border-purple-300'
+        isSelected
+          ? 'border-2 border-purple-600 bg-purple-50'
+          : 'border border-gray-200 hover:border-purple-300'
       }`}
       onClick={onSelect}
     >
       <div className="flex items-start gap-3">
-        <div className="text-3xl">{venue.icon}</div>
+        <div className="text-2xl">🏟️</div>
         <div className="flex-1">
-          <div className="flex items-center gap-2 mb-1">
-            <div className="font-semibold text-sm">{venue.name}</div>
-            {venue.id === 'venue-yacht' && (
-              <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">Popular</span>
-            )}
+          <div className="flex items-center justify-between mb-1">
+            <div className="font-semibold text-sm">{arena.name}</div>
+            <div className="text-sm font-bold text-purple-600">{arena.priceRange}</div>
           </div>
-          <div className="text-xs text-gray-600 mb-2">{venue.description}</div>
+          <div className="text-xs text-gray-600 mb-1">{arena.address}</div>
+          <div className="text-xs text-gray-500 mb-2">
+            🏟️ {arena.sportType} • 💰 {arena.priceRange}
+          </div>
+          <div className="text-xs text-gray-600 mb-2">{arena.description}</div>
+
+          {/* Sport Type Tags */}
+          <div className="flex flex-wrap gap-1 mb-2">
+            <span className="text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded-full">
+              {arena.sportType}
+            </span>
+            <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">
+              {arena.priceRange}
+            </span>
+          </div>
+
           {isSelected && (
             <div className="w-4 h-4 bg-purple-600 rounded-full flex items-center justify-center ml-auto">
               <div className="w-2 h-2 bg-white rounded-full"></div>
@@ -87,11 +98,11 @@ function VenueCard({
   )
 }
 
-function VenueContent() {
+function SportsArenasContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  
-  const [selectedVenue, setSelectedVenue] = useState<string>('')
+
+  const [selectedSportsArena, setSelectedSportsArena] = useState<string>('')
   const [searchTerm, setSearchTerm] = useState('')
   const [eventType, setEventType] = useState('')
   const [location, setLocation] = useState('')
@@ -101,6 +112,7 @@ function VenueContent() {
   const [endTime, setEndTime] = useState('')
   const [guestCount, setGuestCount] = useState('')
   const [budget, setBudget] = useState('')
+  const [venue, setVenue] = useState('')
 
   useEffect(() => {
     // Get previous parameters from URL
@@ -112,7 +124,8 @@ function VenueContent() {
     const endTimeParam = searchParams.get('endTime')
     const guestCountParam = searchParams.get('guestCount')
     const budgetParam = searchParams.get('budget')
-    
+    const venueParam = searchParams.get('venue')
+
     if (eventTypeParam) setEventType(eventTypeParam)
     if (locationParam) setLocation(locationParam)
     if (dateParam) setDate(dateParam)
@@ -121,25 +134,26 @@ function VenueContent() {
     if (endTimeParam) setEndTime(endTimeParam)
     if (guestCountParam) setGuestCount(guestCountParam)
     if (budgetParam) setBudget(budgetParam)
-    
+    if (venueParam) setVenue(venueParam)
   }, [searchParams])
 
-  const venueServices = VENUE_SERVICES
-  
-  // Filter venues based on search term
-  const filteredVenues = venueServices.filter(venue => 
-    venue.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    venue.description.toLowerCase().includes(searchTerm.toLowerCase())
-  )
-  
-  // Check if yacht venue is available
-  const yachtVenue = venueServices.find(v => v.id === 'venue-yacht')
-  const yachtAvailable = yachtVenue !== undefined
+  // Filter sports arenas based on search term
+  let filteredSportsArenas = SPORTS_ARENAS
 
-  const valid = selectedVenue
+  if (searchTerm) {
+    filteredSportsArenas = SPORTS_ARENAS.filter(arena =>
+      arena.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      arena.sportType.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      arena.address.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      arena.description.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+  }
+
+  const valid = selectedSportsArena
 
   function next() {
     if (valid) {
+      const selectedSportsArenaData = SPORTS_ARENAS.find(a => a.id === selectedSportsArena)
       const params = new URLSearchParams({
         eventType: eventType,
         location: location,
@@ -149,41 +163,31 @@ function VenueContent() {
         endTime: endTime,
         guestCount: guestCount,
         budget: budget,
-        venue: selectedVenue
+        venue: venue,
+        specificVenue: selectedSportsArena,
+        venueName: selectedSportsArenaData?.name || '',
+        venueAddress: selectedSportsArenaData?.address || '',
+        venuePrice: '0' // Sports arenas typically don't have base venue fees
       })
-
-      // Route to specific venue selection pages for restaurant and sports arena
-      if (selectedVenue === 'venue-restaurant') {
-        router.push(`/create/venue/restaurants?${params.toString()}`)
-      } else if (selectedVenue === 'venue-sports-arena') {
-        router.push(`/create/venue/sports-arenas?${params.toString()}`)
-      } else {
-        // Go directly to services for other venue types
-        router.push(`/create/services?${params.toString()}`)
-      }
+      router.push(`/create/services?${params.toString()}`)
     }
   }
 
   return (
     <div className="max-w-md mx-auto min-h-screen bg-gray-50">
-      <StepHeader step={4} title="Select Your Venue" />
+      <StepHeader step={4} title="Choose Sports Arena" />
       <div className="p-6 space-y-6">
         <div className="text-center">
-          <h2 className="text-xl font-semibold mb-2">Choose Your Venue</h2>
-          <p className="text-sm text-gray-600">Select the perfect venue for your event</p>
+          <h2 className="text-xl font-semibold mb-2">Select Your Sports Arena</h2>
+          <p className="text-sm text-gray-600">Choose the perfect sports arena for your event</p>
           {eventType && location && (
             <div className="mt-2 text-sm text-purple-600 font-medium">
               Planning: {eventType} in {location}
             </div>
           )}
-          {date && (
+          {guestCount && (
             <div className="mt-1 text-sm text-gray-600">
-              📅 {date}
-              {startTime && endTime ? (
-                <> • ⏰ {startTime} - {endTime}</>
-              ) : (
-                <> • ⏰ Time not set</>
-              )}
+              👥 {guestCount} guests
             </div>
           )}
         </div>
@@ -192,63 +196,37 @@ function VenueContent() {
         <div className="mb-4">
           <input
             type="text"
-            placeholder="Search venues (e.g., yacht, restaurant, wedding)..."
+            placeholder="Search sports arenas (e.g., basketball, Madison Square Garden)..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full h-12 rounded-xl border border-gray-300 px-4 outline-none focus:ring-2 focus:ring-purple-300"
           />
         </div>
 
-        {/* AI Error Handling - Show if yacht is not available */}
-        {!yachtAvailable && (
-          <div className="bg-red-50 p-4 rounded-xl mb-4">
-            <div className="text-sm font-medium text-red-800 mb-2">🤖 AI Analysis: Yacht Venue Issue</div>
-            <div className="text-xs text-red-700">
-              The yacht venue is not currently available in our system. This could be due to:
-              <ul className="mt-2 ml-4 list-disc">
-                <li>Seasonal availability restrictions</li>
-                <li>Maintenance or booking conflicts</li>
-                <li>System configuration issue</li>
-              </ul>
-              Please try selecting a different venue or contact support for assistance.
-            </div>
-          </div>
-        )}
-
-        {/* Yacht Venue Highlight */}
-        {yachtAvailable && searchTerm.toLowerCase().includes('yacht') && (
-          <div className="bg-blue-50 p-4 rounded-xl mb-4">
-            <div className="text-sm font-medium text-blue-800 mb-2">🛥️ Yacht Venue Available!</div>
-            <div className="text-xs text-blue-700">
-              Great news! The yacht venue is available for your event. Look for the yacht option below with the 🛥️ icon.
-            </div>
-          </div>
-        )}
-
         <div className="space-y-3">
-          {filteredVenues.length > 0 ? (
-            filteredVenues.map(venue => (
-              <VenueCard
-                key={venue.id}
-                venue={venue}
-                isSelected={selectedVenue === venue.id}
-                onSelect={() => setSelectedVenue(venue.id)}
+          {filteredSportsArenas.length > 0 ? (
+            filteredSportsArenas.map(arena => (
+              <SportsArenaCard
+                key={arena.id}
+                arena={arena}
+                isSelected={selectedSportsArena === arena.id}
+                onSelect={() => setSelectedSportsArena(arena.id)}
               />
             ))
           ) : (
             <div className="bg-yellow-50 p-4 rounded-xl text-center">
-              <div className="text-sm font-medium text-yellow-800 mb-2">🔍 No Venues Found</div>
+              <div className="text-sm font-medium text-yellow-800 mb-2">🔍 No Sports Arenas Found</div>
               <div className="text-xs text-yellow-700">
-                No venues match your search term "{searchTerm}". Try searching for "yacht", "restaurant", "wedding", or "sports".
+                No sports arenas match your search criteria. Try adjusting your search terms.
               </div>
             </div>
           )}
         </div>
 
-        <div className="bg-blue-50 p-4 rounded-xl">
-          <div className="text-sm font-medium text-blue-800 mb-2">💡 Venue Selection Tip</div>
-          <div className="text-xs text-blue-700">
-            Choose your venue first, then we'll help you select the perfect services to complement your venue choice.
+        <div className="bg-purple-50 p-4 rounded-xl">
+          <div className="text-sm font-medium text-purple-800 mb-2">🏟️ Sports Arena Benefits</div>
+          <div className="text-xs text-purple-700">
+            Sports arena venues offer professional facilities, large capacity, and unique sporting atmospheres for your event.
           </div>
         </div>
 
@@ -260,19 +238,19 @@ function VenueContent() {
   )
 }
 
-export default function Venue() {
+export default function SportsArenas() {
   return (
     <Suspense fallback={
       <div className="max-w-md mx-auto min-h-screen bg-gray-50">
         <div className="p-6">
           <div className="text-center py-8">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto mb-4"></div>
-            <p className="text-sm text-gray-600">Loading...</p>
+            <p className="text-sm text-gray-600">Loading sports arenas...</p>
           </div>
         </div>
       </div>
     }>
-      <VenueContent />
+      <SportsArenasContent />
     </Suspense>
   )
 }
