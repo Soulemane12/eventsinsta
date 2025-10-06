@@ -67,6 +67,7 @@ interface EventData {
   venueName?: string
   venueAddress?: string
   venuePrice?: string
+  venuePackage?: string
 }
 
 function getBudgetDisplay(budget: string): string {
@@ -168,6 +169,7 @@ function PreviewContent() {
     const venueName = searchParams.get('venueName') || ''
     const venueAddress = searchParams.get('venueAddress') || ''
     const venuePrice = searchParams.get('venuePrice') || ''
+    const venuePackage = searchParams.get('venuePackage') || ''
 
     // Combine start and end time if they exist, otherwise use the time parameter
     const combinedTime = (startTime && endTime) ? `${startTime} - ${endTime}` : time
@@ -185,7 +187,8 @@ function PreviewContent() {
       specificVenue,
       venueName,
       venueAddress,
-      venuePrice
+      venuePrice,
+      venuePackage
     }
 
     setEventData(data)
@@ -653,7 +656,8 @@ function PreviewContent() {
               specificVenue: eventData.specificVenue || '',
               venueName: eventData.venueName || '',
               venueAddress: eventData.venueAddress || '',
-              venuePrice: eventData.venuePrice || ''
+              venuePrice: eventData.venuePrice || '',
+              venuePackage: eventData.venuePackage || ''
             })
             router.push(`/create/review?${params.toString()}`)
           }}

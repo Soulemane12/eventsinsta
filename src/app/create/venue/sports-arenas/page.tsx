@@ -49,11 +49,17 @@ function StepHeader({ step, title }: { step: number; title: string }) {
 function SportsArenaCard({
   arena,
   isSelected,
-  onSelect
+  onSelect,
+  selectedPackage,
+  onPackageSelect,
+  guestCount
 }: {
   arena: SportsArena;
   isSelected: boolean;
-  onSelect: () => void
+  onSelect: () => void;
+  selectedPackage?: string;
+  onPackageSelect: (packageName: string, packagePrice: number) => void;
+  guestCount: number;
 }) {
   return (
     <div
@@ -87,9 +93,55 @@ function SportsArenaCard({
             </span>
           </div>
 
+          {/* Package Selection - Only show when arena is selected */}
           {isSelected && (
-            <div className="w-4 h-4 bg-purple-600 rounded-full flex items-center justify-center ml-auto">
-              <div className="w-2 h-2 bg-white rounded-full"></div>
+            <div className="mt-3 pt-3 border-t border-purple-200">
+              <div className="text-xs font-semibold text-purple-800 mb-2">📦 Select Package for {guestCount} guests:</div>
+              <div className="space-y-2">
+                {arena.packages.map((pkg, idx) => {
+                  const isPackageSelected = selectedPackage === pkg.name
+                  const isApplicable = !pkg.guestCount || guestCount <= pkg.guestCount
+
+                  return (
+                    <div
+                      key={idx}
+                      className={`p-2 rounded border cursor-pointer transition-all ${
+                        isPackageSelected
+                          ? 'border-purple-500 bg-purple-100'
+                          : isApplicable
+                            ? 'border-gray-200 hover:border-purple-300 bg-gray-50'
+                            : 'border-gray-100 bg-gray-100 opacity-50 cursor-not-allowed'
+                      }`}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        if (isApplicable) {
+                          onPackageSelect(pkg.name, pkg.price)
+                        }
+                      }}
+                    >
+                      <div className="flex justify-between items-start mb-1">
+                        <div className="text-xs font-semibold text-gray-800">{pkg.name}</div>
+                        <div className="text-xs font-bold text-purple-600">${pkg.price}</div>
+                      </div>
+                      <div className="text-xs text-gray-600 mb-1">{pkg.description}</div>
+                      <div className="text-xs text-gray-500">
+                        Includes: {pkg.includes.join(', ')}
+                        {pkg.guestCount && ` • Up to ${pkg.guestCount} guests`}
+                      </div>
+                      {!isApplicable && (
+                        <div className="text-xs text-red-500 mt-1">
+                          Not suitable for {guestCount} guests
+                        </div>
+                      )}
+                      {isPackageSelected && (
+                        <div className="text-xs text-purple-600 mt-1 font-semibold">
+                          ✅ Selected Package
+                        </div>
+                      )}
+                    </div>
+                  )
+                })}
+              </div>
             </div>
           )}
         </div>
@@ -103,6 +155,8 @@ function SportsArenasContent() {
   const searchParams = useSearchParams()
 
   const [selectedSportsArena, setSelectedSportsArena] = useState<string>('')
+  const [selectedPackage, setSelectedPackage] = useState<string>('')
+  const [selectedPackagePrice, setSelectedPackagePrice] = useState<number>(0)
   const [searchTerm, setSearchTerm] = useState('')
   const [eventType, setEventType] = useState('')
   const [location, setLocation] = useState('')
@@ -149,7 +203,12 @@ function SportsArenasContent() {
     )
   }
 
-  const valid = selectedSportsArena
+  const valid = selectedSportsArena && selectedPackage
+
+  const handlePackageSelect = (packageName: string, packagePrice: number) => {
+    setSelectedPackage(packageName)
+    setSelectedPackagePrice(packagePrice)
+  }
 
   function next() {
     if (valid) {
@@ -167,7 +226,8 @@ function SportsArenasContent() {
         specificVenue: selectedSportsArena,
         venueName: selectedSportsArenaData?.name || '',
         venueAddress: selectedSportsArenaData?.address || '',
-        venuePrice: '0' // Sports arenas typically don't have base venue fees
+        venuePrice: selectedPackagePrice.toString(),
+        venuePackage: selectedPackage
       })
       router.push(`/create/services?${params.toString()}`)
     }
@@ -210,7 +270,15 @@ function SportsArenasContent() {
                 key={arena.id}
                 arena={arena}
                 isSelected={selectedSportsArena === arena.id}
-                onSelect={() => setSelectedSportsArena(arena.id)}
+                onSelect={() => {
+                  setSelectedSportsArena(arena.id)
+                  // Reset package selection when changing arena
+                  setSelectedPackage('')
+                  setSelectedPackagePrice(0)
+                }}
+                selectedPackage={selectedSportsArena === arena.id ? selectedPackage : undefined}
+                onPackageSelect={handlePackageSelect}
+                guestCount={parseInt(guestCount) || 1}
               />
             ))
           ) : (

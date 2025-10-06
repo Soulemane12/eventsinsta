@@ -213,7 +213,8 @@ function WeddingVenuesContent() {
         specificVenue: selectedVenue,
         venueName: selectedVenueData?.name || '',
         venueAddress: selectedVenueData?.address || '',
-        venuePrice: selectedVenueData?.price.starting.toString() || '0'
+        venuePrice: selectedVenueData?.price.starting.toString() || '0',
+        venuePackage: 'Wedding Package'
       })
       router.push(`/create/services?${params.toString()}`)
     }

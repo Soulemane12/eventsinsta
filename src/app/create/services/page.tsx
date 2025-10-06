@@ -213,6 +213,11 @@ function ServicesContent() {
   const [guestCount, setGuestCount] = useState('')
   const [budget, setBudget] = useState('')
   const [venue, setVenue] = useState('')
+  const [specificVenue, setSpecificVenue] = useState('')
+  const [venueName, setVenueName] = useState('')
+  const [venueAddress, setVenueAddress] = useState('')
+  const [venuePrice, setVenuePrice] = useState('')
+  const [venuePackage, setVenuePackage] = useState('')
 
   const [recommendedServices, setRecommendedServices] = useState<string[]>([])
   const [isLoadingRecommendations, setIsLoadingRecommendations] = useState(false)
@@ -261,6 +266,11 @@ function ServicesContent() {
     const budgetParam = searchParams.get('budget')
     const venueParam = searchParams.get('venue')
     const servicesParam = searchParams.get('services')
+    const specificVenueParam = searchParams.get('specificVenue')
+    const venueNameParam = searchParams.get('venueName')
+    const venueAddressParam = searchParams.get('venueAddress')
+    const venuePriceParam = searchParams.get('venuePrice')
+    const venuePackageParam = searchParams.get('venuePackage')
     
     if (eventTypeParam) setEventType(eventTypeParam)
     if (locationParam) setLocation(locationParam)
@@ -271,6 +281,11 @@ function ServicesContent() {
     if (guestCountParam) setGuestCount(guestCountParam)
     if (budgetParam) setBudget(budgetParam)
     if (venueParam) setVenue(venueParam)
+    if (specificVenueParam) setSpecificVenue(specificVenueParam)
+    if (venueNameParam) setVenueName(venueNameParam)
+    if (venueAddressParam) setVenueAddress(venueAddressParam)
+    if (venuePriceParam) setVenuePrice(venuePriceParam)
+    if (venuePackageParam) setVenuePackage(venuePackageParam)
     
     // Restore previously selected services
     if (servicesParam) {
@@ -352,10 +367,15 @@ function ServicesContent() {
   }
 
   const getSelectedServicesTotal = () => {
-    return selectedServices.reduce((total, serviceId) => {
+    const servicesTotal = selectedServices.reduce((total, serviceId) => {
       const service = SERVICES.find(s => s.id === serviceId)
       return total + (service?.price || 0)
     }, 0)
+
+    // Add venue cost if available
+    const venueCost = venuePrice ? parseInt(venuePrice) : 0
+
+    return servicesTotal + venueCost
   }
 
   const totalCost = getSelectedServicesTotal()
@@ -484,7 +504,12 @@ function ServicesContent() {
       budget: budget,
       venue: venue,
       services: selectedServices.join(','),
-      servicesTotal: totalCost.toString()
+      servicesTotal: totalCost.toString(),
+      specificVenue: specificVenue,
+      venueName: venueName,
+      venueAddress: venueAddress,
+      venuePrice: venuePrice,
+      venuePackage: venuePackage
     })
     router.push(`/create/preview?${params.toString()}`)
   }
@@ -724,8 +749,22 @@ function ServicesContent() {
                 ) : null
               })}
               <div className="border-t border-purple-200 pt-2 mt-2">
+                {/* Show venue cost if available */}
+                {venuePrice && parseInt(venuePrice) > 0 && (
+                  <div className="flex justify-between text-sm mb-1">
+                    <span className="text-gray-700">Venue Cost</span>
+                    <span className="text-gray-700">${parseInt(venuePrice)}</span>
+                  </div>
+                )}
+                <div className="flex justify-between text-sm mb-1">
+                  <span className="text-gray-700">Services Cost</span>
+                  <span className="text-gray-700">${selectedServices.reduce((total, serviceId) => {
+                    const service = SERVICES.find(s => s.id === serviceId)
+                    return total + (service?.price || 0)
+                  }, 0)}</span>
+                </div>
                 <div className="flex justify-between text-sm font-bold">
-                  <span className="text-purple-800">Total Services Cost</span>
+                  <span className="text-purple-800">Total Cost</span>
                   <span className="text-purple-800">${totalCost}</span>
                 </div>
                 

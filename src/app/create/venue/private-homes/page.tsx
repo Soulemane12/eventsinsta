@@ -204,7 +204,8 @@ function PrivateHomesContent() {
         specificVenue: selectedHome,
         venueName: selectedHomeData?.name || '',
         venueAddress: selectedHomeData?.address || '',
-        venuePrice: selectedHomeData?.price.starting.toString() || '0'
+        venuePrice: selectedHomeData?.price.starting.toString() || '0',
+        venuePackage: 'Full Day Rental'
       })
       router.push(`/create/services?${params.toString()}`)
     }

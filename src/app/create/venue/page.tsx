@@ -152,11 +152,15 @@ function VenueContent() {
         venue: selectedVenue
       })
 
-      // Route to specific venue selection pages for restaurant and sports arena
+      // Route to specific venue selection pages for detailed venue types
       if (selectedVenue === 'venue-restaurant') {
         router.push(`/create/venue/restaurants?${params.toString()}`)
       } else if (selectedVenue === 'venue-sports-arena') {
         router.push(`/create/venue/sports-arenas?${params.toString()}`)
+      } else if (selectedVenue === 'venue-private-home') {
+        router.push(`/create/venue/private-homes?${params.toString()}`)
+      } else if (selectedVenue === 'venue-wedding') {
+        router.push(`/create/venue/wedding-venues?${params.toString()}`)
       } else {
         // Go directly to services for other venue types
         router.push(`/create/services?${params.toString()}`)

@@ -49,11 +49,17 @@ function StepHeader({ step, title }: { step: number; title: string }) {
 function RestaurantCard({
   restaurant,
   isSelected,
-  onSelect
+  onSelect,
+  selectedPackage,
+  onPackageSelect,
+  guestCount
 }: {
   restaurant: Restaurant;
   isSelected: boolean;
-  onSelect: () => void
+  onSelect: () => void;
+  selectedPackage?: string;
+  onPackageSelect: (packageName: string, packagePrice: number) => void;
+  guestCount: number;
 }) {
   return (
     <div
@@ -87,9 +93,55 @@ function RestaurantCard({
             </span>
           </div>
 
+          {/* Package Selection - Only show when restaurant is selected */}
           {isSelected && (
-            <div className="w-4 h-4 bg-purple-600 rounded-full flex items-center justify-center ml-auto">
-              <div className="w-2 h-2 bg-white rounded-full"></div>
+            <div className="mt-3 pt-3 border-t border-purple-200">
+              <div className="text-xs font-semibold text-purple-800 mb-2">📦 Select Package for {guestCount} guests:</div>
+              <div className="space-y-2">
+                {restaurant.packages.map((pkg, idx) => {
+                  const isPackageSelected = selectedPackage === pkg.name
+                  const isApplicable = !pkg.guestCount || guestCount <= pkg.guestCount
+
+                  return (
+                    <div
+                      key={idx}
+                      className={`p-2 rounded border cursor-pointer transition-all ${
+                        isPackageSelected
+                          ? 'border-purple-500 bg-purple-100'
+                          : isApplicable
+                            ? 'border-gray-200 hover:border-purple-300 bg-gray-50'
+                            : 'border-gray-100 bg-gray-100 opacity-50 cursor-not-allowed'
+                      }`}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        if (isApplicable) {
+                          onPackageSelect(pkg.name, pkg.price)
+                        }
+                      }}
+                    >
+                      <div className="flex justify-between items-start mb-1">
+                        <div className="text-xs font-semibold text-gray-800">{pkg.name}</div>
+                        <div className="text-xs font-bold text-purple-600">${pkg.price}</div>
+                      </div>
+                      <div className="text-xs text-gray-600 mb-1">{pkg.description}</div>
+                      <div className="text-xs text-gray-500">
+                        Includes: {pkg.includes.join(', ')}
+                        {pkg.guestCount && ` • Up to ${pkg.guestCount} guests`}
+                      </div>
+                      {!isApplicable && (
+                        <div className="text-xs text-red-500 mt-1">
+                          Not suitable for {guestCount} guests
+                        </div>
+                      )}
+                      {isPackageSelected && (
+                        <div className="text-xs text-purple-600 mt-1 font-semibold">
+                          ✅ Selected Package
+                        </div>
+                      )}
+                    </div>
+                  )
+                })}
+              </div>
             </div>
           )}
         </div>
@@ -103,6 +155,8 @@ function RestaurantsContent() {
   const searchParams = useSearchParams()
 
   const [selectedRestaurant, setSelectedRestaurant] = useState<string>('')
+  const [selectedPackage, setSelectedPackage] = useState<string>('')
+  const [selectedPackagePrice, setSelectedPackagePrice] = useState<number>(0)
   const [searchTerm, setSearchTerm] = useState('')
   const [eventType, setEventType] = useState('')
   const [location, setLocation] = useState('')
@@ -149,7 +203,12 @@ function RestaurantsContent() {
     )
   }
 
-  const valid = selectedRestaurant
+  const valid = selectedRestaurant && selectedPackage
+
+  const handlePackageSelect = (packageName: string, packagePrice: number) => {
+    setSelectedPackage(packageName)
+    setSelectedPackagePrice(packagePrice)
+  }
 
   function next() {
     if (valid) {
@@ -167,7 +226,8 @@ function RestaurantsContent() {
         specificVenue: selectedRestaurant,
         venueName: selectedRestaurantData?.name || '',
         venueAddress: selectedRestaurantData?.address || '',
-        venuePrice: '0' // Restaurants typically don't have venue fees
+        venuePrice: selectedPackagePrice.toString(),
+        venuePackage: selectedPackage
       })
       router.push(`/create/services?${params.toString()}`)
     }
@@ -210,7 +270,15 @@ function RestaurantsContent() {
                 key={restaurant.id}
                 restaurant={restaurant}
                 isSelected={selectedRestaurant === restaurant.id}
-                onSelect={() => setSelectedRestaurant(restaurant.id)}
+                onSelect={() => {
+                  setSelectedRestaurant(restaurant.id)
+                  // Reset package selection when changing restaurant
+                  setSelectedPackage('')
+                  setSelectedPackagePrice(0)
+                }}
+                selectedPackage={selectedRestaurant === restaurant.id ? selectedPackage : undefined}
+                onPackageSelect={handlePackageSelect}
+                guestCount={parseInt(guestCount) || 1}
               />
             ))
           ) : (
