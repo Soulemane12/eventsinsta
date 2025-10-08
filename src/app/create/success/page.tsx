@@ -41,6 +41,11 @@ interface EventData {
   selectedRestaurant: string
   customerName: string
   specialRequests?: string
+  venueName?: string
+  venueAddress?: string
+  specificVenue?: string
+  venuePrice?: string
+  venuePackage?: string
 }
 
 function formatDate(dateString: string): string {
@@ -116,8 +121,13 @@ function SuccessContent() {
     const services = searchParams.get('services')?.split(',').filter(Boolean) || []
     const servicesTotal = parseInt(searchParams.get('servicesTotal') || '0')
     const totalCostParam = parseInt(searchParams.get('totalCost') || '0')
-    const selectedRestaurant = searchParams.get('selectedRestaurant') || ''
+    const selectedRestaurant = searchParams.get('selectedRestaurant') || searchParams.get('specificVenue') || ''
     const customerName = searchParams.get('customerName') || 'Billy Duc'
+    const venueName = searchParams.get('venueName') || ''
+    const venueAddress = searchParams.get('venueAddress') || ''
+    const specificVenue = searchParams.get('specificVenue') || ''
+    const venuePrice = searchParams.get('venuePrice') || ''
+    const venuePackage = searchParams.get('venuePackage') || ''
 
     const data: EventData = {
       eventType,
@@ -130,7 +140,12 @@ function SuccessContent() {
       services,
       servicesTotal,
       selectedRestaurant,
-      customerName
+      customerName,
+      venueName,
+      venueAddress,
+      specificVenue,
+      venuePrice,
+      venuePackage
     }
 
     setEventData(data)

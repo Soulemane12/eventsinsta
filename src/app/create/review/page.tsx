@@ -85,6 +85,7 @@ interface EventData {
   venue: string
   venuePrice?: string
   venueName?: string
+  venueAddress?: string
   venuePackage?: string
   specificVenue?: string
 }
@@ -205,6 +206,7 @@ function ReviewContent() {
     const venue = searchParams.get('venue') || ''
     const venuePrice = searchParams.get('venuePrice') || ''
     const venueName = searchParams.get('venueName') || ''
+    const venueAddress = searchParams.get('venueAddress') || ''
     const venuePackage = searchParams.get('venuePackage') || ''
     const specificVenue = searchParams.get('specificVenue') || ''
 
@@ -222,6 +224,7 @@ function ReviewContent() {
       venue,
       venuePrice,
       venueName,
+      venueAddress,
       venuePackage,
       specificVenue
     }
@@ -305,11 +308,17 @@ function ReviewContent() {
       time: eventData!.time,
       guestCount: eventData!.guestCount.toString(),
       budget: eventData!.budget,
+      venue: eventData!.venue,
       services: eventData!.services.join(','),
       servicesTotal: eventData!.servicesTotal.toString(),
       totalCost: getTotalCost().toString(),
       selectedRestaurant: eventData!.selectedRestaurant,
-      customerName: bookingData.name
+      customerName: bookingData.name,
+      ...(eventData!.venueName && { venueName: eventData!.venueName }),
+      ...(eventData!.venueAddress && { venueAddress: eventData!.venueAddress }),
+      ...(eventData!.specificVenue && { specificVenue: eventData!.specificVenue }),
+      ...(eventData!.venuePrice && { venuePrice: eventData!.venuePrice }),
+      ...(eventData!.venuePackage && { venuePackage: eventData!.venuePackage })
     })
     
     router.push(`/create/success?${params.toString()}`)
