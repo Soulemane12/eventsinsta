@@ -230,27 +230,6 @@ function SuccessContent() {
             <div>📅 {formatDate(eventData.date)} at {formatTime(eventData.time)}</div>
             <div>👥 {eventData.guestCount} guests</div>
             <div className="font-medium text-purple-600">💰 ${totalCost.toLocaleString()} total</div>
-            
-            {/* Debug: Show cost breakdown */}
-            <div className="mt-2 p-2 bg-gray-50 rounded text-xs">
-              <div className="font-medium text-gray-700 mb-1">🔍 Debug Cost Breakdown:</div>
-              <div className="flex justify-between">
-                <span>Total from URL:</span>
-                <span>${totalCost}</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Calculated Total:</span>
-                <span>${getTotalCost()}</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Venue Cost:</span>
-                <span>${getCurrentVenueCost()}</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Services Total:</span>
-                <span>${eventData.servicesTotal}</span>
-              </div>
-            </div>
           </div>
           
           {/* Venue Information */}

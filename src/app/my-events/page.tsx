@@ -3,6 +3,8 @@
 import { useState, useEffect, Suspense } from 'react'
 import { useRouter } from 'next/navigation'
 import Logo from '../../components/Logo'
+import { VENUE_SERVICES } from '../../data/services'
+import { RESTAURANTS } from '../../data/restaurants'
 
 const BrandPurple = 'bg-purple-800'
 const BrandPurpleHover = 'hover:bg-purple-900'
@@ -54,6 +56,9 @@ interface EventData {
   customerName: string
   createdAt: string
   status: 'upcoming' | 'completed' | 'cancelled'
+  venueName?: string
+  venueAddress?: string
+  specificVenue?: string
 }
 
 function formatDate(dateString: string): string {
@@ -81,6 +86,33 @@ function formatTime(timeString: string): string {
   } catch {
     return timeString
   }
+}
+
+function getVenueDisplayName(event: EventData): string {
+  // If we have a specific venue name, use it
+  if (event.venueName) {
+    return event.venueName
+  }
+
+  // For restaurants, try to get restaurant name
+  if (event.venue === 'venue-restaurant' && event.specificVenue) {
+    const restaurant = RESTAURANTS.find(r => r.id === event.specificVenue)
+    if (restaurant) {
+      return restaurant.name
+    }
+  }
+
+  // For general venues, get the venue type name
+  if (event.venue) {
+    const venue = VENUE_SERVICES.find(v => v.id === event.venue)
+    if (venue) {
+      return venue.name
+    }
+    // Fallback to formatted venue ID
+    return event.venue.replace('venue-', '').replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())
+  }
+
+  return 'Venue TBD'
 }
 
 function MyEventsContent() {
@@ -238,14 +270,7 @@ function MyEventsContent() {
                   </div>
                   <div className="flex items-center gap-2">
                     <span>📍</span>
-                    <span>
-                      {event.venue === 'venue-restaurant' && event.selectedRestaurant 
-                        ? 'Restaurant Venue'
-                        : event.venue 
-                          ? event.venue.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())
-                          : 'Venue TBD'
-                      }
-                    </span>
+                    <span>{getVenueDisplayName(event)}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span>💰</span>

@@ -257,7 +257,11 @@ function VenueContent() {
         </div>
 
         <Button onClick={next} disabled={!valid}>
-          Continue to Services
+          {selectedVenue === 'venue-restaurant' ? 'Continue to Restaurant' :
+           selectedVenue === 'venue-sports-arena' ? 'Continue to Sports Arena' :
+           selectedVenue === 'venue-private-home' ? 'Continue to Private Home' :
+           selectedVenue === 'venue-wedding' ? 'Continue to Wedding Venue' :
+           'Continue to Services'}
         </Button>
       </div>
     </div>

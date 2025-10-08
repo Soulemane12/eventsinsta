@@ -343,25 +343,21 @@ function PreviewContent() {
                       <div className="text-xs text-yellow-700">{restaurant.hours}</div>
                     </div>
 
-                    {/* Available Packages */}
-                    <div className="bg-indigo-50 p-3 rounded-lg">
-                      <div className="text-xs font-semibold text-indigo-800 mb-2">📦 Available Packages</div>
-                      <div className="space-y-2">
-                        {restaurant.packages.map((pkg, idx) => (
-                          <div key={idx} className="bg-white p-2 rounded border border-indigo-200">
-                            <div className="flex justify-between items-start mb-1">
-                              <div className="text-xs font-semibold text-indigo-800">{pkg.name}</div>
-                              <div className="text-xs font-bold text-indigo-600">${pkg.price}</div>
-                            </div>
-                            <div className="text-xs text-indigo-700 mb-1">{pkg.description}</div>
-                            <div className="text-xs text-indigo-600">
-                              Includes: {pkg.includes.join(', ')}
-                              {pkg.guestCount && ` • ${pkg.guestCount} guests`}
-                            </div>
+                    {/* Selected Package (only show if a specific package is selected) */}
+                    {eventData.venuePackage && (
+                      <div className="bg-indigo-50 p-3 rounded-lg">
+                        <div className="text-xs font-semibold text-indigo-800 mb-2">📦 Your Selected Package</div>
+                        <div className="bg-white p-2 rounded border border-indigo-200">
+                          <div className="flex justify-between items-start mb-1">
+                            <div className="text-xs font-semibold text-indigo-800">{eventData.venuePackage}</div>
+                            <div className="text-xs font-bold text-indigo-600">${eventData.venuePrice}</div>
                           </div>
-                        ))}
+                          <div className="text-xs text-indigo-600">
+                            For {eventData.guestCount} guests
+                          </div>
+                        </div>
                       </div>
-                    </div>
+                    )}
                   </div>
                 ) : (
                   <div className="bg-purple-50 p-3 rounded-lg">
@@ -417,25 +413,21 @@ function PreviewContent() {
                       <div className="text-xs text-yellow-700">{arena.hours}</div>
                     </div>
 
-                    {/* Available Packages */}
-                    <div className="bg-indigo-50 p-3 rounded-lg">
-                      <div className="text-xs font-semibold text-indigo-800 mb-2">📦 Available Packages</div>
-                      <div className="space-y-2">
-                        {arena.packages.map((pkg, idx) => (
-                          <div key={idx} className="bg-white p-2 rounded border border-indigo-200">
-                            <div className="flex justify-between items-start mb-1">
-                              <div className="text-xs font-semibold text-indigo-800">{pkg.name}</div>
-                              <div className="text-xs font-bold text-indigo-600">${pkg.price}</div>
-                            </div>
-                            <div className="text-xs text-indigo-700 mb-1">{pkg.description}</div>
-                            <div className="text-xs text-indigo-600">
-                              Includes: {pkg.includes.join(', ')}
-                              {pkg.guestCount && ` • ${pkg.guestCount} guests`}
-                            </div>
+                    {/* Selected Package (only show if a specific package is selected) */}
+                    {eventData.venuePackage && (
+                      <div className="bg-indigo-50 p-3 rounded-lg">
+                        <div className="text-xs font-semibold text-indigo-800 mb-2">📦 Your Selected Package</div>
+                        <div className="bg-white p-2 rounded border border-indigo-200">
+                          <div className="flex justify-between items-start mb-1">
+                            <div className="text-xs font-semibold text-indigo-800">{eventData.venuePackage}</div>
+                            <div className="text-xs font-bold text-indigo-600">${eventData.venuePrice}</div>
                           </div>
-                        ))}
+                          <div className="text-xs text-indigo-600">
+                            For {eventData.guestCount} guests
+                          </div>
+                        </div>
                       </div>
-                    </div>
+                    )}
                   </div>
                 ) : (
                   <div className="bg-purple-50 p-3 rounded-lg">

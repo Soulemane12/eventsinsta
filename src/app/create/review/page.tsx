@@ -360,114 +360,93 @@ function ReviewContent() {
             <Field label="Date of Birth">
               <div className="flex gap-2">
                 <div className="flex-1">
-                  <input
-                    type="text"
-                    placeholder="MM"
-                    maxLength={2}
+                  <select
                     value={dateOfBirth.split('-')[1] || ''}
                     onChange={e => {
-                      let month = e.target.value
-                      if (month.length > 2) {
-                        month = month.slice(0, 2)
-                      }
-                      
-                      // Allow all input - no restrictions during typing
+                      const month = e.target.value
                       const currentDate = dateOfBirth.split('-')
                       const newDate = `${currentDate[0] || ''}-${month}-${currentDate[2] || ''}`
                       setDateOfBirth(newDate)
-                      
-                      // Clear errors while typing
                       setDateOfBirthError('')
                     }}
-                    onBlur={e => {
-                      // Validate when user finishes typing
+                    onBlur={() => {
                       const currentDate = dateOfBirth.split('-')
-                      
-                      // Only validate if we have a complete date
                       if (currentDate[0] && currentDate[1] && currentDate[2]) {
                         const error = validateDateOfBirth(currentDate[0], currentDate[1], currentDate[2])
                         setDateOfBirthError(error)
-                      } else {
-                        setDateOfBirthError('')
                       }
                     }}
-                    className={`w-full h-12 rounded-xl border border-gray-300 px-4 outline-none focus:ring-2 focus:ring-purple-300 text-center text-base ${dateOfBirthError ? 'border-red-500' : ''} ${!dateOfBirthError && dateOfBirth && dateOfBirth.split('-')[0] && dateOfBirth.split('-')[1] && dateOfBirth.split('-')[2] && dateOfBirth.split('-')[0].length === 4 && dateOfBirth.split('-')[1].length === 2 && dateOfBirth.split('-')[2].length === 2 ? 'border-green-500' : ''}`}
-                  />
-                  <div className="text-xs text-gray-500 text-center mt-1">Month</div>
+                    className={`w-full h-12 rounded-xl border border-gray-300 px-4 outline-none focus:ring-2 focus:ring-purple-300 text-center text-base bg-white ${dateOfBirthError ? 'border-red-500' : ''} ${!dateOfBirthError && dateOfBirth && dateOfBirth.split('-')[0] && dateOfBirth.split('-')[1] && dateOfBirth.split('-')[2] && dateOfBirth.split('-')[0].length === 4 && dateOfBirth.split('-')[1].length >= 1 && dateOfBirth.split('-')[2].length >= 1 ? 'border-green-500' : ''}`}
+                  >
+                    <option value="">Month</option>
+                    <option value="01">Jan</option>
+                    <option value="02">Feb</option>
+                    <option value="03">Mar</option>
+                    <option value="04">Apr</option>
+                    <option value="05">May</option>
+                    <option value="06">Jun</option>
+                    <option value="07">Jul</option>
+                    <option value="08">Aug</option>
+                    <option value="09">Sep</option>
+                    <option value="10">Oct</option>
+                    <option value="11">Nov</option>
+                    <option value="12">Dec</option>
+                  </select>
                 </div>
-                
+
                 <div className="flex-1">
                   <input
-                    type="text"
-                    placeholder="DD"
-                    maxLength={2}
+                    type="number"
+                    placeholder="Day"
+                    min="1"
+                    max="31"
                     value={dateOfBirth.split('-')[2] || ''}
                     onChange={e => {
                       let day = e.target.value
-                      if (day.length > 2) {
-                        day = day.slice(0, 2)
-                      }
-                      
-                      // Allow all input - no restrictions during typing
+                      if (parseInt(day) > 31) day = '31'
+                      if (parseInt(day) < 1 && day !== '') day = '1'
+
                       const currentDate = dateOfBirth.split('-')
-                      const newDate = `${currentDate[0] || ''}-${currentDate[1] || ''}-${day}`
+                      const newDate = `${currentDate[0] || ''}-${currentDate[1] || ''}-${day.padStart(2, '0')}`
                       setDateOfBirth(newDate)
-                      
-                      // Clear errors while typing
                       setDateOfBirthError('')
                     }}
-                    onBlur={e => {
-                      // Validate when user finishes typing
+                    onBlur={() => {
                       const currentDate = dateOfBirth.split('-')
-                      
-                      // Only validate if we have a complete date
                       if (currentDate[0] && currentDate[1] && currentDate[2]) {
                         const error = validateDateOfBirth(currentDate[0], currentDate[1], currentDate[2])
                         setDateOfBirthError(error)
-                      } else {
-                        setDateOfBirthError('')
                       }
                     }}
-                    className={`w-full h-12 rounded-xl border border-gray-300 px-4 outline-none focus:ring-2 focus:ring-purple-300 text-center text-base ${dateOfBirthError ? 'border-red-500' : ''} ${!dateOfBirthError && dateOfBirth && dateOfBirth.split('-')[0] && dateOfBirth.split('-')[1] && dateOfBirth.split('-')[2] && dateOfBirth.split('-')[0].length === 4 && dateOfBirth.split('-')[1].length === 2 && dateOfBirth.split('-')[2].length === 2 ? 'border-green-500' : ''}`}
+                    className={`w-full h-12 rounded-xl border border-gray-300 px-4 outline-none focus:ring-2 focus:ring-purple-300 text-center text-base ${dateOfBirthError ? 'border-red-500' : ''} ${!dateOfBirthError && dateOfBirth && dateOfBirth.split('-')[0] && dateOfBirth.split('-')[1] && dateOfBirth.split('-')[2] && dateOfBirth.split('-')[0].length === 4 && dateOfBirth.split('-')[1].length >= 1 && dateOfBirth.split('-')[2].length >= 1 ? 'border-green-500' : ''}`}
                   />
-                  <div className="text-xs text-gray-500 text-center mt-1">Day</div>
                 </div>
-                
+
                 <div className="flex-1">
                   <input
-                    type="text"
-                    placeholder="YYYY"
-                    maxLength={4}
+                    type="number"
+                    placeholder="Year"
+                    min="1900"
+                    max={new Date().getFullYear()}
                     value={dateOfBirth.split('-')[0] || ''}
                     onChange={e => {
                       let year = e.target.value
-                      if (year.length > 4) {
-                        year = year.slice(0, 4)
-                      }
-                      
-                      // Allow all input - no restrictions during typing
+                      if (year.length > 4) year = year.slice(0, 4)
+
                       const currentDate = dateOfBirth.split('-')
                       const newDate = `${year}-${currentDate[1] || ''}-${currentDate[2] || ''}`
                       setDateOfBirth(newDate)
-                      
-                      // Clear errors while typing
                       setDateOfBirthError('')
                     }}
-                    onBlur={e => {
-                      // Validate when user finishes typing
+                    onBlur={() => {
                       const currentDate = dateOfBirth.split('-')
-                      
-                      // Only validate if we have a complete date
                       if (currentDate[0] && currentDate[1] && currentDate[2]) {
                         const error = validateDateOfBirth(currentDate[0], currentDate[1], currentDate[2])
                         setDateOfBirthError(error)
-                      } else {
-                        setDateOfBirthError('')
                       }
                     }}
-                    className={`w-full h-12 rounded-xl border border-gray-300 px-4 outline-none focus:ring-2 focus:ring-purple-300 text-center text-base ${dateOfBirthError ? 'border-red-500' : ''} ${!dateOfBirthError && dateOfBirth && dateOfBirth.split('-')[0] && dateOfBirth.split('-')[1] && dateOfBirth.split('-')[2] && dateOfBirth.split('-')[0].length === 4 && dateOfBirth.split('-')[1].length === 2 && dateOfBirth.split('-')[2].length === 2 ? 'border-green-500' : ''}`}
+                    className={`w-full h-12 rounded-xl border border-gray-300 px-4 outline-none focus:ring-2 focus:ring-purple-300 text-center text-base ${dateOfBirthError ? 'border-red-500' : ''} ${!dateOfBirthError && dateOfBirth && dateOfBirth.split('-')[0] && dateOfBirth.split('-')[1] && dateOfBirth.split('-')[2] && dateOfBirth.split('-')[0].length === 4 && dateOfBirth.split('-')[1].length >= 1 && dateOfBirth.split('-')[2].length >= 1 ? 'border-green-500' : ''}`}
                   />
-                  <div className="text-xs text-gray-500 text-center mt-1">Year</div>
                 </div>
               </div>
               
@@ -477,7 +456,7 @@ function ReviewContent() {
               )}
               
               {/* Valid date confirmation */}
-              {!dateOfBirthError && dateOfBirth && dateOfBirth.split('-')[0] && dateOfBirth.split('-')[1] && dateOfBirth.split('-')[2] && dateOfBirth.split('-')[0].length === 4 && dateOfBirth.split('-')[1].length === 2 && dateOfBirth.split('-')[2].length === 2 && (
+              {!dateOfBirthError && dateOfBirth && dateOfBirth.split('-')[0] && dateOfBirth.split('-')[1] && dateOfBirth.split('-')[2] && dateOfBirth.split('-')[0].length === 4 && dateOfBirth.split('-')[1].length >= 1 && dateOfBirth.split('-')[2].length >= 1 && (
                 <div className="text-green-600 text-xs mt-1">✅ Valid date of birth</div>
               )}
             </Field>

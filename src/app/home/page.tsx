@@ -24,6 +24,8 @@ function Card({ children, className = '' }: { children: React.ReactNode; classNa
   return <div className={`rounded-2xl bg-white shadow ${className}`}>{children}</div>
 }
 
+
+
 function BottomNav() {
   const item = (to: string, label: string, symbol: string) => (
     <Link href={to} className={`flex-1 py-3 text-center ${to === '/home' ? BrandText : 'text-gray-500'}`}>{symbol}<div className="text-sm">{label}</div></Link>
