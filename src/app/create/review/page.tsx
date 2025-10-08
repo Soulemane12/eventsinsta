@@ -83,6 +83,10 @@ interface EventData {
   selectedRestaurant: string
   selectedSportsArena: string
   venue: string
+  venuePrice?: string
+  venueName?: string
+  venuePackage?: string
+  specificVenue?: string
 }
 
 function formatDate(dateString: string): string {
@@ -196,10 +200,13 @@ function ReviewContent() {
     const budget = searchParams.get('budget') || 'budget-2'
     const services = searchParams.get('services')?.split(',').filter(Boolean) || []
     const servicesTotal = parseInt(searchParams.get('servicesTotal') || '0')
-    const selectedRestaurant = searchParams.get('selectedRestaurant') || ''
+    const selectedRestaurant = searchParams.get('selectedRestaurant') || searchParams.get('specificVenue') || ''
     const selectedSportsArena = searchParams.get('selectedSportsArena') || ''
     const venue = searchParams.get('venue') || ''
-
+    const venuePrice = searchParams.get('venuePrice') || ''
+    const venueName = searchParams.get('venueName') || ''
+    const venuePackage = searchParams.get('venuePackage') || ''
+    const specificVenue = searchParams.get('specificVenue') || ''
 
     const data: EventData = {
       eventType,
@@ -212,7 +219,11 @@ function ReviewContent() {
       servicesTotal,
       selectedRestaurant,
       selectedSportsArena,
-      venue
+      venue,
+      venuePrice,
+      venueName,
+      venuePackage,
+      specificVenue
     }
 
     setEventData(data)
@@ -225,20 +236,25 @@ function ReviewContent() {
   const getCurrentVenueCost = () => {
     if (!eventData) return 0
 
+    // First priority: Use venuePrice from URL if available
+    if (eventData.venuePrice) {
+      const price = parseInt(eventData.venuePrice) || 0
+      return price
+    }
 
-    // For restaurant venues, use restaurant pricing
+    // Fallback: For restaurant venues, use restaurant pricing
     if (eventData.venue === 'venue-restaurant' && eventData.selectedRestaurant) {
       const venueCost = getRestaurantPriceByGuestCount(eventData.selectedRestaurant, eventData.guestCount)
       return venueCost
     }
 
-    // For sports arena venues, use sports arena pricing
+    // Fallback: For sports arena venues, use sports arena pricing
     if (eventData.venue === 'venue-sports-arena' && eventData.selectedSportsArena) {
       const venueCost = getSportsArenaPriceByGuestCount(eventData.selectedSportsArena, eventData.guestCount)
       return venueCost
     }
 
-    // For other venues, use venue pricing
+    // Fallback: For other venues, use venue pricing
     const otherVenueCost = getVenueCost(eventData.venue, eventData.guestCount)
     return otherVenueCost
   }
