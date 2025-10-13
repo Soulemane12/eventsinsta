@@ -347,8 +347,8 @@ function ReviewContent() {
               <StepHeader step={7} title="Book & Celebrate!" />
       <div className="p-6 space-y-6">
         <div className="text-center">
-          <h2 className="text-xl font-semibold mb-2">Ready to book your perfect event?</h2>
-          <p className="text-sm text-gray-600">Review your selections and complete your booking</p>
+          <h2 className="text-xl font-semibold mb-2">📝 Complete Event Review</h2>
+          <p className="text-sm text-gray-600">Review all your selections in detail before booking your perfect event</p>
         </div>
 
         {/* Booking Information */}
@@ -496,81 +496,188 @@ function ReviewContent() {
           </div>
         </Card>
 
-        {/* Event Summary */}
+        {/* Event Overview */}
         <Card className="p-4">
-          <div className="font-semibold mb-3">Event Summary</div>
+          <div className="font-semibold mb-3">🎉 Your Event Overview</div>
           <div className="space-y-2 text-sm">
-            <div className="flex justify-between">
-              <span>Event Type:</span>
-              <span className="font-medium">{eventData.eventType}</span>
+            <div className="text-base font-medium text-purple-800">{eventData.eventType}</div>
+            <div className="flex items-center gap-2 text-gray-600">
+              <span>📍</span>
+              <span>{eventData.location}</span>
             </div>
-            <div className="flex justify-between">
-              <span>Location:</span>
-              <span className="font-medium">{eventData.location}</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Date & Time:</span>
-              <span className="font-medium">{formatDate(eventData.date)} at {formatTime(eventData.time)}</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Guests:</span>
-              <span className="font-medium">{eventData.guestCount} people</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Budget Range:</span>
-              <span className="font-medium">${eventData.budget === 'budget-1' ? '500 - 1,000' : 
-                eventData.budget === 'budget-2' ? '1,000 - 3,000' : 
-                eventData.budget === 'budget-3' ? '3,000 - 5,000' : '5,000+'}</span>
+            <div className="grid grid-cols-2 gap-4 mt-3">
+              <div>
+                <div className="text-xs text-gray-500">📅 Date</div>
+                <div className="font-medium">{formatDate(eventData.date)}</div>
+              </div>
+              <div>
+                <div className="text-xs text-gray-500">🕐 Time</div>
+                <div className="font-medium">{formatTime(eventData.time)}</div>
+              </div>
+              <div>
+                <div className="text-xs text-gray-500">👥 Guests</div>
+                <div className="font-medium">{eventData.guestCount} people</div>
+              </div>
+              <div>
+                <div className="text-xs text-gray-500">💰 Budget</div>
+                <div className="font-medium">${eventData.budget === 'budget-1' ? '1,000 - 3,000' :
+                  eventData.budget === 'budget-2' ? '3,000 - 5,000' :
+                  eventData.budget === 'budget-3' ? '5,000+' : '3,000 - 5,000'}</div>
+              </div>
             </div>
           </div>
         </Card>
 
-        {/* Selected Venues & Services */}
-        <Card className="p-4">
-          <div className="font-semibold mb-3">Your Selections</div>
-          <div className="space-y-3">
-            <div className="flex justify-between items-center">
-              <div>
-                <div className="font-medium text-sm">
-                  {eventData.venue === 'venue-restaurant' ? 'Restaurant Cost' : 
-                   eventData.venue === 'venue-sports-arena' ? 'Sports Arena Cost' :
-                   getVenueDisplayName(eventData.venue) + ' Cost'}
+        {/* Venue Details */}
+        {eventData.venue === 'venue-restaurant' && eventData.selectedRestaurant && (
+          <Card className="p-4">
+            <div className="font-semibold mb-3">🍽️ Your Restaurant Details</div>
+            <div className="space-y-2">
+              <div className="text-base font-medium text-purple-800">
+                {eventData.venueName || eventData.selectedRestaurant}
+              </div>
+              <div className="text-sm text-gray-600">
+                📍 {eventData.venueAddress || eventData.location}
+              </div>
+              {eventData.venuePackage && (
+                <div className="mt-3 p-3 bg-purple-50 rounded-lg">
+                  <div className="text-sm font-medium text-purple-800">📦 Your Selected Package</div>
+                  <div className="text-sm text-purple-700">{eventData.venuePackage}</div>
+                  <div className="text-lg font-semibold text-purple-800">${getCurrentVenueCost()}</div>
+                  <div className="text-xs text-purple-600">For {eventData.guestCount} guests</div>
                 </div>
-                <div className="text-xs text-gray-600">For {eventData.guestCount} guests</div>
-              </div>
-              <div className="text-sm font-medium">${getCurrentVenueCost()}</div>
+              )}
             </div>
-            
-            {eventData.services.map(serviceId => {
-              const service = SERVICES.find(s => s.id === serviceId)
-              return service ? (
-                <div key={serviceId} className="flex justify-between items-center">
-              <div>
-                    <div className="font-medium text-sm">{service.name}</div>
-                    <div className="text-xs text-gray-600">{service.category}</div>
+          </Card>
+        )}
+
+        {/* Services Summary */}
+        {eventData.services.length > 0 && (
+          <Card className="p-4">
+            <div className="font-semibold mb-3">🎯 Your Selected Services</div>
+            <div className="space-y-3">
+              {eventData.services.map(serviceId => {
+                const service = SERVICES.find(s => s.id === serviceId)
+                return service ? (
+                  <div key={serviceId} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                    <div className="flex items-center gap-3">
+                      <div className="text-2xl">
+                        {service.category === 'Decorations' ? '🎨' :
+                         service.category === 'DJ' ? '🎵' :
+                         service.category === 'Photography' ? '📷' :
+                         service.category === 'Catering' ? '🍽️' : '🎯'}
+                      </div>
+                      <div>
+                        <div className="font-medium text-sm">{service.name}</div>
+                        <div className="text-xs text-gray-600">{service.category}</div>
+                        <div className="text-xs text-green-600">${service.price} for full event</div>
+                      </div>
+                    </div>
+                    <div className="text-lg font-semibold text-purple-800">${service.price}</div>
+                  </div>
+                ) : null
+              })}
+
+              <div className="border-t pt-3">
+                <div className="flex justify-between items-center">
+                  <div className="font-medium">Total Services Cost</div>
+                  <div className="text-lg font-semibold">${eventData.servicesTotal}</div>
+                </div>
+                <div className="text-xs text-gray-600">{eventData.services.length} services selected</div>
               </div>
-                  <div className="text-sm font-medium">${service.price}</div>
             </div>
-              ) : null
-            })}
-            
+          </Card>
+        )}
+
+        {/* Cost Breakdown */}
+        <Card className="p-4">
+          <div className="font-semibold mb-3">💰 Complete Cost Breakdown</div>
+          <div className="space-y-3">
+            <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+              <div className="flex items-center gap-3">
+                <div className="text-2xl">🏛️</div>
+                <div>
+                  <div className="font-medium text-sm">
+                    {eventData.venueName ||
+                     (eventData.venue === 'venue-restaurant' ? 'Restaurant Venue' :
+                      eventData.venue === 'venue-sports-arena' ? 'Sports Arena' :
+                      getVenueDisplayName(eventData.venue))}
+                  </div>
+                  <div className="text-xs text-gray-600">
+                    {eventData.venuePackage || `For ${eventData.guestCount} guests`} • {eventData.venueAddress || eventData.location}
+                  </div>
+                </div>
+              </div>
+              <div className="text-lg font-semibold text-purple-800">${getCurrentVenueCost()}</div>
+            </div>
+
+            {eventData.services.length > 0 && (
+              <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                <div className="flex items-center gap-3">
+                  <div className="text-2xl">🎯</div>
+                  <div>
+                    <div className="font-medium text-sm">All Services</div>
+                    <div className="text-xs text-gray-600">{eventData.services.length} services included</div>
+                  </div>
+                </div>
+                <div className="text-lg font-semibold text-purple-800">${eventData.servicesTotal}</div>
+              </div>
+            )}
+
             <div className="border-t pt-3">
-              <div className="flex justify-between items-center font-semibold">
-                <span>Total:</span>
-                <span className="text-lg">${getTotalCost().toLocaleString()}</span>
+              <div className="p-3 bg-purple-50 rounded-lg">
+                <div className="flex justify-between items-center mb-2">
+                  <div className="font-medium">💡 Budget Analysis</div>
+                </div>
+                <div className="text-sm space-y-1">
+                  <div className="flex justify-between">
+                    <span>Your Budget:</span>
+                    <span className="font-medium">${eventData.budget === 'budget-1' ? '1,000 - 3,000' :
+                      eventData.budget === 'budget-2' ? '3,000 - 5,000' :
+                      eventData.budget === 'budget-3' ? '5,000+' : '3,000 - 5,000'}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Total Cost:</span>
+                    <span className="font-medium">${getTotalCost()}</span>
+                  </div>
+                  <div className="text-green-600 font-medium">✅ Within Budget</div>
+                </div>
+              </div>
+
+              <div className="mt-3 p-4 bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg border border-purple-200">
+                <div className="flex justify-between items-center">
+                  <div className="font-semibold text-lg">Grand Total</div>
+                  <div className="text-2xl font-bold text-purple-800">${getTotalCost().toLocaleString()}</div>
+                </div>
+                <div className="text-xs text-gray-600 mt-1">All costs included</div>
               </div>
             </div>
           </div>
         </Card>
 
-        {/* Booking Benefits */}
-        <Card className="p-4 bg-green-50">
-          <div className="text-sm font-medium text-green-800 mb-2">🎉 What's Included</div>
-          <div className="space-y-1 text-xs text-green-700">
-            <div>• Professional event coordination</div>
-            <div>• All-inclusive pricing (no hidden fees)</div>
-            <div>• 24/7 support throughout your event</div>
-            <div>• Flexible payment options available</div>
+        {/* Event Ready Section */}
+        <Card className="p-4 bg-gradient-to-r from-green-50 to-blue-50 border border-green-200">
+          <div className="text-center">
+            <div className="text-lg font-semibold text-green-800 mb-2">🎉 Your Event is Ready to Book!</div>
+            <div className="grid grid-cols-1 gap-2 text-sm">
+              <div className="flex items-center justify-center gap-2 text-green-700">
+                <span>📝</span>
+                <span className="font-medium">Event Confirmed:</span>
+                <span>{eventData.eventType} for {eventData.guestCount} guests on {formatDate(eventData.date)}</span>
+              </div>
+              <div className="flex items-center justify-center gap-2 text-green-700">
+                <span>🏛️</span>
+                <span className="font-medium">Venue Secured:</span>
+                <span>{eventData.venueName || 'Perfect venue selected'}</span>
+              </div>
+              {eventData.services.length > 0 && (
+                <div className="flex items-center justify-center gap-2 text-green-700">
+                  <span>🎯</span>
+                  <span className="font-medium">Services Booked:</span>
+                  <span>{eventData.services.length} premium services totaling ${eventData.servicesTotal}</span>
+                </div>
+              )}
+            </div>
           </div>
         </Card>
 
