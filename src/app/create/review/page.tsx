@@ -239,27 +239,26 @@ function ReviewContent() {
   const getCurrentVenueCost = () => {
     if (!eventData) return 0
 
-    // First priority: Use venuePrice from URL if available
+    // First priority: Use specific venue price if available (from URL parameters)
     if (eventData.venuePrice) {
       const price = parseInt(eventData.venuePrice) || 0
       return price
     }
 
-    // Fallback: For restaurant venues, use restaurant pricing
+    // Second priority: Use venue-specific pricing functions
     if (eventData.venue === 'venue-restaurant' && eventData.selectedRestaurant) {
       const venueCost = getRestaurantPriceByGuestCount(eventData.selectedRestaurant, eventData.guestCount)
       return venueCost
     }
 
-    // Fallback: For sports arena venues, use sports arena pricing
     if (eventData.venue === 'venue-sports-arena' && eventData.selectedSportsArena) {
       const venueCost = getSportsArenaPriceByGuestCount(eventData.selectedSportsArena, eventData.guestCount)
       return venueCost
     }
 
-    // Fallback: For other venues, use venue pricing
-    const otherVenueCost = getVenueCost(eventData.venue, eventData.guestCount)
-    return otherVenueCost
+    // Fallback: Use base venue pricing
+    const basePricing = getVenueCost(eventData.venue, eventData.guestCount)
+    return basePricing
   }
 
   const getTotalCost = () => {
