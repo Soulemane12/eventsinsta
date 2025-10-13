@@ -367,18 +367,23 @@ function ServicesContent() {
   }
 
   const getSelectedServicesTotal = () => {
-    const servicesTotal = selectedServices.reduce((total, serviceId) => {
+    return selectedServices.reduce((total, serviceId) => {
       const service = SERVICES.find(s => s.id === serviceId)
       return total + (service?.price || 0)
     }, 0)
-
-    // Add venue cost if available
-    const venueCost = venuePrice ? parseInt(venuePrice) : 0
-
-    return servicesTotal + venueCost
   }
 
-  const totalCost = getSelectedServicesTotal()
+  const getVenueCost = () => {
+    return venuePrice ? parseInt(venuePrice) : 0
+  }
+
+  const getGrandTotal = () => {
+    return getSelectedServicesTotal() + getVenueCost()
+  }
+
+  const servicesTotal = getSelectedServicesTotal()
+  const venueCost = getVenueCost()
+  const totalCost = getGrandTotal()
 
   // Budget flexibility features
   const getBudgetRange = (budgetId: string): { min: number; max: number } => {
@@ -504,7 +509,7 @@ function ServicesContent() {
       budget: budget,
       venue: venue,
       services: selectedServices.join(','),
-      servicesTotal: totalCost.toString(),
+      servicesTotal: servicesTotal.toString(),
       specificVenue: specificVenue,
       venueName: venueName,
       venueAddress: venueAddress,
@@ -750,18 +755,15 @@ function ServicesContent() {
               })}
               <div className="border-t border-purple-200 pt-2 mt-2">
                 {/* Show venue cost if available */}
-                {venuePrice && parseInt(venuePrice) > 0 && (
+                {venueCost > 0 && (
                   <div className="flex justify-between text-sm mb-1">
                     <span className="text-gray-700">Venue Cost</span>
-                    <span className="text-gray-700">${parseInt(venuePrice)}</span>
+                    <span className="text-gray-700">${venueCost}</span>
                   </div>
                 )}
                 <div className="flex justify-between text-sm mb-1">
                   <span className="text-gray-700">Services Cost</span>
-                  <span className="text-gray-700">${selectedServices.reduce((total, serviceId) => {
-                    const service = SERVICES.find(s => s.id === serviceId)
-                    return total + (service?.price || 0)
-                  }, 0)}</span>
+                  <span className="text-gray-700">${servicesTotal}</span>
                 </div>
                 <div className="flex justify-between text-sm font-bold">
                   <span className="text-purple-800">Total Cost</span>
