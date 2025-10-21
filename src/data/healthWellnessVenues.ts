@@ -30,14 +30,14 @@ export const HEALTH_WELLNESS_VENUES: HealthWellnessVenue[] = [
         description: 'Comprehensive biohacking session with Dr Chuck Morris including health assessments and optimization protocols.',
         price: 5000,
         duration: '2 hours',
-        maxPeople: 5
+        maxPeople: 10
       },
       {
-        name: 'Extended Wellness Program',
-        description: 'Full-day wellness experience with multiple biohacking modalities and personalized consultation.',
+        name: 'Extended Wellness Program + Event + Networking',
+        description: 'Full-day wellness experience with multiple biohacking modalities, personalized consultation, event coordination, and networking opportunities.',
         price: 8000,
         duration: '4 hours',
-        maxPeople: 5
+        maxPeople: 10
       }
     ]
   },
@@ -53,14 +53,14 @@ export const HEALTH_WELLNESS_VENUES: HealthWellnessVenue[] = [
       {
         name: 'Group IFS Session',
         description: 'Transformative Internal Family Systems therapy session led by TY Cutner for small groups.',
-        price: 5000,
+        price: 3500,
         duration: '1.5 hours',
         maxPeople: 5
       },
       {
         name: 'Extended IFS Workshop',
         description: 'Comprehensive IFS workshop with multiple sessions and personalized coaching.',
-        price: 7500,
+        price: 6000,
         duration: '3 hours',
         maxPeople: 5
       }
