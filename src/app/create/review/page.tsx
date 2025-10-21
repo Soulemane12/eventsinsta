@@ -538,7 +538,7 @@ function ReviewContent() {
 
         {/* Event Overview */}
         <Card className="p-4">
-          <div className="font-semibold mb-3">🎉 Your Event Overview</div>
+          <div className="font-semibold mb-3">🎉 Event Summary</div>
           <div className="space-y-2 text-sm">
             <div className="text-base font-medium text-purple-800">{eventData.eventType}</div>
             <div className="flex items-center gap-2 text-gray-600">
@@ -558,80 +558,13 @@ function ReviewContent() {
                 <div className="text-xs text-gray-500">👥 Guests</div>
                 <div className="font-medium">{eventData.guestCount} people</div>
               </div>
-              <div>
-                <div className="text-xs text-gray-500">💰 Budget</div>
-                <div className="font-medium">${eventData.budget === 'budget-1' ? '1,000 - 3,000' :
-                  eventData.budget === 'budget-2' ? '3,000 - 5,000' :
-                  eventData.budget === 'budget-3' ? '5,000+' : '3,000 - 5,000'}</div>
-              </div>
             </div>
           </div>
         </Card>
 
-        {/* Venue Details */}
-        {eventData.venue === 'venue-restaurant' && eventData.selectedRestaurant && (
-          <Card className="p-4">
-            <div className="font-semibold mb-3">🍽️ Your Restaurant Details</div>
-            <div className="space-y-2">
-              <div className="text-base font-medium text-purple-800">
-                {eventData.venueName || eventData.selectedRestaurant}
-              </div>
-              <div className="text-sm text-gray-600">
-                📍 {eventData.venueAddress || eventData.location}
-              </div>
-              {eventData.venuePackage && (
-                <div className="mt-3 p-3 bg-purple-50 rounded-lg">
-                  <div className="text-sm font-medium text-purple-800">📦 Your Selected Package</div>
-                  <div className="text-sm text-purple-700">{eventData.venuePackage}</div>
-                  <div className="text-lg font-semibold text-purple-800">${getCurrentVenueCost()}</div>
-                  <div className="text-xs text-purple-600">For {eventData.guestCount} guests</div>
-                </div>
-              )}
-            </div>
-          </Card>
-        )}
-
-        {/* Services Summary */}
-        {eventData.services.length > 0 && (
-          <Card className="p-4">
-            <div className="font-semibold mb-3">🎯 Your Selected Services</div>
-            <div className="space-y-3">
-              {eventData.services.map(serviceId => {
-                const service = SERVICES.find(s => s.id === serviceId)
-                return service ? (
-                  <div key={serviceId} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                    <div className="flex items-center gap-3">
-                      <div className="text-2xl">
-                        {service.category === 'Decorations' ? '🎨' :
-                         service.category === 'DJ' ? '🎵' :
-                         service.category === 'Photography' ? '📷' :
-                         service.category === 'Catering' ? '🍽️' : '🎯'}
-                      </div>
-                      <div>
-                        <div className="font-medium text-sm">{service.name}</div>
-                        <div className="text-xs text-gray-600">{service.category}</div>
-                        <div className="text-xs text-green-600">${service.price} for full event</div>
-                      </div>
-                    </div>
-                    <div className="text-lg font-semibold text-purple-800">${service.price}</div>
-                  </div>
-                ) : null
-              })}
-
-              <div className="border-t pt-3">
-                <div className="flex justify-between items-center">
-                  <div className="font-medium">Total Services Cost</div>
-                  <div className="text-lg font-semibold">${eventData.servicesTotal}</div>
-                </div>
-                <div className="text-xs text-gray-600">{eventData.services.length} services selected</div>
-              </div>
-            </div>
-          </Card>
-        )}
-
         {/* Cost Breakdown */}
         <Card className="p-4">
-          <div className="font-semibold mb-3">💰 Complete Cost Breakdown</div>
+          <div className="font-semibold mb-3">💰 Cost Summary</div>
           <div className="space-y-3">
             <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
               <div className="flex items-center gap-3">
@@ -644,7 +577,7 @@ function ReviewContent() {
                       getVenueDisplayName(eventData.venue))}
                   </div>
                   <div className="text-xs text-gray-600">
-                    {eventData.venuePackage || `For ${eventData.guestCount} guests`} • {eventData.venueAddress || eventData.location}
+                    {eventData.venuePackage || `For ${eventData.guestCount} guests`}
                   </div>
                 </div>
               </div>
@@ -656,8 +589,13 @@ function ReviewContent() {
                 <div className="flex items-center gap-3">
                   <div className="text-2xl">🎯</div>
                   <div>
-                    <div className="font-medium text-sm">All Services</div>
-                    <div className="text-xs text-gray-600">{eventData.services.length} services included</div>
+                    <div className="font-medium text-sm">Services ({eventData.services.length})</div>
+                    <div className="text-xs text-gray-600">
+                      {eventData.services.map(serviceId => {
+                        const service = SERVICES.find(s => s.id === serviceId)
+                        return service ? service.name : serviceId
+                      }).join(', ')}
+                    </div>
                   </div>
                 </div>
                 <div className="text-lg font-semibold text-purple-800">${eventData.servicesTotal}</div>
@@ -665,61 +603,21 @@ function ReviewContent() {
             )}
 
             <div className="border-t pt-3">
-              <div className="p-3 bg-purple-50 rounded-lg">
-                <div className="flex justify-between items-center mb-2">
-                  <div className="font-medium">💡 Budget Analysis</div>
-                </div>
-                <div className="text-sm space-y-1">
-                  <div className="flex justify-between">
-                    <span>Your Budget:</span>
-                    <span className="font-medium">${eventData.budget === 'budget-1' ? '1,000 - 3,000' :
-                      eventData.budget === 'budget-2' ? '3,000 - 5,000' :
-                      eventData.budget === 'budget-3' ? '5,000+' : '3,000 - 5,000'}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Total Cost:</span>
-                    <span className="font-medium">${getTotalCost()}</span>
-                  </div>
-                  <div className="text-green-600 font-medium">✅ Within Budget</div>
-                </div>
-              </div>
-
-              <div className="mt-3 p-4 bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg border border-purple-200">
+              <div className="p-4 bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg border border-purple-200">
                 <div className="flex justify-between items-center">
-                  <div className="font-semibold text-lg">Grand Total</div>
+                  <div className="font-semibold text-lg">Total Cost</div>
                   <div className="text-2xl font-bold text-purple-800">${getTotalCost().toLocaleString()}</div>
                 </div>
-                <div className="text-xs text-gray-600 mt-1">All costs included</div>
+                <div className="text-xs text-gray-600 mt-1">
+                  Budget: ${eventData.budget === 'budget-1' ? '1,000 - 3,000' :
+                    eventData.budget === 'budget-2' ? '3,000 - 5,000' :
+                    eventData.budget === 'budget-3' ? '5,000+' : '3,000 - 5,000'} • ✅ Within Budget
+                </div>
               </div>
             </div>
           </div>
         </Card>
 
-        {/* Event Ready Section */}
-        <Card className="p-4 bg-gradient-to-r from-green-50 to-blue-50 border border-green-200">
-          <div className="text-center">
-            <div className="text-lg font-semibold text-green-800 mb-2">🎉 Your Event is Ready to Book!</div>
-            <div className="grid grid-cols-1 gap-2 text-sm">
-              <div className="flex items-center justify-center gap-2 text-green-700">
-                <span>📝</span>
-                <span className="font-medium">Event Confirmed:</span>
-                <span>{eventData.eventType} for {eventData.guestCount} guests on {formatDate(eventData.date)}</span>
-              </div>
-              <div className="flex items-center justify-center gap-2 text-green-700">
-                <span>🏛️</span>
-                <span className="font-medium">Venue Secured:</span>
-                <span>{eventData.venueName || 'Perfect venue selected'}</span>
-              </div>
-              {eventData.services.length > 0 && (
-                <div className="flex items-center justify-center gap-2 text-green-700">
-                  <span>🎯</span>
-                  <span className="font-medium">Services Booked:</span>
-                  <span>{eventData.services.length} premium services totaling ${eventData.servicesTotal}</span>
-                </div>
-              )}
-            </div>
-          </div>
-        </Card>
 
         <div className="space-y-3">
           <Button onClick={bookEvent} disabled={!isFormValid}>
