@@ -161,6 +161,8 @@ function VenueContent() {
         router.push(`/create/venue/private-homes?${params.toString()}`)
       } else if (selectedVenue === 'venue-wedding') {
         router.push(`/create/venue/wedding-venues?${params.toString()}`)
+      } else if (selectedVenue === 'venue-health-wellness') {
+        router.push(`/create/venue/health-wellness?${params.toString()}`)
       } else {
         // Go directly to services for other venue types
         router.push(`/create/services?${params.toString()}`)

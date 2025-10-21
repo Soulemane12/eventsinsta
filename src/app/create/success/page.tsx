@@ -4,6 +4,7 @@ import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { getRestaurantPriceByGuestCount, RESTAURANTS } from '../../../data/restaurants'
 import { SERVICES, VENUE_SERVICES } from '../../../data/services'
+import { getHealthWellnessVenuePriceByGuestCount, HEALTH_WELLNESS_VENUES } from '../../../data/healthWellnessVenues'
 import Logo from '../../../components/Logo'
 
 const BrandPurple = 'bg-purple-800'

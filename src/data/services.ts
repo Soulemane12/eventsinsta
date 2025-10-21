@@ -219,15 +219,6 @@ export const SERVICES: Service[] = [
     priceDescription: '$2,000 starting price',
     icon: '⚽'
   },
-  {
-    id: 'boxing-lessons-eric-kelly',
-    name: 'Boxing Lessons by Eric Kelly',
-    category: 'Sporting Events',
-    description: 'Professional boxing training sessions with Eric Kelly. Expert instruction for all skill levels, from beginners to advanced fighters.',
-    price: 100,
-    priceDescription: '$100 per hour',
-    icon: '🥊'
-  },
 
 
 

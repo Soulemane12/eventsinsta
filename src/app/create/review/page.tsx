@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { getRestaurantPriceByGuestCount } from '../../../data/restaurants'
 import { SERVICES, VENUE_SERVICES } from '../../../data/services'
 import { getSportsArenaPriceByGuestCount } from '../../../data/sportsArenas'
+import { getHealthWellnessVenuePriceByGuestCount } from '../../../data/healthWellnessVenues'
 import Logo from '../../../components/Logo'
 
 const BrandPurple = 'bg-purple-800'
@@ -264,6 +265,11 @@ function ReviewContent() {
 
     if (eventData.venue === 'venue-sports-arena' && eventData.selectedSportsArena) {
       const venueCost = getSportsArenaPriceByGuestCount(eventData.selectedSportsArena, eventData.guestCount)
+      return venueCost
+    }
+
+    if (eventData.venue === 'venue-health-wellness' && eventData.specificVenue) {
+      const venueCost = getHealthWellnessVenuePriceByGuestCount(eventData.specificVenue, eventData.guestCount, eventData.venuePackage)
       return venueCost
     }
 
@@ -574,6 +580,7 @@ function ReviewContent() {
                     {eventData.venueName ||
                      (eventData.venue === 'venue-restaurant' ? 'Restaurant Venue' :
                       eventData.venue === 'venue-sports-arena' ? 'Sports Arena' :
+                      eventData.venue === 'venue-health-wellness' ? 'Health & Wellness Center' :
                       getVenueDisplayName(eventData.venue))}
                   </div>
                   <div className="text-xs text-gray-600">
