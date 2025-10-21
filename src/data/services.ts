@@ -405,7 +405,7 @@ export const VENUE_SERVICES: Service[] = [
     id: 'venue-health-wellness',
     name: 'Health & Wellness',
     category: 'Venue',
-    description: 'Wellness centers, spas, and health facilities perfect for wellness retreats, corporate wellness events, and relaxation-focused gatherings. Located at 225 Liberty Street, New York, NY 10281 and surrounding areas.',
+    description: 'Wellness centers, spas, and health facilities perfect for wellness retreats, corporate wellness events, and relaxation-focused gatherings.',
     price: 0,
     priceDescription: 'Contact for pricing',
     icon: '🧘‍♀️'
