@@ -4,16 +4,12 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Logo from '../../../components/Logo'
 
-const BrandPurple = 'bg-purple-800'
-const BrandPurpleHover = 'hover:bg-purple-900'
-const BrandText = 'text-purple-800'
-
-function Button({ children, className = '', disabled, ...props }: React.ButtonHTMLAttributes<HTMLButtonElement>) {
+function GradientButton({ children, className = '', disabled, ...props }: React.ButtonHTMLAttributes<HTMLButtonElement>) {
   return (
     <button
       {...props}
       disabled={disabled}
-      className={`w-full h-14 rounded-2xl ${BrandPurple} ${BrandPurpleHover} text-white font-semibold disabled:opacity-50 ${className}`}
+      className={`w-full h-16 rounded-2xl bg-gradient-to-r from-purple-600 via-purple-700 to-pink-600 hover:from-purple-700 hover:via-purple-800 hover:to-pink-700 text-white font-bold text-lg shadow-lg hover:shadow-xl transform hover:scale-[1.02] transition-all duration-300 disabled:opacity-50 disabled:transform-none ${className}`}
     >
       {children}
     </button>
@@ -23,8 +19,12 @@ function Button({ children, className = '', disabled, ...props }: React.ButtonHT
 function BackBtn() {
   const router = useRouter();
   return (
-    <button onClick={() => router.back()} className="w-9 h-9 grid place-items-center rounded-full hover:bg-gray-100" aria-label="Back">
-      ←
+    <button
+      onClick={() => router.back()}
+      className="w-10 h-10 grid place-items-center rounded-full bg-white/80 backdrop-blur-sm border border-gray-200 hover:bg-white hover:shadow-md transition-all duration-300"
+      aria-label="Back"
+    >
+      <span className="text-gray-700">←</span>
     </button>
   )
 }
@@ -32,21 +32,32 @@ function BackBtn() {
 function StepHeader({ step, title }: { step: number; title: string }) {
   const pct = (step / 6) * 100
   return (
-    <div className="sticky top-0 bg-white z-10">
-      <div className="flex items-center gap-3 p-4">
+    <div className="sticky top-0 bg-gradient-to-r from-purple-600 via-purple-700 to-pink-600 z-10 shadow-lg">
+      <div className="flex items-center gap-3 p-4 text-white">
         <BackBtn />
-        <Logo size="md" />
-        <div className="text-2xl font-semibold">{step} of 6: {title}</div>
+        <Logo size="md" className="drop-shadow-lg" />
+        <div className="text-xl font-bold">{step} of 6: {title}</div>
       </div>
-      <div className="w-full h-1 bg-gray-200">
-        <div className="h-1 bg-green-500" style={{ width: pct + '%' }} />
+      <div className="w-full h-2 bg-white/20">
+        <div
+          className="h-2 bg-gradient-to-r from-green-400 to-emerald-500 transition-all duration-500 ease-out"
+          style={{ width: pct + '%' }}
+        />
       </div>
     </div>
   )
 }
 
-function Card({ children, className = '' }: { children: React.ReactNode; className?: string }) {
-  return <div className={`rounded-2xl bg-white shadow ${className}`}>{children}</div>
+function EnhancedCard({ children, className = '', selected = false }: { children: React.ReactNode; className?: string; selected?: boolean }) {
+  return (
+    <div className={`rounded-2xl bg-white shadow-lg border-2 transition-all duration-300 ${
+      selected
+        ? 'border-purple-400 bg-gradient-to-br from-purple-50 to-pink-50 shadow-xl scale-[1.02]'
+        : 'border-gray-100 hover:border-purple-300 hover:shadow-xl hover:scale-[1.02]'
+    } ${className}`}>
+      {children}
+    </div>
+  )
 }
 
 const EVENT_TYPES = [
@@ -76,44 +87,65 @@ export default function Customize() {
   }
 
   return (
-    <div className="max-w-md mx-auto min-h-screen bg-gray-50">
+    <div className="max-w-md mx-auto min-h-screen bg-gradient-to-br from-purple-50/50 via-white to-pink-50/50">
       <StepHeader step={1} title="Select Event Type" />
-      <div className="p-6 space-y-6">
+      <div className="p-6 space-y-8">
         <div className="text-center">
-          <h2 className="text-xl font-semibold mb-2">What type of event are you planning?</h2>
-          <p className="text-sm text-gray-600">Choose the event type that best matches your celebration</p>
+          <div className="text-5xl mb-4">✨</div>
+          <h2 className="text-2xl font-bold mb-3 bg-gradient-to-r from-purple-700 to-pink-600 bg-clip-text text-transparent">
+            What type of event are you planning?
+          </h2>
+          <p className="text-gray-600 leading-relaxed">Choose the event type that best matches your celebration</p>
         </div>
 
-        <div className="grid grid-cols-2 gap-3">
-          {EVENT_TYPES.map((type) => (
-            <button
+        <div className="grid grid-cols-2 gap-4">
+          {EVENT_TYPES.map((type, index) => (
+            <EnhancedCard
               key={type.id}
-              className={`w-full p-4 text-center cursor-pointer transition-all rounded-2xl bg-white shadow ${
-                selectedType === type.id 
-                  ? 'border-2 border-purple-600 bg-purple-50' 
-                  : 'border border-gray-200 hover:border-purple-300'
-              }`}
-              onClick={() => setSelectedType(type.id)}
+              selected={selectedType === type.id}
+              className="cursor-pointer group"
             >
-              <div className="text-3xl mb-2">{type.icon}</div>
-              <div className="font-semibold text-sm mb-1">{type.name}</div>
-              <div className="text-xs text-gray-600">{type.description}</div>
-              {selectedType === type.id && (
-                <div className="mt-2">
-                  <div className="w-4 h-4 bg-purple-600 rounded-full mx-auto flex items-center justify-center">
-                    <div className="w-2 h-2 bg-white rounded-full"></div>
-                  </div>
+              <button
+                className="w-full p-5 text-center"
+                onClick={() => setSelectedType(type.id)}
+              >
+                <div className="text-4xl mb-3 group-hover:scale-110 transition-transform duration-300">
+                  {type.icon}
                 </div>
-              )}
-            </button>
+                <div className="font-bold text-sm mb-2">{type.name}</div>
+                <div className="text-xs text-gray-500 leading-relaxed">{type.description}</div>
+                {selectedType === type.id && (
+                  <div className="mt-3 animate-pulse">
+                    <div className="w-6 h-6 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full mx-auto flex items-center justify-center">
+                      <div className="w-2 h-2 bg-white rounded-full"></div>
+                    </div>
+                  </div>
+                )}
+              </button>
+            </EnhancedCard>
           ))}
         </div>
 
-        <div className="mt-8">
-          <Button onClick={next} disabled={!selectedType}>
-            Next: Location & Date
-          </Button>
+        <div className="mt-10">
+          <GradientButton
+            onClick={next}
+            disabled={!selectedType}
+            className={selectedType ? 'animate-pulse' : ''}
+          >
+            {selectedType ? '✨ Next: Location & Date' : 'Select an Event Type'}
+          </GradientButton>
         </div>
+
+        {selectedType && (
+          <div className="text-center animate-fade-in">
+            <p className="text-sm text-gray-500">
+              Great choice! Let's plan your{' '}
+              <span className="font-semibold text-purple-600">
+                {EVENT_TYPES.find(type => type.id === selectedType)?.name}
+              </span>
+            </p>
+          </div>
+        )}
       </div>
     </div>
   )
