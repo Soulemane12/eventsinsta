@@ -13,6 +13,15 @@ export interface Service {
 export const SERVICES: Service[] = [
   // DJ Services
   {
+    id: 'dj-envy',
+    name: 'DJ Envy',
+    category: 'DJ',
+    description: 'Celebrity DJ service by DJ Envy, professional radio host and renowned DJ. Premium entertainment experience with top-tier sound and lighting.',
+    price: 5000,
+    priceDescription: '$5,000 for 3 hours',
+    icon: '🎵'
+  },
+  {
     id: 'dj-ceo',
     name: 'DJ CEO',
     category: 'DJ',
@@ -139,6 +148,24 @@ export const SERVICES: Service[] = [
   },
   
   // Entertainment
+  {
+    id: 'angela-simmons-host',
+    name: 'Angela Simmons - Celebrity Host',
+    category: 'Entertainment',
+    description: 'Celebrity hosting by Angela Simmons, TV personality and entrepreneur. Professional event hosting with charisma and style.',
+    price: 3000,
+    priceDescription: '$3,000 for 3 hours',
+    icon: '🎤'
+  },
+  {
+    id: 'jess-hilarious-comedy',
+    name: 'Jess Hilarious - Comedy Performance',
+    category: 'Entertainment',
+    description: 'Stand-up comedy performance by Jess Hilarious, comedian and radio personality. Guaranteed laughs for your event.',
+    price: 500,
+    priceDescription: '$500 for 30 minutes',
+    icon: '😂'
+  },
   {
     id: 'entertainment-live-band',
     name: 'Live Band',

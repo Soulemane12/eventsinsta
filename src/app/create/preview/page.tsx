@@ -662,10 +662,10 @@ function PreviewContent() {
               venuePrice: eventData.venuePrice || '',
               venuePackage: eventData.venuePackage || ''
             })
-            router.push(`/create/review?${params.toString()}`)
+            router.push(`/create/sponsorship?${params.toString()}`)
           }}
         >
-          Next: Book & Celebrate!
+          Next: Sponsorship Options
         </Button>
       </div>
     </div>

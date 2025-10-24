@@ -89,6 +89,10 @@ interface EventData {
   venueAddress?: string
   venuePackage?: string
   specificVenue?: string
+  sponsorship?: string
+  sponsorshipContact?: string
+  sponsorshipEmail?: string
+  sponsorshipPhone?: string
 }
 
 function formatDate(dateString: string): string {
@@ -221,6 +225,10 @@ function ReviewContent() {
     const venueAddress = searchParams.get('venueAddress') || ''
     const venuePackage = searchParams.get('venuePackage') || ''
     const specificVenue = searchParams.get('specificVenue') || ''
+    const sponsorship = searchParams.get('sponsorship') || ''
+    const sponsorshipContact = searchParams.get('sponsorshipContact') || ''
+    const sponsorshipEmail = searchParams.get('sponsorshipEmail') || ''
+    const sponsorshipPhone = searchParams.get('sponsorshipPhone') || ''
 
     const data: EventData = {
       eventType,
@@ -238,7 +246,11 @@ function ReviewContent() {
       venueName,
       venueAddress,
       venuePackage,
-      specificVenue
+      specificVenue,
+      sponsorship,
+      sponsorshipContact,
+      sponsorshipEmail,
+      sponsorshipPhone
     }
 
     setEventData(data)
@@ -334,7 +346,11 @@ function ReviewContent() {
       ...(eventData!.venueAddress && { venueAddress: eventData!.venueAddress }),
       ...(eventData!.specificVenue && { specificVenue: eventData!.specificVenue }),
       ...(eventData!.venuePrice && { venuePrice: eventData!.venuePrice }),
-      ...(eventData!.venuePackage && { venuePackage: eventData!.venuePackage })
+      ...(eventData!.venuePackage && { venuePackage: eventData!.venuePackage }),
+      ...(eventData!.sponsorship && { sponsorship: eventData!.sponsorship }),
+      ...(eventData!.sponsorshipContact && { sponsorshipContact: eventData!.sponsorshipContact }),
+      ...(eventData!.sponsorshipEmail && { sponsorshipEmail: eventData!.sponsorshipEmail }),
+      ...(eventData!.sponsorshipPhone && { sponsorshipPhone: eventData!.sponsorshipPhone })
     })
     
     router.push(`/create/success?${params.toString()}`)
@@ -625,6 +641,34 @@ function ReviewContent() {
           </div>
         </Card>
 
+        {/* Sponsorship Information */}
+        {eventData.sponsorship === 'yes' && (
+          <Card className="p-4 bg-gradient-to-br from-blue-50 to-purple-50 border-blue-200">
+            <div className="font-semibold mb-3 flex items-center gap-2">
+              <span>💼</span>
+              <span>Event Sponsorship</span>
+            </div>
+            <div className="space-y-2 text-sm">
+              <div className="flex items-center gap-2 text-green-700 mb-3">
+                <span>✅</span>
+                <span className="font-medium">Sponsorship coordinator will contact you</span>
+              </div>
+              <div className="bg-white/80 p-3 rounded-lg">
+                <div className="font-semibold text-gray-800 mb-2">{eventData.sponsorshipContact}</div>
+                <div className="text-gray-600 text-xs space-y-1">
+                  <div className="flex items-center gap-2">
+                    <span>📧</span>
+                    <span>{eventData.sponsorshipEmail}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span>📞</span>
+                    <span>{eventData.sponsorshipPhone}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Card>
+        )}
 
         <div className="space-y-3">
           <Button onClick={bookEvent} disabled={!isFormValid}>
