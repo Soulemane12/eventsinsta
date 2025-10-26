@@ -353,6 +353,17 @@ export const SERVICES: Service[] = [
     icon: '🥊'
   },
 
+  // Sponsorship
+  {
+    id: 'event-sponsorship-inquiry',
+    name: 'Event Sponsorship',
+    category: 'Sponsorship',
+    description: 'Connect with our sponsorship coordinator to explore sponsorship opportunities for your event. Malir Burks from Burks Biz Dev Agency will reach out to discuss potential partnerships.',
+    price: 0,
+    priceDescription: 'Contact for details',
+    icon: '💼'
+  },
+
 ]
 
 export const SERVICE_CATEGORIES = [
@@ -370,7 +381,8 @@ export const SERVICE_CATEGORIES = [
   'Exotic Cars',
   'Yacht',
   'Baby Shower',
-  'Health & Wellness'
+  'Health & Wellness',
+  'Sponsorship'
 ]
 
 export function getServicesByCategory(category: string): Service[] {

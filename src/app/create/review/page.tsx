@@ -293,7 +293,16 @@ function ReviewContent() {
   const getTotalCost = () => {
     if (!eventData) return 0
     const venueCost = getCurrentVenueCost()
-    const total = venueCost + eventData.servicesTotal
+    // Filter out sponsorship services from cost calculation
+    const nonSponsorshipServices = eventData.services.filter(serviceId => {
+      const service = SERVICES.find(s => s.id === serviceId)
+      return service?.category !== 'Sponsorship'
+    })
+    const nonSponsorshipTotal = nonSponsorshipServices.reduce((total, serviceId) => {
+      const service = SERVICES.find(s => s.id === serviceId)
+      return total + (service?.price || 0)
+    }, 0)
+    const total = venueCost + nonSponsorshipTotal
     return total
   }
 
@@ -328,7 +337,17 @@ function ReviewContent() {
 
   function bookEvent() {
     // In a real app, this would process the booking with the collected data
-    
+
+    // Filter out sponsorship services from final booking
+    const nonSponsorshipServices = eventData!.services.filter(serviceId => {
+      const service = SERVICES.find(s => s.id === serviceId)
+      return service?.category !== 'Sponsorship'
+    })
+    const nonSponsorshipTotal = nonSponsorshipServices.reduce((total, serviceId) => {
+      const service = SERVICES.find(s => s.id === serviceId)
+      return total + (service?.price || 0)
+    }, 0)
+
     const params = new URLSearchParams({
       eventType: eventData!.eventType,
       location: eventData!.location,
@@ -337,8 +356,8 @@ function ReviewContent() {
       guestCount: eventData!.guestCount.toString(),
       budget: eventData!.budget,
       venue: eventData!.venue,
-      services: eventData!.services.join(','),
-      servicesTotal: eventData!.servicesTotal.toString(),
+      services: nonSponsorshipServices.join(','),
+      servicesTotal: nonSponsorshipTotal.toString(),
       totalCost: getTotalCost().toString(),
       selectedRestaurant: eventData!.selectedRestaurant,
       customerName: bookingData.name,
@@ -352,7 +371,7 @@ function ReviewContent() {
       ...(eventData!.sponsorshipEmail && { sponsorshipEmail: eventData!.sponsorshipEmail }),
       ...(eventData!.sponsorshipPhone && { sponsorshipPhone: eventData!.sponsorshipPhone })
     })
-    
+
     router.push(`/create/success?${params.toString()}`)
   }
 
@@ -607,23 +626,58 @@ function ReviewContent() {
               <div className="text-lg font-semibold text-purple-800">${getCurrentVenueCost()}</div>
             </div>
 
-            {eventData.services.length > 0 && (
-              <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                <div className="flex items-center gap-3">
-                  <div className="text-2xl">🎯</div>
-                  <div>
-                    <div className="font-medium text-sm">Services ({eventData.services.length})</div>
-                    <div className="text-xs text-gray-600">
-                      {eventData.services.map(serviceId => {
-                        const service = SERVICES.find(s => s.id === serviceId)
-                        return service ? service.name : serviceId
-                      }).join(', ')}
+{(() => {
+              // Filter out sponsorship services for display and cost calculation
+              const nonSponsorshipServices = eventData.services.filter(serviceId => {
+                const service = SERVICES.find(s => s.id === serviceId)
+                return service?.category !== 'Sponsorship'
+              })
+              const nonSponsorshipTotal = nonSponsorshipServices.reduce((total, serviceId) => {
+                const service = SERVICES.find(s => s.id === serviceId)
+                return total + (service?.price || 0)
+              }, 0)
+
+              return nonSponsorshipServices.length > 0 && (
+                <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <div className="text-2xl">🎯</div>
+                    <div>
+                      <div className="font-medium text-sm">Services ({nonSponsorshipServices.length})</div>
+                      <div className="text-xs text-gray-600">
+                        {nonSponsorshipServices.map(serviceId => {
+                          const service = SERVICES.find(s => s.id === serviceId)
+                          return service ? service.name : serviceId
+                        }).join(', ')}
+                      </div>
                     </div>
                   </div>
+                  <div className="text-lg font-semibold text-purple-800">${nonSponsorshipTotal}</div>
                 </div>
-                <div className="text-lg font-semibold text-purple-800">${eventData.servicesTotal}</div>
-              </div>
-            )}
+              )
+            })()}
+
+            {(() => {
+              // Show sponsorship inquiries separately (not included in cost)
+              const sponsorshipServices = eventData.services.filter(serviceId => {
+                const service = SERVICES.find(s => s.id === serviceId)
+                return service?.category === 'Sponsorship'
+              })
+
+              return sponsorshipServices.length > 0 && (
+                <div className="flex justify-between items-center p-3 bg-blue-50 rounded-lg border border-blue-200">
+                  <div className="flex items-center gap-3">
+                    <div className="text-2xl">💼</div>
+                    <div>
+                      <div className="font-medium text-sm">Sponsorship Inquiry</div>
+                      <div className="text-xs text-blue-600">
+                        Our team will contact you about sponsorship opportunities
+                      </div>
+                    </div>
+                  </div>
+                  <div className="text-sm font-medium text-blue-600">Inquiry Only</div>
+                </div>
+              )
+            })()}
 
             <div className="border-t pt-3">
               <div className="p-4 bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg border border-purple-200">
